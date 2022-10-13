@@ -19,10 +19,10 @@
             <v-data-table :headers="headers" :items="services" :search="search">
               <template v-slot:item="row">
                 <tr>
-                    <td>{{row.item.id}}</td>
                     <td>{{row.item.title}}</td>
                     <td>{{row.item.serviceType}}</td>
                     <td>R$ {{row.item.value}}</td>
+                    <td>{{row.item.writeDate}}</td>
                 </tr>
               </template>
             </v-data-table>
@@ -43,19 +43,20 @@ export default {
           title: '',
           serviceType: '',
           value: 0,
+          writeDate: ''
       },
       services: [],
       errors: [],
       search: '',
       headers: [
-      {
-        text: 'Status',
-        align: 'start',
-        value: 'name',
-      },
-      { text: 'Titulo', value: 'title' },
-      { text: 'Tipo de Serviço', value: 'serviceType' },
-      { text: 'Valor', value: 'value' },
+        {
+          text: 'Titulo',
+          align: 'center',
+          value: 'title',
+        },
+        { text: 'Tipo de Serviço', align: 'center', value: 'serviceType' },
+        { text: 'Valor', align: 'center', value: 'value' },
+        { text: 'Data da Remoção', align: 'center', value: 'writeDate' },
     ],
   }
 },

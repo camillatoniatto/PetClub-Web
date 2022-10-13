@@ -19,7 +19,7 @@ export default {
     async loginUser(login) {
         return await apiClient.post(`Account/login`, login)
     },
-    // deleteUsers(id) {
-    //     return apiClient.delete(`User/delete-Users?idUsers=${id}`)
-    // }
+    deleteUsers(id) {
+        return apiClient.delete(`User/delete-users?idUser=${id}`)
+    }
 }

@@ -46,20 +46,19 @@ export default {
           accessToken: '',
           refreshToken: '',
           expiresIn: '',
-          user: {
-            idUser: '',
-            fullName: '',
-            cpf: '',
-            email: '',
-            birthdate: '',
-            lastNumberCard: '',
-            nameCard: '',
-            phoneNumber: '',
-            image: '',
-            userPerfil: '',
-            isAdmin: false,
-            isPartner: false
-          },
+          dateExpire: '',
+          idUser: '',
+          fullName: '',
+          cpf: '',
+          email: '',
+          birthdate: '',
+          lastNumberCard: '',
+          nameCard: '',
+          phoneNumber: '',
+          image: '',
+          userPerfil: '',
+          isAdmin: false,
+          isPartner: false
         },
         errors: [],
     }
@@ -69,6 +68,7 @@ export default {
         register.loginUser(login).then(response => {
         this.responseLogin = response.data.data
         window.localStorage.setItem('accessToken', response.data.data['accessToken']);
+        window.localStorage.setItem('dateExpire', response.data.data['dateExpire']);
         window.localStorage.setItem('idUser', response.data.data['idUser']);
         window.localStorage.setItem('isAdmin', response.data.data['isAdmin']);
         window.localStorage.setItem('isPartner', response.data.data['isPartner']);

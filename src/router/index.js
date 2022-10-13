@@ -47,4 +47,14 @@ const router = new VueRouter({
   routes
 })
 
+router.beforeEach(async (to, from, next) =>  {
+  if (Date(localStorage.getItem('dateExpire') < Date.now())) {
+    next();
+  }
+  else{
+    // logout()
+    next({ path: '/login' });
+  }
+});
+
 export default router

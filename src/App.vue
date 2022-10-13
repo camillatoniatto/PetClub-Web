@@ -4,7 +4,7 @@
           <center><v-avatar  color="white" size="150"></v-avatar></center>
           <br>
 
-          {{ user.fullName }}
+          <v-subheader dark class="text-center">Olá, {{ user.fullName }}</v-subheader>
 
           <hr><br>
 

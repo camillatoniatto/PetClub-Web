@@ -62,7 +62,7 @@
                   <v-container>
                     <v-row>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="petSelecionado.Nome" label="Nome" type="text" block required></v-text-field>
+                        <v-text-field v-model="petSelecionado.name" label="Nome" type="text" block required></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field v-model="petSelecionado.specie" label="Espécie" type="text" ></v-text-field>
@@ -73,11 +73,8 @@
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field v-model="petSelecionado.birthdate" label="Nascimento" type="date"></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field v-model="petSelecionado.brand" label="Raça" type="text"></v-text-field>
-                      </v-col>
                       <v-col cols="12" sm="6">
-                        <v-select v-model="petSelecionado.genre" :items="['Masculino','Feminino']" label="Gênero" required></v-select>
+                        <v-select v-model="petSelecionado.genre" :items="genre" :item-value="'key'" :item-text="'value'" filled dense></v-select>
                       </v-col>
                     </v-row>
                   </v-container>
@@ -102,7 +99,9 @@
 
 <script>
 import register from '@/store/modules/pets'
-import Alert from '../Alerts.vue'
+import Alert from '../Alerts.js'
+import enums from '../.././Enums.js'
+import moment from 'moment'
 
 export default {
     name: 'PagePetUser',
@@ -116,7 +115,7 @@ export default {
             genre: '',
             specie: '',
             brand: '',
-            birthdate: Date.now(),
+            birthdate: moment(Date()).format('yyyy-MM-DD'),
             isAlive: true
         },
         petSelecionado: {
@@ -127,7 +126,7 @@ export default {
             genre: '',
             specie: '',
             brand: '',
-            birthdate: Date.now(),
+            birthdate: moment(Date()).format('yyyy-MM-DD'),
             isAlive: true
         },
         pets: [],
@@ -140,18 +139,19 @@ export default {
         headers: [
           {
             text: 'Nome',
-            align: 'start',
+            align: 'center',
             filterable: false,
             value: 'name',
           },
-          { text: 'Tutor', value: 'tutor' },
-          { text: 'Gênero', value: 'genre' },
-          { text: 'Espécie', value: 'specie' },
-          { text: 'Raça', value: 'brand' },
-          { text: 'Nascimento', value: 'birthdate' },
-          { text: 'Vivo', value: 'isAlive' },
-          { text: 'Ações', value: 'actions', sortable: false },
+          { text: 'Tutor',align: 'center',  value: 'tutor' },
+          { text: 'Gênero',align: 'center',  value: 'genre' },
+          { text: 'Espécie',align: 'center',  value: 'specie' },
+          { text: 'Raça',align: 'center',  value: 'brand' },
+          { text: 'Nascimento',align: 'center',  value: 'birthdate' },
+          { text: 'Vivo',align: 'center',  value: 'isAlive' },
+          { text: 'Ações',align: 'center',  value: 'actions', sortable: false },
         ],
+        genre: enums.Genre,
     }
   },
   mounted(){
@@ -165,6 +165,11 @@ export default {
     formTitle () {
       return this.editedIndex === -1 ? 'Cadastrar pet' : 'Editar pet'
     },
+    filteredList() {
+      return this.pets.filter(result => {
+        return result.name.toLowerCase().includes(this.search.toLowerCase())
+      })
+    }
   },
   watch: {
     dialog (val) {
@@ -200,7 +205,7 @@ export default {
             this.errors = {}
             this.listar()
             console.log('salvar pet', response)
-            Alert.showAlertSuccess('Animal cadastrado com sucesso!')
+            Alert.ShowAlertSuccess.Alert('Animal cadastrado com sucesso!')
 
         }).catch(e => {
           this.errors = e.response.data.errors
@@ -211,7 +216,7 @@ export default {
             this.errors = {}
             console.log('salvar erro', response)
             this.listar()
-            Alert.showAlertSuccess('Animal atualizado com sucesso!')
+            Alert.ShowAlertSuccess.Alert('Animal atualizado com sucesso!')
 
         }).catch(e => {
           this.errors = e.response.data.errors
@@ -223,18 +228,18 @@ export default {
       this.pet = pet
     },
     remover(pet){
-        var result = Alert.showAlertAlert('Você tem certeza que quer deletar este pet?')
-        if(result){
+        // var result = Alert.ShowAlertAlert.Alert('Você tem certeza que quer deletar este pet?')
+        // if(result){
             register.deletePet(pet.idPet).then(response => {
             this.listar()
             this.errors = {}
             console.log('remover', response)
-            Alert.showAlertSuccess('Animal deletado com sucesso!')
+            Alert.ShowAlertSuccess.Alert('Animal deletado com sucesso!')
 
         }).catch(e => {
           this.errors = e.response.data.errors
         })
-    }
+    //}
     //   this.closeDelete()
     },
     editItem (item) {

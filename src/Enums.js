@@ -13,6 +13,10 @@ const enums = {
       {key: '2', value: 'Serviço Veterinário'},
       {key: '3', value: 'Banho e Tosa'},
       {key: '4', value: 'Outros'},
+    ],
+    Genre: [
+      {key: '0', value: 'Macho'},
+      {key: '1', value: 'Fêmea'}
     ]
 }
 
