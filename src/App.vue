@@ -77,7 +77,7 @@
         'mdi-instagram',
       ],
       user: {
-        fullName: ''
+        fullName: window.localStorage.getItem('fullName')
         // fullName: setUser.$fullName
       }
     }),

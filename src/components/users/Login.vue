@@ -76,7 +76,8 @@ export default {
         window.localStorage.setItem('fullName', response.data.data['fullName']);
 
         if(response.data.success === true){
-          window.location.href = '/home'
+          // window.location.href = '/home'
+          this.$router.push(this.$route.query.redirect || '/home')
         }
       }).catch(e => {
         console.log(e)

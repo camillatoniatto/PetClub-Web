@@ -4,7 +4,7 @@
           <!-- adicionar novo -->
           <v-container>
               <div class="text-left mb-2 mr-2">
-                  <v-btn color="dark" dark @click="editItem(userSelecionado)">
+                  <v-btn color="dark" dark @click="createItem(userSelecionado)">
                       <v-icon dark>mdi-plus</v-icon>
                       Cadastrar um usuário
                   </v-btn>
@@ -55,7 +55,92 @@
             <v-dialog v-model="dialog" max-width="500px">
               <v-card>
                 <v-card-title>
-                  <span class="text-h5">{{ formTitle }}</span>
+                  <span class="text-h5">Editar usuário</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-container>
+                    <v-spacer></v-spacer>
+                    <v-row>
+                    <v-subheader class="text-h6">Dados Pessoais</v-subheader>
+                      <v-col  cols="12">
+                        <v-text-field v-model="userSelecionado.fullName" label="Nome" type="text" block required></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field v-model="userSelecionado.cpf" label="CPF" type="text" disabled></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field v-model="userSelecionado.email" label="Email" type="text"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <v-text-field v-model="userSelecionado.phoneNumber" label="Telefone" type="text"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <v-text-field v-model="userSelecionado.birthdate" label="Nascimento" type="date"></v-text-field>
+                    </v-col>
+
+                    <v-spacer></v-spacer>
+                    <v-divider></v-divider>
+                    <v-col cols="12">
+                      <v-checkbox v-model="showAddress" label="Mostrar Endereço" value="showAddress"></v-checkbox>
+                    </v-col>
+
+                    <v-container v-if="showAddress">
+                    <v-subheader class="text-h6">Dados Endereço</v-subheader>
+
+                    <v-col cols="12">
+                        <v-text-field v-model="userSelecionado.addressName" label="Endereço" type="text"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <v-text-field v-model="userSelecionado.number" label="Número" type="number"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <v-text-field v-model="userSelecionado.complement" label="Complemento" type="text"></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                        <v-text-field v-model="userSelecionado.neighborhood" label="Bairro" type="text"></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                        <v-text-field v-model="userSelecionado.city" label="Cidade" type="text"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <v-text-field v-model="userSelecionado.state" label="Estado" type="text"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <v-text-field v-model="userSelecionado.zipCode" label="CEP" type="text"></v-text-field>
+                    </v-col>
+                    </v-container>
+
+                    <v-spacer></v-spacer>
+                    <v-divider></v-divider>
+                    <v-subheader class="text-h6">Tipo de Usuário</v-subheader>
+                    <v-col cols="12">
+                    <p>{{ radios || 'null' }}</p>
+                      <v-radio-group v-model="radios" mandatory>
+                        <v-radio label="Cliente" value="isUser"></v-radio>
+                        <v-radio label="Parceiro" value="isPartner"></v-radio>
+                        <v-radio label="Administrador" value="isAdmin"></v-radio>
+                      </v-radio-group>
+                    </v-col>
+
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="close">
+                    Fechar
+                  </v-btn>
+                  <v-btn color="blue darken-1" text @click="salvar(userSelecionado)">
+                    Salvar
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="dialogPost" max-width="500px">
+              <v-card>
+                <v-card-title>
+                  <span class="text-h5">Cadastrar Usuário</span>
                 </v-card-title>
                 <v-card-text>
                   <v-container>
@@ -81,16 +166,20 @@
 
                     <v-spacer></v-spacer>
                     <v-divider></v-divider>
+                    <v-col cols="12">
+                      <v-checkbox v-model="showAddress" label="Cadastrar Endereço" value="showAddress"></v-checkbox>
+                    </v-col>
 
+                    <v-container v-if="showAddress">
                     <v-subheader class="text-h6">Dados Endereço</v-subheader>
 
                     <v-col cols="12">
                         <v-text-field v-model="userSelecionado.addressName" label="Endereço" type="text"></v-text-field>
                     </v-col>
-                    <v-col cols="12">
+                    <v-col cols="12" md="6">
                         <v-text-field v-model="userSelecionado.number" label="Número" type="number"></v-text-field>
                     </v-col>
-                    <v-col cols="12">
+                    <v-col cols="12" md="6">
                         <v-text-field v-model="userSelecionado.complement" label="Complemento" type="text"></v-text-field>
                     </v-col>
                     <v-col cols="12">
@@ -100,10 +189,23 @@
                         <v-text-field v-model="userSelecionado.city" label="Cidade" type="text"></v-text-field>
                     </v-col>
                     <v-col cols="12" md="6">
-                        <v-text-field v-model="userSelecionado.State" label="Estado" type="text"></v-text-field>
+                        <v-text-field v-model="userSelecionado.state" label="Estado" type="text"></v-text-field>
                     </v-col>
                     <v-col cols="12" md="6">
                         <v-text-field v-model="userSelecionado.zipCode" label="CEP" type="text"></v-text-field>
+                    </v-col>
+                    </v-container>
+
+                    <v-spacer></v-spacer>
+                    <v-divider></v-divider>
+                    <v-subheader class="text-h6">Tipo de Usuário</v-subheader>
+                    <v-col cols="12">
+                    <p>{{ radios || 'null' }}</p>
+                      <v-radio-group v-model="radios" mandatory>
+                        <v-radio label="Cliente" value="isUser"></v-radio>
+                        <v-radio label="Parceiro" value="isPartner"></v-radio>
+                        <v-radio label="Administrador" value="isAdmin"></v-radio>
+                      </v-radio-group>
                     </v-col>
 
                     </v-row>
@@ -114,7 +216,7 @@
                   <v-btn color="blue darken-1" text @click="close">
                     Fechar
                   </v-btn>
-                  <v-btn color="blue darken-1" text @click="salvar(userSelecionado)">
+                  <v-btn color="blue darken-1" text @click="cadastrar(userSelecionado)">
                     Salvar
                   </v-btn>
                 </v-card-actions>
@@ -148,6 +250,7 @@ export default {
             isPartner: false,
             addressName: '',
             number: '',
+            password: '',
             complement: '',
             neighborhood: '',
             city: '',
@@ -162,12 +265,13 @@ export default {
             cpf: '',
             email: '',
             phoneNumber: '',
-            birthdate: '',
+            birthdate: moment(Date.now()).format('yyyy-MM-DD'),
             image: '',
             isAdmin: false,
             isPartner: false,
             addressName: '',
             number: '',
+            password: '',
             complement: '',
             neighborhood: '',
             city: '',
@@ -179,10 +283,13 @@ export default {
         users: [],
         editedIndex: -1,
         errors: [],
+        showAddress: false,
         search: '',
         dialog: false,
         dialogDelete: false,
+        dialogPost: false,
         admin: true,
+        radios: '',
         headers: [
           {
             text: 'Nome',
@@ -229,31 +336,52 @@ export default {
         console.log(e)
       })
     },
-    salvar(userSelecionado){
-      if(userSelecionado.id == '') {
-        register.postUsers(this.userSelecionado).then(response => {
+    setRole(){
+      if(this.radios == 'isUser'){
+          this.userSelecionado.isAdmin = false
+          this.userSelecionado.isPartner = false
+        }else if(this.radios == 'isPartner'){
+          this.userSelecionado.isAdmin = false
+          this.userSelecionado.isPartner = true
+        }else if(this.radios == 'isAdmin'){
+          this.userSelecionado.isAdmin = true
+          this.userSelecionado.isPartner = false
+        }
+    },
+    setRadios(){
+      if(this.userSelecionado.isAdmin){
+        this.radios = 'isAdmin'
+      }else if(this.userSelecionado.isPartner){
+        this.radios = 'isPartner'
+      }else{
+        this.radios = 'isUser'
+      }
+    },
+    cadastrar(userSelecionado){
+        this.setRole()
+        register.postUsers(userSelecionado).then(response => {
             userSelecionado = {}
             this.errors = {}
             this.listar()
             console.log('salvar user', response)
             Alert.ShowAlertSuccess.Alert('Usuário cadastrado com sucesso!')
-
         }).catch(e => {
           this.errors = e.response.data.errors
         })
-      }else{
-        register.putUsers(userSelecionado).then(response => {
+    },
+    salvar(userSelecionado){
+        this.setRole()
+        register.putUserPerfil(userSelecionado)
+        .then(register.putUserAdmin(userSelecionado).then(response => {
             this.userSelecionado = {},
             this.errors = {}
             console.log('salvar erro', response)
             this.listar()
             Alert.ShowAlertSuccess.Alert('Usuário atualizado com sucesso!')
-
         }).catch(e => {
           this.errors = e.response.data.errors
-        })
-      }
-      this.close()
+        }))
+        this.close()
     },
     editar(user){
       this.user = user
@@ -278,6 +406,11 @@ export default {
         this.userSelecionado = Object.assign({}, item)
         this.dialog = true
     },
+    createItem (item) {
+        this.editedIndex = this.users.indexOf(item)
+        this.userSelecionado = Object.assign({}, item)
+        this.dialogPost = true
+    },
     deleteItem (item) {
       this.editedIndex = this.users.indexOf(item)
       this.userSelecionado = Object.assign({}, item)
@@ -285,6 +418,7 @@ export default {
     },
     close () {
       this.dialog = false
+      this.dialogPost = false
       this.$nextTick(() => {
         this.userSelecionado = {},
         this.editedIndex = -1

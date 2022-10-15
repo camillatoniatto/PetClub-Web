@@ -2,7 +2,7 @@ import apiClient from '@/services/api'
 
 export default {
     async postUsers(Users) {
-        return await apiClient.post(`User/create-Users`, Users)
+        return await apiClient.post(`Account/register`, Users)
     },
     async getAllUsers() {
         return await apiClient.get(`User/get-all-users`)
@@ -13,7 +13,10 @@ export default {
     async getUserId(id) {
         return await apiClient.get(`User/get-user-byid?idUser=${id}`)
     },
-    async putUsers(perfil) {
+    async putUserAdmin(perfil) {
+        return await apiClient.put(`Account/update-user-admin`, perfil)
+    },
+    async putUserPerfil(perfil) {
         return await apiClient.put(`User/update-perfil`, perfil)
     },
     async loginUser(login) {
