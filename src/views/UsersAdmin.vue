@@ -14,36 +14,36 @@
     </v-row>
     </v-container>
 
-    <Users v-if="!myAccount"/>
+    <UsersAdmin v-if="!myAccount"/>
     <MyUser v-else/>
 
   </v-container>
 </template>
 
 <script>
- import Users from '@/components/users/Users.vue'
+ import UsersAdmin from '@/components/users/UsersAdmin.vue'
  import MyUser from '@/components/users/MyUser.vue'
 
-  export default {
-    name: 'UsersView',
-    components: {
-      Users,
-      MyUser
+export default {
+  name: 'UsersView',
+  components: {
+    UsersAdmin,
+    MyUser
+  },
+  data() {
+    return {
+      myAccount: false
+    }
+  },
+  methods: {
+    changeMyList() {
+          this.myAccount = false
     },
-    data() {
-      return {
-        myAccount: false
-      }
-    },
-    methods: {
-      changeMyList() {
-            this.myAccount = false
-      },
-      changeMyListAccount() {
-            this.myAccount = true
-      }
+    changeMyListAccount() {
+          this.myAccount = true
     }
   }
+}
   </script>
 
 

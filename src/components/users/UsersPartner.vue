@@ -4,9 +4,9 @@
           <!-- adicionar novo -->
           <v-container>
               <div class="text-left mb-2 mr-2">
-                  <v-btn color="dark" dark @click="createItem(userSelecionado)">
+                  <v-btn color="dark" dark @click="createClient(userSelecionado)">
                       <v-icon dark>mdi-plus</v-icon>
-                      Cadastrar um usuário
+                      Adicionar um Cliente
                   </v-btn>
               </div>
 
@@ -28,26 +28,35 @@
                       <td>{{row.item.roles}}</td>
                       <td>
                         <v-icon small class="mr-2" @click="editItem(row.item)">mdi-pencil</v-icon>
-                        <v-icon small @click="remover(row.item)">mdi-delete</v-icon>
                       </td>
                   </tr>
                 </template>
               </v-data-table>
 
-              <!-- delete dialog -->
-              <v-dialog v-model="dialogDelete" max-width="500px">
+              <v-dialog v-model="dialogCpf" max-width="500px">
                 <v-card>
-                  <v-card-title class="text-center">
-                    <v-icon x-large icon dark color="yellow lighten-2">mdi-alert-outline</v-icon>
-                    <br>
-                    <h3>Você tem certeza que deseja deletar esse usuário?</h3>
+                  <v-card-title>
+                    <span class="text-h5">Cadastrar Usuário</span>
                   </v-card-title>
-
+                  <v-card-text>
+                    <v-container>
+                      <v-spacer></v-spacer>
+                      <v-row>
+                      <v-subheader class="text-h6">Buscar por cpf</v-subheader>
+                        <v-col cols="12">
+                          <v-text-field v-model="userSelecionado.cpf" label="CPF" type="text" ></v-text-field>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="closeDelete">Cancelar</v-btn>
-                    <v-btn color="blue darken-1" text @click="remover(userSelecionado)">Sim</v-btn>
-                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="close">
+                      Fechar
+                    </v-btn>
+                    <v-btn color="blue darken-1" text @click="adicionarCliente(userSelecionado)">
+                      Buscar
+                    </v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -55,7 +64,7 @@
             <v-dialog v-model="dialog" max-width="500px">
               <v-card>
                 <v-card-title>
-                  <span class="text-h5">Editar usuário</span>
+                  <span class="text-h5">Editar cliente</span>
                 </v-card-title>
                 <v-card-text>
                   <v-container>
@@ -109,19 +118,6 @@
                         <v-text-field v-model="userSelecionado.zipCode" label="CEP" type="text"></v-text-field>
                     </v-col>
                     </v-container>
-
-                    <v-spacer></v-spacer>
-                    <v-divider></v-divider>
-                    <v-subheader class="text-h6">Tipo de Usuário</v-subheader>
-                    <v-col cols="12">
-                    <p>{{ radios || 'null' }}</p>
-                      <v-radio-group v-model="radios" mandatory>
-                        <v-radio label="Cliente" value="isUser"></v-radio>
-                        <v-radio label="Parceiro" value="isPartner"></v-radio>
-                        <v-radio label="Administrador" value="isAdmin"></v-radio>
-                      </v-radio-group>
-                    </v-col>
-
                     </v-row>
                   </v-container>
                 </v-card-text>
@@ -137,6 +133,8 @@
               </v-card>
             </v-dialog>
 
+
+            <!-- =============================== -->
             <v-dialog v-model="dialogPost" max-width="500px">
               <v-card>
                 <v-card-title>
@@ -195,19 +193,6 @@
                         <v-text-field v-model="userSelecionado.zipCode" label="CEP" type="text"></v-text-field>
                     </v-col>
                     </v-container>
-
-                    <v-spacer></v-spacer>
-                    <v-divider></v-divider>
-                    <v-subheader class="text-h6">Tipo de Usuário</v-subheader>
-                    <v-col cols="12">
-                    <p>{{ radios || 'null' }}</p>
-                      <v-radio-group v-model="radios" mandatory>
-                        <v-radio label="Cliente" value="isUser"></v-radio>
-                        <v-radio label="Parceiro" value="isPartner"></v-radio>
-                        <v-radio label="Administrador" value="isAdmin"></v-radio>
-                      </v-radio-group>
-                    </v-col>
-
                     </v-row>
                   </v-container>
                 </v-card-text>
@@ -288,6 +273,7 @@ export default {
         dialog: false,
         dialogDelete: false,
         dialogPost: false,
+        dialogCpf: false,
         admin: true,
         radios: '',
         headers: [
@@ -307,11 +293,7 @@ export default {
     }
   },
   mounted(){
-
     this.listar()
-
-    // this.listarPetUser()
-
   },
   computed: {
     formTitle () {
@@ -328,7 +310,7 @@ export default {
   },
   methods:{
     listar(){
-        register.getAllUsers().then(response => {
+        register.getAllClients().then(response => {
         this.users = response.data.data
         console.log('listar users: ',this.users)
         console.log('listar ',this.users)
@@ -336,26 +318,17 @@ export default {
         console.log(e)
       })
     },
-    setRole(){
-      if(this.radios == 'isUser'){
-          this.userSelecionado.isAdmin = false
-          this.userSelecionado.isPartner = false
-        }else if(this.radios == 'isPartner'){
-          this.userSelecionado.isAdmin = false
-          this.userSelecionado.isPartner = true
-        }else if(this.radios == 'isAdmin'){
-          this.userSelecionado.isAdmin = true
-          this.userSelecionado.isPartner = false
-        }
-    },
-    setRadios(){
-      if(this.userSelecionado.isAdmin){
-        this.radios = 'isAdmin'
-      }else if(this.userSelecionado.isPartner){
-        this.radios = 'isPartner'
-      }else{
-        this.radios = 'isUser'
-      }
+    adicionarCliente(userSelecionado){
+      register.postClient(userSelecionado.cpf).then(response => {
+            userSelecionado = {}
+            this.errors = {}
+            this.listar()
+            console.log('salvar user', response)
+            Alert.ShowAlertSuccess.Alert('Cliente cadastrado com sucesso!')
+        }).catch(e => {
+          this.errors = e.response.data.data.errors
+        })
+        this.close()
     },
     cadastrar(userSelecionado){
         this.setRole()
@@ -364,20 +337,24 @@ export default {
             this.errors = {}
             this.listar()
             console.log('salvar user', response)
-            Alert.ShowAlertSuccess.Alert('Usuário cadastrado com sucesso!')
+            Alert.ShowAlertSuccess.Alert('Cliente cadastrado com sucesso!')
         }).catch(e => {
-          this.errors = e.response.data.errors
+          this.errors = e.response.data.data.errors
         })
+        this.close()
     },
     salvar(userSelecionado){
         this.setRole()
+        userSelecionado = this.userSelecionado
+        console.log('este usuario edit 2: ', userSelecionado)
+
         register.putUserPerfil(userSelecionado)
         .then(register.putUserAdmin(userSelecionado).then(response => {
             this.userSelecionado = {},
             this.errors = {}
             console.log('salvar erro', response)
             this.listar()
-            Alert.ShowAlertSuccess.Alert('Usuário atualizado com sucesso!')
+            Alert.ShowAlertSuccess.Alert('Cliente atualizado com sucesso!')
         }).catch(e => {
           this.errors = e.response.data.errors
         }))
@@ -393,7 +370,7 @@ export default {
             this.listar()
             this.errors = {}
             console.log('remover', response)
-            Alert.ShowAlertSuccess.Alert('Usuário deletado com sucesso!')
+            Alert.ShowAlertSuccess.Alert('Cliente deletado com sucesso!')
 
         }).catch(e => {
           this.errors = e.response.data.errors
@@ -404,28 +381,25 @@ export default {
     editItem (item) {
         this.editedIndex = this.users.indexOf(item)
         this.userSelecionado = Object.assign({}, item)
+        this.userSelecionado.birthdate = moment(this.userSelecionado.birthdate, 'DD/MM/YYYY').format('yyyy-MM-DD')
+        console.log('este usuario edit 1: ', this.userSelecionado)
         this.dialog = true
     },
     createItem (item) {
+      this.dialogCpf = false
         this.editedIndex = this.users.indexOf(item)
         this.userSelecionado = Object.assign({}, item)
         this.dialogPost = true
     },
-    deleteItem (item) {
-      this.editedIndex = this.users.indexOf(item)
-      this.userSelecionado = Object.assign({}, item)
-      this.dialogDelete = true
+    createClient (item) {
+        this.dialogCpf = true
+        this.userSelecionado = Object.assign({}, item)
+        this.dialogPost = false
     },
     close () {
       this.dialog = false
       this.dialogPost = false
-      this.$nextTick(() => {
-        this.userSelecionado = {},
-        this.editedIndex = -1
-      })
-    },
-    closeDelete () {
-      this.dialogDelete = false
+      this.dialogCpf = false
       this.$nextTick(() => {
         this.userSelecionado = {},
         this.editedIndex = -1

@@ -60,6 +60,7 @@ export default {
           isAdmin: false,
           isPartner: false
         },
+        loading: true,
         errors: [],
     }
   },
@@ -74,9 +75,14 @@ export default {
         window.localStorage.setItem('isPartner', response.data.data['isPartner']);
         window.localStorage.setItem('cpf', response.data.data['cpf']);
         window.localStorage.setItem('fullName', response.data.data['fullName']);
-
+        console.log('LOGADO!: ', response.data.data)
+        console.log('LOGADO localStorage!: ', window.localStorage.getItem('accessToken'))
         if(response.data.success === true){
-          // window.location.href = '/home'
+          console.log('loading... ', this.loading)
+
+          setTimeout(() => (this.loading = false), 50000000);
+          console.log('loading... ', this.loading)
+
           this.$router.push(this.$route.query.redirect || '/home')
         }
       }).catch(e => {

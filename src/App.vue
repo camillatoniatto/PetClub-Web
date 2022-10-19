@@ -9,7 +9,7 @@
           <hr><br>
 
           <v-list>
-          <v-list-item v-for="item in items" :key="item.link" link router-link :to="item.patch" tag="button">
+          <v-list-item v-for="item in itemsPartner" :key="item.link" link router-link :to="item.patch" tag="button">
               <v-list-item-icon>
                 <v-icon>{{ item.icon }}</v-icon>
               </v-list-item-icon>
@@ -21,7 +21,7 @@
 
         <template v-slot:append>
             <div class="pa-2">
-              <v-btn block light class="blue-grey lighten-5">
+              <v-btn block light class="blue-grey lighten-5" @click="logout">
                 Sair
               </v-btn>
             </div>
@@ -62,14 +62,22 @@
 
   export default {
     data: () => ({
-      items: [
+      itemsAdmin: [
         { title: 'Início', icon: 'mdi-view-dashboard', patch: '/home' },
-        { title: 'Usuários', icon: 'mdi-account-circle', patch: '/users' },
+        { title: 'Usuários', icon: 'mdi-account-circle', patch: '/usersadmin' },
+        { title: 'Animais', icon: 'mdi-paw', patch: '/pets' },
+        { title: 'Serviços', icon: 'mdi-toolbox-outline', patch: '/services' },
+        { title: 'Financeiro', icon: 'mdi-chart-line', patch: '/cashflow' },
+      ],
+      itemsPartner: [
+        { title: 'Início', icon: 'mdi-view-dashboard', patch: '/home' },
+        { title: 'Clientes', icon: 'mdi-account-circle', patch: '/userspartner' },
         { title: 'Animais', icon: 'mdi-paw', patch: '/pets' },
         { title: 'Serviços', icon: 'mdi-toolbox-outline', patch: '/services' },
         { title: 'Agenda', icon: 'mdi-calendar-multiselect', patch: '/scheduler' },
         { title: 'Financeiro', icon: 'mdi-chart-line', patch: '/cashflow' },
       ],
+      headers: [],
       icons: [
         'mdi-facebook',
         'mdi-twitter',
@@ -82,8 +90,27 @@
       }
     }),
     mounted() {
-        this.user.fullName = `${window.localStorage.getItem('fullName')}`
+        this.user.fullName = `${window.localStorage.getItem('fullName')}`,
+        this.showHeaders()
+    },
+    methods: {
+      logout() {
+        window.localStorage.clear('accessToken');
+        window.localStorage.clear('idUser');
+        window.localStorage.clear('isAdmin');
+        window.localStorage.clear('isPartner');
+        window.localStorage.clear('cpf');
+        window.localStorage.clear('fullName');
+        this.$router.push(this.$route.query.redirect || '/login')
+      },
+      showHeaders() {
+        if(window.localStorage.getItem('isAdmin')){
+          this.headers = this.itemsAdmin
+        }else if(window.localStorage.getItem('isPartner')) {
+          this.headers = this.itemsPartner
+        }
       }
+    }
   }
 </script>
 
