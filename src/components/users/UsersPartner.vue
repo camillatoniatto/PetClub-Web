@@ -4,7 +4,7 @@
           <!-- adicionar novo -->
           <v-container>
               <div class="text-left mb-2 mr-2">
-                  <v-btn color="dark" dark @click="createClient(userSelecionado)">
+                  <v-btn color="dark" dark @click="getCpf(userSelecionado)">
                       <v-icon dark>mdi-plus</v-icon>
                       Adicionar um Cliente
                   </v-btn>
@@ -20,12 +20,12 @@
                 <template v-slot:item="row">
                   <tr>
                       <!-- <td>{{row.item.idPet}}</td> -->
-                      <td class="align-start">{{row.item.fullName}}</td>
-                      <td>{{row.item.cpf}}</td>
-                      <td>{{row.item.email}}</td>
+                      <td class="align-start">{{row.item.userFullName}}</td>
+                      <td>{{row.item.userCpf}}</td>
+                      <td>{{row.item.userEmail}}</td>
                       <td>{{row.item.phoneNumber}}</td>
-                      <td>{{row.item.birthdate}}</td>
-                      <td>{{row.item.roles}}</td>
+                      <!-- <td>{{row.item.birthdate}}</td> -->
+                      <!-- <td>{{row.item.roles}}</td> -->
                       <td>
                         <v-icon small class="mr-2" @click="editItem(row.item)">mdi-pencil</v-icon>
                       </td>
@@ -36,13 +36,13 @@
               <v-dialog v-model="dialogCpf" max-width="500px">
                 <v-card>
                   <v-card-title>
-                    <span class="text-h5">Cadastrar Usuário</span>
+                    <span class="text-h5">Buscar Usuário</span>
                   </v-card-title>
                   <v-card-text>
                     <v-container>
                       <v-spacer></v-spacer>
                       <v-row>
-                      <v-subheader class="text-h6">Buscar por cpf</v-subheader>
+                      <v-subheader class="text-h6">Insira o CPF:</v-subheader>
                         <v-col cols="12">
                           <v-text-field v-model="userSelecionado.cpf" label="CPF" type="text" ></v-text-field>
                         </v-col>
@@ -54,7 +54,7 @@
                     <v-btn color="blue darken-1" text @click="close">
                       Fechar
                     </v-btn>
-                    <v-btn color="blue darken-1" text @click="adicionarCliente(userSelecionado)">
+                    <v-btn color="blue darken-1" text @click="buscarCliente(userSelecionado.cpf)">
                       Buscar
                     </v-btn>
                   </v-card-actions>
@@ -64,7 +64,7 @@
             <v-dialog v-model="dialog" max-width="500px">
               <v-card>
                 <v-card-title>
-                  <span class="text-h5">Editar cliente</span>
+                  <span class="text-h5">Editar Cliente</span>
                 </v-card-title>
                 <v-card-text>
                   <v-container>
@@ -133,24 +133,21 @@
               </v-card>
             </v-dialog>
 
-
-            <!-- =============================== -->
             <v-dialog v-model="dialogPost" max-width="500px">
               <v-card>
                 <v-card-title>
-                  <span class="text-h5">Cadastrar Usuário</span>
+                  <span class="text-h5">Cadastrar Cliente</span>
                 </v-card-title>
                 <v-card-text>
                   <v-container>
                     <v-spacer></v-spacer>
                     <v-row>
                     <v-subheader class="text-h6">Dados Pessoais</v-subheader>
-
                       <v-col  cols="12">
                         <v-text-field v-model="userSelecionado.fullName" label="Nome" type="text" block required></v-text-field>
                       </v-col>
                       <v-col cols="12">
-                        <v-text-field v-model="userSelecionado.cpf" label="CPF" type="text" ></v-text-field>
+                        <v-text-field v-model="userSelecionado.cpf" label="CPF" type="text" disabled></v-text-field>
                       </v-col>
                       <v-col cols="12">
                         <v-text-field v-model="userSelecionado.email" label="Email" type="text"></v-text-field>
@@ -165,7 +162,7 @@
                     <v-spacer></v-spacer>
                     <v-divider></v-divider>
                     <v-col cols="12">
-                      <v-checkbox v-model="showAddress" label="Cadastrar Endereço" value="showAddress"></v-checkbox>
+                      <v-checkbox v-model="showAddress" label="Mostrar Endereço" value="showAddress"></v-checkbox>
                     </v-col>
 
                     <v-container v-if="showAddress">
@@ -201,7 +198,48 @@
                   <v-btn color="blue darken-1" text @click="close">
                     Fechar
                   </v-btn>
-                  <v-btn color="blue darken-1" text @click="cadastrar(userSelecionado)">
+                  <v-btn color="blue darken-1" text @click="cadastrarUsuario(userSelecionado)">
+                    Salvar
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+
+
+            <!-- =============================== -->
+            <v-dialog v-model="dialogVisual" max-width="500px">
+              <v-card>
+                <v-card-title>
+                  <span class="text-h5">Adicionar Cliente</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-container>
+                    <v-spacer></v-spacer>
+                    <v-row>
+                      <v-col  cols="12">
+                        <v-text-field v-model="userSelecionado.fullName" label="Nome" type="text" block required disabled></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field v-model="userSelecionado.cpf" label="CPF" type="text" disabled></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field v-model="userSelecionado.email" label="Email" type="text" disabled></v-text-field>
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <v-text-field v-model="userSelecionado.phoneNumber" label="Telefone" type="text" disabled></v-text-field>
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <v-text-field v-model="userSelecionado.birthdate" label="Nascimento" type="date" disabled></v-text-field>
+                    </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="close">
+                    Fechar
+                  </v-btn>
+                  <v-btn color="blue darken-1" text @click="cadastrarCliente(userSelecionado.cpf)">
                     Salvar
                   </v-btn>
                 </v-card-actions>
@@ -274,6 +312,7 @@ export default {
         dialogDelete: false,
         dialogPost: false,
         dialogCpf: false,
+        dialogVisual: false,
         admin: true,
         radios: '',
         headers: [
@@ -286,8 +325,7 @@ export default {
           { text: 'CPF', align: 'center',  value: 'cpf' },
           { text: 'Email', align: 'center',  value: 'email' },
           { text: 'Telefone', align: 'center',  value: 'phoneNumber' },
-          { text: 'Nascimento', align: 'center',  value: 'birthdate' },
-          { text: 'Tipo', align: 'center',  value: 'roles' },
+          // { text: 'Nascimento', align: 'center',  value: 'birthdate' },
           { text: 'Ações', align: 'center',  value: 'actions', sortable: false },
         ],
     }
@@ -318,26 +356,40 @@ export default {
         console.log(e)
       })
     },
-    adicionarCliente(userSelecionado){
-      register.postClient(userSelecionado.cpf).then(response => {
-            userSelecionado = {}
+    buscarCliente(cpf){
+      register.getCpf(cpf).then(response => {
+          if(response['data'] != null) {
+              this.userSelecionado = response.data.data
+              this.userSelecionado.birthdate = moment(this.userSelecionado.birthdate, 'DD/MM/YYYY').format('yyyy-MM-DD')
+              this.createClient(this.userSelecionado)
+          }
+          else{
+              this.createItem(this.userSelecionado)
+
+          }
+        }).catch(e => {
+          this.errors = e.response.data.data.errors
+        })
+        this.close()
+    },
+    cadastrarCliente(cpf){
+        register.postUserPartner(cpf).then(() => {
+            this.userSelecionado = {}
             this.errors = {}
             this.listar()
-            console.log('salvar user', response)
             Alert.ShowAlertSuccess.Alert('Cliente cadastrado com sucesso!')
         }).catch(e => {
           this.errors = e.response.data.data.errors
         })
         this.close()
     },
-    cadastrar(userSelecionado){
-        this.setRole()
+    cadastrarUsuario(userSelecionado){
         register.postUsers(userSelecionado).then(response => {
             userSelecionado = {}
             this.errors = {}
             this.listar()
             console.log('salvar user', response)
-            Alert.ShowAlertSuccess.Alert('Cliente cadastrado com sucesso!')
+            Alert.ShowAlertSuccess.Alert('Usuário cadastrado com sucesso!')
         }).catch(e => {
           this.errors = e.response.data.data.errors
         })
@@ -363,21 +415,6 @@ export default {
     editar(user){
       this.user = user
     },
-    remover(user){
-        // var result = Alert.ShowAlertAlert.Alert('Você tem certeza que quer deletar este usuário?')
-        // if(result){
-            register.deleteUsers(user.id).then(response => {
-            this.listar()
-            this.errors = {}
-            console.log('remover', response)
-            Alert.ShowAlertSuccess.Alert('Cliente deletado com sucesso!')
-
-        }).catch(e => {
-          this.errors = e.response.data.errors
-        })
-    //}
-    //   this.closeDelete()
-    },
     editItem (item) {
         this.editedIndex = this.users.indexOf(item)
         this.userSelecionado = Object.assign({}, item)
@@ -385,25 +422,32 @@ export default {
         console.log('este usuario edit 1: ', this.userSelecionado)
         this.dialog = true
     },
+    createClient (item) {
+        this.dialogCpf = false
+        this.editedIndex = this.users.indexOf(item)
+        this.userSelecionado = Object.assign({}, item)
+        this.dialogVisual = true
+    },
     createItem (item) {
-      this.dialogCpf = false
+        this.dialogCpf = false
         this.editedIndex = this.users.indexOf(item)
         this.userSelecionado = Object.assign({}, item)
         this.dialogPost = true
     },
-    createClient (item) {
+    getCpf (item) {
         this.dialogCpf = true
         this.userSelecionado = Object.assign({}, item)
         this.dialogPost = false
     },
     close () {
-      this.dialog = false
-      this.dialogPost = false
-      this.dialogCpf = false
-      this.$nextTick(() => {
-        this.userSelecionado = {},
-        this.editedIndex = -1
-      })
+        this.dialog = false
+        this.dialogPost = false
+        this.dialogCpf = false
+        this.dialogVisual = false
+        this.$nextTick(() => {
+          this.userSelecionado = {},
+          this.editedIndex = -1
+        })
     },
     save () {
       if (this.editedIndex > -1) {

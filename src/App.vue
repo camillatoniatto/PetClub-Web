@@ -9,7 +9,7 @@
           <hr><br>
 
           <v-list>
-          <v-list-item v-for="item in itemsPartner" :key="item.link" link router-link :to="item.patch" tag="button">
+          <v-list-item v-for="item in  userAccess === 'true' ? itemsAdmin : itemsPartner" :key="item.link" link router-link :to="item.patch" tag="button">
               <v-list-item-icon>
                 <v-icon>{{ item.icon }}</v-icon>
               </v-list-item-icon>
@@ -31,7 +31,6 @@
       <v-app-bar app dark class="blue-grey darken-3">
         <!-- -->
       </v-app-bar>
-
 
       <v-main>
         <v-container fluid>
@@ -85,12 +84,18 @@
         'mdi-instagram',
       ],
       user: {
-        fullName: window.localStorage.getItem('fullName')
-        // fullName: setUser.$fullName
-      }
+        fullName: window.localStorage.getItem('fullName'),
+        isAdmin: window.localStorage.getItem('isAdmin'),
+        isPartner: window.localStorage.getItem('isPartner')
+      },
     }),
-    mounted() {
-        this.user.fullName = `${window.localStorage.getItem('fullName')}`,
+    computed: {
+      userAccess() {
+        return window.localStorage.getItem('isAdmin')
+      }
+    },
+    updated() {
+        console.log('mounted')
         this.showHeaders()
     },
     methods: {
@@ -104,9 +109,12 @@
         this.$router.push(this.$route.query.redirect || '/login')
       },
       showHeaders() {
-        if(window.localStorage.getItem('isAdmin')){
+        this.user.fullName = window.localStorage.getItem('fullName')
+        this.user.isAdmin = window.localStorage.getItem('isAdmin')
+        this.user.isPartner = window.localStorage.getItem('isPartner')
+        if(window.localStorage.getItem('isAdmin') === 'true'){
           this.headers = this.itemsAdmin
-        }else if(window.localStorage.getItem('isPartner')) {
+        }else if(window.localStorage.getItem('isPartner')  === 'true') {
           this.headers = this.itemsPartner
         }
       }

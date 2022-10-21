@@ -65,11 +65,19 @@ export default {
     }
   },
   methods:{
-    loginUser(login) {
-        register.loginUser(login).then(response => {
+    async loginUser(login) {
+        await register.loginUser(login).then(response => {
+
+        window.localStorage.clear('accessToken');
+        window.localStorage.clear('idUser');
+        window.localStorage.clear('isAdmin');
+        window.localStorage.clear('isPartner');
+        window.localStorage.clear('cpf');
+        window.localStorage.clear('fullName');
+
         this.responseLogin = response.data.data
         window.localStorage.setItem('accessToken', response.data.data['accessToken']);
-        window.localStorage.setItem('dateExpire', response.data.data['dateExpire']);
+        // window.localStorage.setItem('dateExpire', response.data.data['dateExpire']);
         window.localStorage.setItem('idUser', response.data.data['idUser']);
         window.localStorage.setItem('isAdmin', response.data.data['isAdmin']);
         window.localStorage.setItem('isPartner', response.data.data['isPartner']);
@@ -78,15 +86,10 @@ export default {
         console.log('LOGADO!: ', response.data.data)
         console.log('LOGADO localStorage!: ', window.localStorage.getItem('accessToken'))
         if(response.data.success === true){
-          console.log('loading... ', this.loading)
-
-          setTimeout(() => (this.loading = false), 50000000);
-          console.log('loading... ', this.loading)
-
           this.$router.push(this.$route.query.redirect || '/home')
         }
       }).catch(e => {
-        console.log(e)
+        console.log('ERRO LOGIN: ',e)
       })
     },
   }

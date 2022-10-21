@@ -34,8 +34,11 @@ export default {
         window.localStorage.setItem('fullName', '');
     },
 
-    async postClient(client) {
-        return await apiClient.post(`UsersPartners/get-user-cpf`, client)
+    async getCpf(cpf) {
+        return await apiClient.get(`UsersPartners/get-user-cpf?cpf=${cpf}`)
+    },
+    async postUserPartner(cpf) {
+        return await apiClient.post(`UsersPartners/create-partner-client?cpf=${cpf}`)
     },
     async getAllClients() {
         return await apiClient.get(`UsersPartners/get-users-partner`)
