@@ -17,6 +17,12 @@ const enums = {
     Genre: [
       {key: '0', value: 'Macho'},
       {key: '1', value: 'Fêmea'}
+    ],
+    PaymentType: [
+      {key: '0', value: 'Cartão de Crédito'},
+      {key: '1', value: 'Dinheiro'},
+      {key: '2', value: 'Cartão de Débito'},
+      {key: '3', value: 'Pix'}
     ]
 }
 

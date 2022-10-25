@@ -23,8 +23,8 @@
                       <td class="align-start">{{row.item.userFullName}}</td>
                       <td>{{row.item.userCpf}}</td>
                       <td>{{row.item.userEmail}}</td>
-                      <td>{{row.item.phoneNumber}}</td>
-                      <!-- <td>{{row.item.birthdate}}</td> -->
+                      <td>{{row.item.userPhone}}</td>
+                      <td>{{row.item.dateCreation}}</td>
                       <!-- <td>{{row.item.roles}}</td> -->
                       <td>
                         <v-icon small class="mr-2" @click="editItem(row.item)">mdi-pencil</v-icon>
@@ -325,7 +325,7 @@ export default {
           { text: 'CPF', align: 'center',  value: 'cpf' },
           { text: 'Email', align: 'center',  value: 'email' },
           { text: 'Telefone', align: 'center',  value: 'phoneNumber' },
-          // { text: 'Nascimento', align: 'center',  value: 'birthdate' },
+          { text: 'Data de Adesão', align: 'center',  value: 'dateCreation' },
           { text: 'Ações', align: 'center',  value: 'actions', sortable: false },
         ],
     }
@@ -358,14 +358,17 @@ export default {
     },
     buscarCliente(cpf){
       register.getCpf(cpf).then(response => {
-          if(response['data'] != null) {
+          if(response.data.data != null) {
+            console.log('caiu no if: ', true)
+
               this.userSelecionado = response.data.data
               this.userSelecionado.birthdate = moment(this.userSelecionado.birthdate, 'DD/MM/YYYY').format('yyyy-MM-DD')
               this.createClient(this.userSelecionado)
           }
           else{
+              this.userSelecionado.cpf = cpf
+              console.log('this.userSelecionado.cpf: ', cpf)
               this.createItem(this.userSelecionado)
-
           }
         }).catch(e => {
           this.errors = e.response.data.data.errors
@@ -385,6 +388,7 @@ export default {
     },
     cadastrarUsuario(userSelecionado){
         register.postUsers(userSelecionado).then(response => {
+            this.cadastrarCliente(userSelecionado.cpf)
             userSelecionado = {}
             this.errors = {}
             this.listar()
