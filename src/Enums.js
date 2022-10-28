@@ -23,7 +23,7 @@ const enums = {
       {key: '1', value: 'Dinheiro'},
       {key: '2', value: 'Cartão de Débito'},
       {key: '3', value: 'Pix'}
-    ]
+    ],
 }
 
 export default enums;

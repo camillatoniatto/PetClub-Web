@@ -6,7 +6,7 @@
               <div class="text-left mb-2 mr-2">
                   <v-btn color="dark" dark @click="createItem()">
                       <v-icon dark>mdi-plus</v-icon>
-                      Criar movimentação de caixa
+                      Gerar movimentação de caixa
                   </v-btn>
               </div>
               <br>
@@ -17,16 +17,19 @@
               <v-data-table :headers="headers" :items="allCashflow" :search="search">
                 <template v-slot:item="row">
                   <tr>
+                      <td><v-chip dark :color="getColor(row.item.isOutflow)" class="align-center my-5 md-2 white-text">{{movimentacao(row.item.isOutflow)}}</v-chip></td>
                       <td>{{row.item.title}}</td>
                       <td>{{row.item.description}}</td>
-                      <td>{{row.item.userCreateName}}</td>
+                      <td>{{row.item.paymentMethod}}</td>
+                      <!-- <td>{{row.item.userCreateName}}</td> -->
                       <td>R$ {{row.item.netValue}}</td>
                       <td>{{row.item.expirationDate}}</td>
                       <td>{{row.item.writeOffDate}}</td>
-                      <td>{{row.item.userWriteOffName}}</td>
-                      <td>{{row.item.isOutflow}}</td>
+                      <td><v-chip dark :color="getColorStatus(row.item.status)" class="align-center my-5 md-2 white-text">{{row.item.status}}</v-chip></td>
+                      <!-- <td>{{row.item.userWriteOffName}}</td> -->
                       <td>
-                        <v-icon small class="mr-2" @click="editItem(row.item)">mdi-pencil</v-icon>
+                        <v-icon v-if="row.item.idPurchaseOrder == null && row.item.idUserWriteOff == '' " medium class="mr-2" @click="writeOff(row.item.id)">mdi-cash-check</v-icon>
+                        <!-- <v-icon small class="mr-2" @click="editItem(row.item)">mdi-pencil</v-icon> -->
                         <v-icon small @click="deleteItem(row.item)">mdi-delete</v-icon>
                       </td>
                   </tr>
@@ -77,14 +80,11 @@
                       <v-col cols="12" md="6">
                       <v-text-field v-model.number="cashflowSelect.launchValue" label="Valor" type="number"></v-text-field>
                       </v-col>
-                      <v-col cols="12">
+                      <v-col cols="12" md="6">
                         <v-subheader>Tipo de Pagamento</v-subheader>
-                        <v-select v-model="cashflowSelect.paymentType" :items="paymentType" :item-value="'key'" :item-text="'value'" filled dense></v-select>
+                        <v-select v-model="cashflowSelect.idPaymentMethod" :items="payments" :item-value="'idPaymentMethod'" :item-text="'paymentType'" filled dense></v-select>
                       </v-col>
-                      <v-col cols="12" v-if="cashflowSelect.paymentType == 0">
-                        <v-subheader>Quantidade de Parcelas</v-subheader>
-                        <v-select v-model="cashflowSelect.idPaymentMethod" :items="paymentType" :item-value="'key'" :item-text="'value'" filled dense></v-select>
-                      </v-col>
+
                     </v-row>
                   </v-container>
                 </v-card-text>
@@ -109,15 +109,25 @@
                 <v-card-text>
                   <v-container>
                     <v-row>
-                      <v-col cols="12" sm="10" md="8" lg="6">
+                      <v-col cols="12">
                       <v-text-field v-model="cashflowSelect.title" label="Titulo" type="text" required></v-text-field>
                       <v-text-field v-model="cashflowSelect.description" label="Descrição" type="text" required></v-text-field>
-                      <v-text-field v-model="cashflowSelect.expirationDate" :label="{expirationDateTitle}" type="Date" required></v-text-field>
-                      <v-text-field v-model="cashflowSelect.writeOffDate" :label="{writeOffDateTitle}" type="Date" required></v-text-field>
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <v-subheader>{{expirationDateTitle}}</v-subheader>
+                        <v-text-field v-model="cashflowSelect.expirationDate" type="Date" required></v-text-field>
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <v-subheader>{{writeOffDateTitle}}</v-subheader>
+                        <v-text-field v-model="cashflowSelect.writeOffDate" type="Date" required></v-text-field>
+                      </v-col>
+                      <v-col cols="12" md="6">
                       <v-text-field v-model.number="cashflowSelect.launchValue" label="Valor" type="number"></v-text-field>
-                      <v-subheader>Tipo de Serviço</v-subheader>
-                      <v-select v-model="cashflowSelect.paymentType" :items="paymentType" :item-value="'key'" :item-text="'value'" filled dense></v-select>
-                    </v-col>
+                      </v-col>
+                      <v-col cols="12" md="6">
+                        <v-subheader>Tipo de Pagamento</v-subheader>
+                        <v-select v-model="cashflowSelect.paymentType" :items="payments" :item-value="'idPaymentMethod'" :item-text="'paymentType'" filled dense></v-select>
+                      </v-col>
                     </v-row>
                   </v-container>
                 </v-card-text>
@@ -140,6 +150,7 @@
 
   <script>
   import register from '@/store/modules/cashflow'
+  import registerPayment from '@/store/modules/payment'
   import Alert from '@/components/Alerts.js'
   import enums from '../.././Enums.js'
   export default {
@@ -147,6 +158,7 @@
     data () {
       return {
         cashflow: {
+            id: '',
             title: '',
             description: '',
             idUserCreate: '',
@@ -162,7 +174,9 @@
             writeDate: '',
         },
         allCashflow: [],
+        payments: [],
         cashflowSelect: {
+            id: '',
             title: '',
             description: '',
             idUserCreate: '',
@@ -187,24 +201,26 @@
         dialogDelete: false,
         headers: [
           {
-            text: 'Titulo',
+            text: 'Tipo',
             align: 'center',
-            value: 'title',
+            value: 'isOutflow',
           },
+          { text: 'Titulo', align: 'center', value: 'title' },
           { text: 'Descrição', align: 'center', value: 'description' },
           { text: 'Tipo de Pagamento', align: 'center', value: 'paymentMethod' },
-          { text: 'Criador', align: 'center', value: 'userCreateName' },
+          //{ text: 'Criador', align: 'center', value: 'userCreateName' },
           { text: 'Valor líquido', align: 'center', value: 'netValue' },
           { text: 'Data de Vencimento', align: 'center', value: 'expirationDate' },
           { text: 'Data da Baixa', align: 'center', value: 'writeOffDate' },
-          { text: 'Usuário da Baixa', align: 'center', value: 'userWriteOffName' },
-          { text: 'Movimentação', align: 'center', value: 'isOutflow' },
+          //{ text: 'Usuário da Baixa', align: 'center', value: 'userWriteOffName' },
+          { text: 'Status', align: 'center', value: 'status' },
           { text: 'Ações', align: 'center', value: 'actions', sortable: false }
         ],
       }
     },
     mounted(){
       this.listar()
+      this.listarPagamentos()
     },
     computed: {
       formTitle () {
@@ -226,8 +242,30 @@
       },
     },
     methods:{
-      listar(){
-          register.getCashflow().then(response => {
+      getColor (isOutflow) {
+        return isOutflow ? 'red' : 'green'
+      },
+      getColorStatus(status) {
+        switch (status) {
+          case 'Pago':
+            return 'light-green darken-3';
+          case 'Recebido':
+            return 'light-green darken-3'
+          case 'Pendente':
+            return 'yellow darken-3'
+          case 'Cancelado':
+            return 'red darken-3'
+          case 'Em atraso':
+            return 'orange accent-4'
+          default:
+            return 'white'
+        }
+      },
+      movimentacao (isOutflow) {
+        return isOutflow ? 'Saída' : 'Entrada'
+      },
+      async listar(){
+          await register.getCashflow().then(response => {
           this.allCashflow = response.data.data
           console.log('listar allCashflow: ',this.allCashflow)
           console.log('listar ',this.allCashflow)
@@ -235,10 +273,28 @@
           console.log(e)
         })
       },
+      async listarPagamentos(){
+        await registerPayment.getPaymentMethods().then(response => {
+        this.payments = response.data.data
+      }).catch(e => {
+        console.log(e)
+      })
+      },
+      async writeOff(id){
+        await register.writeOffBill(id).then(() => {
+            this.cashflowSelect = {}
+            this.errors = {}
+            this.listar()
+            Alert.ShowAlertSuccess.Alert('Baixa realizada com sucesso!')
+        })
+      },
       criarConta(cashflowSelect){
-        this.setRole()
+        if(cashflowSelect.writeOffDate == ''){
+            var minDate = new Date('0001-01-01T00:00:00Z')
+            cashflowSelect.writeOffDate = minDate
+        }
         register.postCashflow(cashflowSelect).then(() => {
-            cashflowSelect = {}
+            this.cashflowSelect = {}
             this.errors = {}
             this.listar()
             Alert.ShowAlertSuccess.Alert('Movimentação cadastrada com sucesso!')
@@ -248,7 +304,6 @@
         this.close()
       },
       salvarConta(cashflowSelect){
-          this.setRole()
           cashflowSelect = this.cashflowSelect
           register.putCashflow(cashflowSelect)
           .then(() => {
