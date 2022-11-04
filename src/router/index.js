@@ -7,8 +7,8 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/home',
-    name: 'home',
+    path: '/',
+    name: '',
     // meta: { requiresAuth: true },
     component: HomeView
   },
@@ -52,6 +52,12 @@ const routes = [
     name: 'cashflow',
     meta: { requiresAuth: true },
     component: () => import('../views/CashFlow.vue')
+  },
+  {
+    path: '/purchaseorder',
+    name: 'purchaseorder',
+    meta: { requiresAuth: true },
+    component: () => import('../views/PurchaseOrder.vue')
   },
 ]
 const router = new VueRouter({

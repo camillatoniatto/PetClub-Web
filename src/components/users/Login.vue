@@ -86,7 +86,7 @@ export default {
         console.log('LOGADO!: ', response.data.data)
         console.log('LOGADO localStorage!: ', window.localStorage.getItem('accessToken'))
         if(response.data.success === true){
-          this.$router.push(this.$route.query.redirect || '/home')
+          this.$router.push(this.$route.query.redirect || '/')
         }
       }).catch(e => {
         console.log('ERRO LOGIN: ',e)
