@@ -24,6 +24,12 @@ const enums = {
       {key: '2', value: 'Cartão de Débito'},
       {key: '3', value: 'Pix'}
     ],
+    SchedulerSituation: [
+      {key: '0', value: 'Agendado'},
+      {key: '1', value: 'Concluído'},
+      {key: '2', value: 'Cancelado'},
+      {key: '3', value: 'Em Andamento'}
+    ]
 }
 
 export default enums;

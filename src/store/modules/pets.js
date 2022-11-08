@@ -7,8 +7,8 @@ export default {
     async getPets() {
         return await apiClient.get(`Pet/get-all-pets`)
     },
-    async getPetUser() {
-        return await apiClient.get(`Pet/get-pet-by-idUser`)
+    async getPetUser(id) {
+        return await apiClient.get(`Pet/get-pet-by-idUser?idUser=${id}`)
     },
     async getPetId(id) {
         return await apiClient.get(`Pet/get-pet-by-id?idPet=${id}`)
