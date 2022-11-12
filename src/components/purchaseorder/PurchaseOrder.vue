@@ -69,7 +69,11 @@
             <v-data-iterator :items="purchaseOrderSelect" hide-default-footer>
               <template v-slot:header>
                 <v-toolbar class="mb-2" color="indigo darken-5" dark flat>
-                  <v-toolbar-title>Itens da venda "{{purchaseOrderSelect.id}}"</v-toolbar-title>
+                  <v-toolbar-title
+                    >Itens da venda "{{
+                      purchaseOrderSelect.id
+                    }}"</v-toolbar-title
+                  >
                 </v-toolbar>
               </template>
               <template v-slot:default="props">
@@ -108,8 +112,8 @@
             </v-data-iterator>
           </v-container>
         </v-dialog>
-        <!-- 
-              <v-dialog v-model="dialogDelete" max-width="500px">
+
+        <!--    <v-dialog v-model="dialogDelete" max-width="500px">
                 <v-card>
                   <v-card-title class="text-center">
                     <v-icon x-large icon dark color="center yellow lighten-2">mdi-alert-outline</v-icon>
@@ -124,57 +128,108 @@
                     <v-spacer></v-spacer>
                   </v-card-actions>
                 </v-card>
-              </v-dialog>
+              </v-dialog> -->
 
-            <v-dialog v-model="dialogPost" max-width="600px">
-              <v-card>
-                <v-card-title>
-                  <span class="text-h5">Cadastro - {{ formTitle }}</span>
-                </v-card-title>
-                <v-card-text>
-                  <v-container>
-                    <v-checkbox
-                      v-model="purchaseOrderSelect.isOutflow"
-                      label="Entrada de caixa"
-                    ></v-checkbox>
-                    <v-row>
-                      <v-col cols="12">
-                      <v-text-field v-model="purchaseOrderSelect.title" label="Titulo" type="text" required></v-text-field>
-                      <v-text-field v-model="purchaseOrderSelect.description" label="Descrição" type="text" required></v-text-field>
-                      </v-col>
-                      <v-col cols="12" md="6">
-                        <v-subheader>{{expirationDateTitle}}</v-subheader>
-                        <v-text-field v-model="purchaseOrderSelect.expirationDate" type="Date" required></v-text-field>
-                      </v-col>
-                      <v-col cols="12" md="6">
-                        <v-subheader>{{writeOffDateTitle}}</v-subheader>
-                        <v-text-field v-model="purchaseOrderSelect.writeOffDate" type="Date" required></v-text-field>
-                      </v-col>
-                      <v-col cols="12" md="6">
-                      <v-text-field v-model.number="purchaseOrderSelect.launchValue" label="Valor" type="number"></v-text-field>
-                      </v-col>
-                      <v-col cols="12" md="6">
-                        <v-subheader>Tipo de Pagamento</v-subheader>
-                        <v-select v-model="purchaseOrderSelect.idPaymentMethod" :items="payments" :item-value="'idPaymentMethod'" :item-text="'paymentType'" filled dense></v-select>
-                      </v-col>
+        <v-dialog v-model="dialogPost" max-width="600px">
+          <v-card>
+            <v-card-title>
+              <span class="text-h5">Cadastrar nova Venda</span>
+            </v-card-title>
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="12">
+                    <v-select
+                      v-model="purchaseOrderSelect.idUser"
+                      :items="clients"
+                      :item-value="'idUser'"
+                      :item-text="'userFullName'"
+                      label="Cliente"
+                      filled
+                      dense
+                    ></v-select>
+                    <v-select
+                      @click="listarPetUser(purchaseOrderSelect.idUser)"
+                      v-model="purchaseOrderSelect.idPet"
+                      label="Pet"
+                      :items="pets"
+                      :item-value="'idPet'"
+                      :item-text="'name'"
+                      filled
+                      dense
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="12" md="12">
+                    <v-subheader>Tipo de Pagamento</v-subheader>
+                    <v-select
+                      v-model="purchaseOrderSelect.idPaymentMethod"
+                      :items="payments"
+                      :item-value="'idPaymentMethod'"
+                      :item-text="'paymentType'"
+                      filled
+                      dense
+                    ></v-select>
+                  </v-col>
+                </v-row>
 
-                    </v-row>
+                <v-divider></v-divider>
+                <v-subheader class="text-h6">Serviços da venda</v-subheader>
+
+                <!-- <div v-model="servicesAdd"> -->
+                <div v-for="service in services" v-bind:key="service.idService">
+                  <v-container fluid>
+                    <v-col cols="12">
+                      <v-checkbox
+                        v-model="service.idService"
+                        hide-details
+                        class="shrink mr-2 mt-0"
+                        :label="`${service.title}`"
+                      ></v-checkbox>
+                      <v-text-field
+                        v-if="service.idService"
+                        v-model="purchaseOrderItem.quantity"
+                        label="Quantidade"
+                        type="number"
+                      ></v-text-field>
+                    </v-col>
                   </v-container>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="close">
-                    Fechar
-                  </v-btn>
-                  <v-btn color="blue darken-1" text @click="criarConta(purchaseOrderSelect)">
-                    Salvar
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+                </div>
+                <v-divider></v-divider>
 
+                <v-row>
+                  <v-col cols="12" md="12">
+                    <v-text-field
+                      v-model="purchaseOrderSelect.launchValue"
+                      label="Valor Total"
+                      type="text"
+                      disabled
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" md="12">
+                    <v-textarea
+                      v-model="purchaseOrderSelect.observations"
+                      label="Observações"
+                      type="text"
+                    ></v-textarea>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="close"> Fechar </v-btn>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="criarConta(purchaseOrderSelect)"
+              >
+                Salvar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
 
-            <v-dialog v-model="dialog" max-width="600px">
+        <!--  <v-dialog v-model="dialog" max-width="600px">
               <v-card>
                 <v-card-title>
                   <span class="text-h5">Edição - {{ formTitle }}</span>
@@ -222,6 +277,9 @@
 
 <script>
 import register from "@/store/modules/purchaseorder";
+import registerUser from "@/store/modules/users";
+import registerPets from "@/store/modules/pets";
+import registerServices from "@/store/modules/services";
 import registerPayment from "@/store/modules/payment";
 import Alert from "@/components/Alerts.js";
 import enums from "../.././Enums.js";
@@ -246,6 +304,10 @@ export default {
       purchaseOrders: [],
       PurchaseOrderItens: [],
       payments: [],
+      clients: [],
+      pets: [],
+      services: [],
+      servicesAdd: [{ idService: "", Quantity: 0 }],
       purchaseOrderSelect: {
         id: "",
         idPartner: "",
@@ -301,6 +363,9 @@ export default {
   mounted() {
     this.listar();
     this.listarPagamentos();
+    this.listarClientes();
+    this.listarServices();
+    // this.listarPetUser()
   },
   computed: {
     formTitle() {
@@ -315,6 +380,9 @@ export default {
     },
     dialogDelete(val) {
       val || this.closeDelete();
+    },
+    servicesAddWatch() {
+      this.servicesAdd;
     },
   },
   methods: {
@@ -359,6 +427,36 @@ export default {
           console.log(e);
         });
     },
+    async listarClientes() {
+      await registerUser
+        .getAllClients()
+        .then((response) => {
+          this.clients = response.data.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    async listarPetUser(id) {
+      await registerPets
+        .getPetUser(id)
+        .then((response) => {
+          this.pets = response.data.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    async listarServices() {
+      await registerServices
+        .getServices()
+        .then((response) => {
+          this.services = response.data.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     async writeOff(id) {
       await register.writeOffBill(id).then(() => {
         this.purchaseOrderSelect = {};
@@ -366,6 +464,10 @@ export default {
         this.listar();
         Alert.ShowAlertSuccess.Alert("Venda gerada com sucesso!");
       });
+    },
+    adicionarService() {
+      this.servicesAdd.length++;
+      console.log("quantidade serviço", this.servicesAdd.length);
     },
     criarVenda(purchaseOrderSelect) {
       register
@@ -420,7 +522,7 @@ export default {
         .getPurchaseOrderId(id)
         .then((response) => {
           this.purchaseOrderSelect = response.data.data.purchaseOrderItem;
-          this.purchaseOrderSelect.id = response.data.data.idPurchaseOrder
+          this.purchaseOrderSelect.id = response.data.data.idPurchaseOrder;
           this.details = true;
         })
         .catch((e) => {

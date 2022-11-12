@@ -59,7 +59,8 @@
                     <v-col cols="12" sm="10" md="8" lg="6">
                     <v-text-field v-model="serviceSelecionado.title" label="Titulo" type="text" required></v-text-field>
                     <v-text-field v-model="serviceSelecionado.description" label="Descrição" type="text" required></v-text-field>
-                    <v-text-field v-model.number="serviceSelecionado.value" label="Valor" type="number"></v-text-field>
+                    <v-text-field v-model="serviceSelecionado.value" label="Valor" type="text"></v-text-field>
+                    {{serviceSelecionado}}
                     <v-subheader>Tipo de Serviço</v-subheader>
                     <v-select v-model="serviceSelecionado.serviceType" :items="serviceType" :item-value="'key'" :item-text="'value'" filled dense></v-select>
                   </v-col>
