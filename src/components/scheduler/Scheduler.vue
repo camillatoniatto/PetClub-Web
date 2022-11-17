@@ -63,27 +63,24 @@
                       <v-select v-model="schedulers.idClient" label="Cliente" :items="clients" :item-value="'idUser'" :item-text="'userFullName'" filled dense></v-select>
                     </v-col>
                     <v-col cols="12" sm="8" md="6">
-                      <v-select @click="listaPetUser(schedulers.idClient)" v-model="schedulerSelecionado.IdPet" label="Pet" :items="petuser" :item-value="'idPet'" :item-text="'IdPet'" filled dense></v-select>
+                      <v-select @click="listaPetUser(schedulers.idClient)" v-model="schedulerSelecionado.idPet" label="Pet" :items="petuser" :item-value="'idPet'" :item-text="'name'" filled dense></v-select>
                     </v-col>
-                    <v-col cols="12" sm="8" md="6">
-                      <v-text-field v-model="schedulerSelecionado.IdPet" label="PET" type="text"></v-text-field>
-                    </v-col>
-                    {{ schedulerSelecionado.IdPet }}
+                    {{ schedulerSelecionado.idPet }}
                     <v-col cols="12" sm="14" md="12">
-                      <v-select v-model="schedulerSelecionado.ServiceType" label="Tipo de Serviço" :items="servicetype" :item-value="'key'" :item-text="'value'" filled dense></v-select>
+                      <v-select v-model="schedulerSelecionado.serviceType" label="Tipo de Serviço" :items="servicetype" :item-value="'key'" :item-text="'value'" filled dense></v-select>
                     </v-col>
                     <v-col cols="12" sm="8" md="6">
-                      <v-text-field v-model="schedulerSelecionado.StartDate" label="Data Inicio" type="datetime-local"></v-text-field>
+                      <v-text-field v-model="schedulerSelecionado.startDate" label="Data Inicio" type="datetime-local"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="8" md="6">
-                      <v-text-field v-model="schedulerSelecionado.FinalDate" label="Data Final" type="datetime-local"></v-text-field>
+                      <v-text-field v-model="schedulerSelecionado.finalDate" label="Data Final" type="datetime-local"></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
               </v-card-text>
               <v-card-actions>
                 <v-col cols="12" md="6">
-                      <v-select v-model="schedulerSelecionado.SchedulerSituation" label="Situação" :items="situation" :item-value="'key'" :item-text="'value'" filled dense></v-select>
+                      <v-select v-model="schedulerSelecionado.schedulerSituation" label="Situação" :items="situation" :item-value="'key'" :item-text="'value'" filled dense></v-select>
                     </v-col>
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" text @click="close">
@@ -119,17 +116,17 @@ export default {
           IdPartner: '',
           IdPet: '',
           ServiceType: '',
-          StartDate: moment(Date()).format('yyyy-MM-DD HH'),
-          FinalDate: moment(Date()).format('yyyy-MM-DD HH'),
+          StartDate: moment(Date()).format('yyyy-MM-DD HH:MM:SS'),
+          FinalDate: moment(Date()).format('yyyy-MM-DD HH:MM:SS'),
           SchedulerSituation: '',
       },
       schedulerSelecionado: {
           idScheduler: '',
           IdPartner: '',
-          IdPet: '',
+          idPet: '',
           ServiceType: '',
-          StartDate: moment(Date()).format('yyyy-MM-DD HH'),
-          FinalDate: moment(Date()).format('yyyy-MM-DD HH'),
+          StartDate: moment(Date()).format('yyyy-MM-DD HH:MM:SS'),
+          FinalDate: moment(Date()).format('yyyy-MM-DD HH:MM:SS'),
           SchedulerSituation: '',
       },
       scheduler: [],
@@ -191,7 +188,7 @@ methods:{
     })
   },
   listarClients(){
-      registers.getAllClients().then(response => {
+    registers.getAllClients().then(response => {
       this.clients = response.data.data
       console.log('listar Clientes: ',this.clients)
       console.log('listar ',this.clients)
@@ -217,29 +214,43 @@ methods:{
       console.log(e)
     })
   },
+
+    showAlertSuccess() {
+      this.$swal("Sucesso", "Agendamento Realizado com Sucesso!", "success");
+    },
+
+    showAlertError() {
+      this.$swal("Oops...", "Algum erro aconteceu! Verifique se todos os campos estão apontados corretamente!", "error");
+    },
+
   salvar(schedulerSelecionado){
     console.log("salvar shudeler -----", schedulerSelecionado)
-
+    
     if(schedulerSelecionado.idScheduler == '') {
-        register.postScheduler(schedulerSelecionado).then(response => {
+      register.postScheduler(schedulerSelecionado).then(response => {
         schedulerSelecionado = {}
-          this.errors = {}
-          this.listar()
-          console.log('salvar scheduler', response)
-          Alert.ShowAlertSuccess.Alert('Agendamento realizado com Sucesso!')
-
+        this.errors = {}
+        this.showAlertSuccess()
+        this.listar()
+        console.log('salvar scheduler', response)
+        Alert.ShowAlertSuccess.Alert('Agendamento realizado com Sucesso!')
+        
       }).catch(e => {
+        this.showAlertError()
         this.errors = e.response.data.errors
       })
     }else{
       register.putScheduler(schedulerSelecionado).then(response => {
+          console.log("aaaa",schedulerSelecionado)
           this.schedulerSelecionado = {},
           this.errors = {}
           console.log('salvar erro', response)
+          this.showAlertSuccess()
           this.listar()
           Alert.ShowAlertSuccess.Alert('Agendamento atualizado com Sucesso!')
 
       }).catch(e => {
+        this.showAlertError()
         this.errors = e.response.data.errors
       })
     }
@@ -252,7 +263,7 @@ methods:{
     console.log('remover', schedulers)
       // var result = Alert.ShowAlertAlert.Alert('Você tem certeza que quer deletar este pet?')
       // if(result){
-          register.deleteScheduler(schedulers.idScheduler).then(response => {
+        register.deleteScheduler(schedulers.idScheduler).then(response => {
           this.listar()
           console.log('remover', response)
           this.errors = {}
@@ -265,6 +276,7 @@ methods:{
   //   this.closeDelete()
   },
   editItem (item) {
+    console.log("aaaaaaaaaaaaaaaaaaa",item)
       this.editedIndex = this.scheduler.indexOf(item)
       this.schedulerSelecionado = Object.assign({}, item)
       this.dialog = true
