@@ -1,20 +1,19 @@
 <template>
   <v-container>
     <!-- titulo -->
-    <h1 class="text-left ml-3">Animais</h1>
-
-    <Pets v-if="!log"/>
+    <h1 class="text-left ml-3">Serviços</h1>
+    <Services/>
 
   </v-container>
 </template>
 
 <script>
- import Pets from '@/components/pets/PetAdmin.vue'
+ import Services from '@/components/partnerservices/ServicesAdmin.vue'
 
   export default {
     name: 'ServicesView',
     components: {
-      Pets,
+      Services
     },
     data() {
       return {
@@ -31,3 +30,5 @@
     }
   }
   </script>
+
+

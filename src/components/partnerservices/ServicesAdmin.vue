@@ -19,6 +19,7 @@
             <v-data-table :headers="headers" :items="services" :search="search">
               <template v-slot:item="row">
                 <tr>
+                    <td>{{row.item.partnerFullName}}</td>
                     <td>{{row.item.title}}</td>
                     <td>{{row.item.serviceType}}</td>
                     <td>R$ {{row.item.valueString}}</td>
@@ -57,6 +58,17 @@
                 <v-container>
                   <v-row>
                     <v-col cols="12">
+                      <v-col cols="12">
+                        <v-select
+                          v-model="serviceSelecionado.idPartner"
+                          :items="users"
+                          :item-value="'idUser'"
+                          :item-text="'fullName'"
+                          label="Cliente"
+                          filled
+                          dense
+                        ></v-select>
+                      </v-col>
                     <v-text-field v-model="serviceSelecionado.title" label="Titulo" type="text" required></v-text-field>
                     <v-text-field v-model="serviceSelecionado.description" label="Descrição" type="text" required></v-text-field>
                     <v-text-field v-model="serviceSelecionado.value" label="Valor" type="text"></v-text-field>
@@ -85,6 +97,7 @@
 </template>
 
 <script>
+import registerUser from "@/store/modules/users";
 import register from '@/store/modules/services'
 import Alert from '@/components/Alerts.js'
 import enums from '../.././Enums.js'
@@ -94,6 +107,7 @@ export default {
     return {
       service: {
           idService: '',
+          idPartner: '',
           title: '',
           description: '',
           serviceType: '',
@@ -129,6 +143,7 @@ export default {
           align: 'center',
           value: 'title',
         },
+        { text: 'Parceiro', align: 'center', value: 'partnerFullName' },
         { text: 'Tipo de Serviço', align: 'center', value: 'serviceType' },
         { text: 'Valor', align: 'center', value: 'value' },
         { text: 'Ações', align: 'center', value: 'actions', sortable: false }
@@ -136,20 +151,13 @@ export default {
     }
   },
   mounted(){
+    this.listarUsers();
     this.listar()
   },
   computed: {
     formTitle () {
       return this.editedIndex === -1 ? 'Cadastrar serviço' : 'Editar serviço'
     },
-    // solicitorsFeesDisplay: {
-    //   get: function() {
-    //     return this.serviceSelecionado.value.toFixed(2)
-    //   },
-    //   set: function(newValue) {
-    //     this.serviceSelecionado.value = newValue
-    //   }
-    // }
   },
   watch: {
     dialog (val) {
@@ -164,7 +172,7 @@ export default {
       return Number(value.replace(",", "."));
     },
     listar(){
-        register.getServices().then(response => {
+        register.getServicesAdmin().then(response => {
         this.services = response.data.data
         console.log('listar services: ',this.services)
         console.log('listar ',this.services)
@@ -172,14 +180,15 @@ export default {
         console.log(e)
       })
     },
-    listarServiceUser(){
-        register.getServiceUser().then(response => {
-        this.services = response.data
-        console.log('listar services user: ',this.services)
-        console.log('listar ',this.services)
-      }).catch(e => {
-        console.log(e)
-      })
+    async listarUsers() {
+      await registerUser
+        .getAllUsers()
+        .then((response) => {
+          this.users = response.data.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     salvar(serviceSelecionado){
       var valorNovo = this.formatPrice(serviceSelecionado.value)

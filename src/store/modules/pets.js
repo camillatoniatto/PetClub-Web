@@ -4,8 +4,11 @@ export default {
     async postPet(pet) {
         return await apiClient.post(`Pet/create-pet`, pet)
     },
-    async getPets() {
-        return await apiClient.get(`Pet/get-all-pets`)
+    async getPetsAdmin() {
+        return await apiClient.get(`Pet/get-all-pets-admin`)
+    },
+    async getPetsPartner() {
+        return await apiClient.get(`Pet/get-all-pets-partner`)
     },
     async getPetUser(id) {
         return await apiClient.get(`Pet/get-pet-by-idUser?idUser=${id}`)

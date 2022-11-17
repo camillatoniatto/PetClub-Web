@@ -19,6 +19,12 @@ const routes = [
     component: () => import('../views/Services.vue')
   },
   {
+    path: '/servicesadmin',
+    name: 'servicesadmin',
+    meta: { requiresAuth: true },
+    component: () => import('../views/ServicesAdmin.vue')
+  },
+  {
     path: '/usersadmin',
     name: 'usersadmin',
     meta: { requiresAuth: true },
@@ -35,6 +41,18 @@ const routes = [
     name: 'pets',
     meta: { requiresAuth: true },
     component: () => import('../views/Pets.vue')
+  },
+  {
+    path: '/petspartner',
+    name: 'petspartner',
+    meta: { requiresAuth: true },
+    component: () => import('../views/PetsPartner.vue')
+  },
+  {
+    path: '/petsuser',
+    name: 'petsuser',
+    meta: { requiresAuth: true },
+    component: () => import('../views/PetsUser.vue')
   },
   {
     path: '/scheduler',
@@ -58,6 +76,12 @@ const routes = [
     name: 'purchaseorder',
     meta: { requiresAuth: true },
     component: () => import('../views/PurchaseOrder.vue')
+  },
+  {
+    path: '/myaccount',
+    name: 'myaccount',
+    meta: { requiresAuth: true },
+    component: () => import('../components/users/MyUser.vue')
   },
 ]
 const router = new VueRouter({

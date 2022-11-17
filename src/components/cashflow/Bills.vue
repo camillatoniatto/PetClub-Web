@@ -28,7 +28,7 @@
                       <td><v-chip dark :color="getColorStatus(row.item.status)" class="align-center my-5 md-2 white-text">{{row.item.status}}</v-chip></td>
                       <!-- <td>{{row.item.userWriteOffName}}</td> -->
                       <td>
-                        <v-icon v-if="row.item.idPurchaseOrder == null && row.item.idUserWriteOff == '' " medium class="mr-2" @click="writeOff(row.item.id)">mdi-cash-check</v-icon>
+                        <v-icon v-if="(row.item.idPurchaseOrder == '' || row.item.idPurchaseOrder == null) && row.item.idUserWriteOff == '' " medium class="mr-2" @click="writeOff(row.item.id)">mdi-cash-check</v-icon>
                         <!-- <v-icon small class="mr-2" @click="editItem(row.item)">mdi-pencil</v-icon> -->
                         <v-icon small @click="deleteItem(row.item)">mdi-delete</v-icon>
                       </td>
@@ -62,12 +62,12 @@
                   <v-container>
                     <v-checkbox
                       v-model="cashflowSelect.isOutflow"
-                      label="Entrada de caixa"
+                      label="Saída de caixa"
                     ></v-checkbox>
                     <v-row>
                       <v-col cols="12">
                       <v-text-field v-model="cashflowSelect.title" label="Titulo" type="text" required></v-text-field>
-                      <v-text-field v-model="cashflowSelect.description" label="Descrição" type="text" required></v-text-field>
+                      <v-textarea v-model="cashflowSelect.description" label="Descrição" type="text" required></v-textarea>
                       </v-col>
                       <v-col cols="12" md="6">
                         <v-subheader>{{expirationDateTitle}}</v-subheader>
@@ -224,13 +224,13 @@
     },
     computed: {
       formTitle () {
-        return this.cashflowSelect.isOutflow ? 'Entrada de Caixa' : 'Saída de Caixa'
+        return !this.cashflowSelect.isOutflow ? 'Entrada de Caixa' : 'Saída de Caixa'
       },
       expirationDateTitle(){
-        return this.cashflowSelect.isOutflow ? 'Previsão de Recebimento' : 'Data de Vencimento'
+        return !this.cashflowSelect.isOutflow ? 'Previsão de Recebimento' : 'Data de Vencimento'
       },
       writeOffDateTitle(){
-        return this.cashflowSelect.isOutflow ? 'Data do Recebimento' : 'Data de Baixa'
+        return !this.cashflowSelect.isOutflow ? 'Data do Recebimento' : 'Data de Baixa'
       }
     },
     watch: {
@@ -242,6 +242,9 @@
       },
     },
     methods:{
+      formatPrice(value) {
+        return Number(value.replace(",", "."));
+      },
       getColor (isOutflow) {
         return isOutflow ? 'red' : 'green'
       },
@@ -289,10 +292,13 @@
         })
       },
       criarConta(cashflowSelect){
+
         if(cashflowSelect.writeOffDate == ''){
             var minDate = new Date('0001-01-01T00:00:00Z')
             cashflowSelect.writeOffDate = minDate
         }
+        // console.log(cashflowSelect)
+        // cashflowSelect.launchValue = this.formatPrice(cashflowSelect.launchValue)
         register.postCashflow(cashflowSelect).then(() => {
             this.cashflowSelect = {}
             this.errors = {}
@@ -304,7 +310,9 @@
         this.close()
       },
       salvarConta(cashflowSelect){
-          cashflowSelect = this.cashflowSelect
+          // cashflowSelect = this.cashflowSelect
+          // var valorNovo = this.formatPrice(cashflowSelect.launchValue)
+          // cashflowSelect.launchValue = valorNovo
           register.putCashflow(cashflowSelect)
           .then(() => {
               this.cashflowSelect = {},

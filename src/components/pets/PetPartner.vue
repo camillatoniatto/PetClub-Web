@@ -21,6 +21,7 @@
                   <tr>
                       <!-- <td>{{row.item.idPet}}</td> -->
                       <td class="align-start">{{row.item.name}}</td>
+                      <td>{{row.item.tutor}}</td>
                       <td>{{row.item.genre}}</td>
                       <td>{{row.item.specie}}</td>
                       <td>{{row.item.brand}}</td>
@@ -29,7 +30,7 @@
 
                       <td>
                         <v-icon small class="mr-2" @click="editItem(row.item)">mdi-pencil</v-icon>
-                        <!-- <v-icon small @click="remover(row.item)">mdi-delete</v-icon> -->
+                        <v-icon small @click="remover(row.item)">mdi-delete</v-icon>
                       </td>
                   </tr>
                 </template>
@@ -61,6 +62,17 @@
                 <v-card-text>
                   <v-container>
                     <v-row>
+                      <v-col cols="12">
+                        <v-select
+                          v-model="petSelecionado.idUser"
+                          :items="clients"
+                          :item-value="'idUser'"
+                          :item-text="'userFullName'"
+                          label="Cliente"
+                          filled
+                          dense
+                        ></v-select>
+                      </v-col>
                       <v-col cols="12">
                         <v-text-field v-model="petSelecionado.name" label="Nome" type="text" block required></v-text-field>
                       </v-col>
@@ -98,6 +110,7 @@
 </template>
 
 <script>
+import registerUser from "@/store/modules/users";
 import register from '@/store/modules/pets'
 import Alert from '../Alerts.js'
 import enums from '../.././Enums.js'
@@ -129,6 +142,7 @@ export default {
             birthdate: moment(Date.now()).format('yyyy-MM-DD'),
             isAlive: true
         },
+        clients: [],
         pets: [],
         editedIndex: -1,
         errors: [],
@@ -143,6 +157,7 @@ export default {
             filterable: false,
             value: 'name',
           },
+          { text: 'Tutor',align: 'center',  value: 'tutor' },
           { text: 'Gênero',align: 'center',  value: 'genre' },
           { text: 'Espécie',align: 'center',  value: 'specie' },
           { text: 'Raça',align: 'center',  value: 'brand' },
@@ -154,7 +169,8 @@ export default {
     }
   },
   mounted(){
-    this.listar()
+    this.listarClientes();
+    this.listarPetPartner()
   },
   computed: {
     formTitle () {
@@ -178,15 +194,24 @@ export default {
     getColor (isAlive) {
         return isAlive ? 'green' : 'red'
       },
-    listar(){
-        register.getPetUser().then(response => {
+    listarPetPartner(){
+        register.getPetsPartner().then(response => {
         this.pets = response.data.data
       }).catch(e => {
         console.log(e)
       })
     },
+    async listarClientes() {
+      await registerUser
+        .getAllClients()
+        .then((response) => {
+          this.clients = response.data.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     salvar(petSelecionado){
-      petSelecionado.idUser = window.localStorage.getItem('idUser')
       if(petSelecionado.idPet == '') {
         register.postPet(this.petSelecionado).then(response => {
             petSelecionado = {}

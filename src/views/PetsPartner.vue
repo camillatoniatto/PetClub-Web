@@ -9,7 +9,7 @@
 </template>
 
 <script>
- import Pets from '@/components/pets/PetAdmin.vue'
+ import Pets from '@/components/pets/PetPartner.vue'
 
   export default {
     name: 'ServicesView',

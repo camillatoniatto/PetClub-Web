@@ -7,6 +7,9 @@ export default {
     async getServices() {
         return await apiClient.get(`Service/get-services`)
     },
+    async getServicesAdmin() {
+        return await apiClient.get(`Service/get-services-admin`)
+    },
     async getLogServices() {
         return await apiClient.get(`Service/get-log-services`)
     },
