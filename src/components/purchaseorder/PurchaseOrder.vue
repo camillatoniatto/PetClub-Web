@@ -176,7 +176,7 @@
                 <v-subheader class="text-h6">Serviços da venda</v-subheader>
 
                 <!-- <div v-model="servicesAdd"> -->
-                <div v-for="service in services" v-bind:key="service.idService">
+                <!-- <div v-for="service in services" v-bind:key="service.idService">
                   <v-container fluid>
                     <v-col cols="12">
                       <v-checkbox
@@ -194,8 +194,39 @@
                     </v-col>
                   </v-container>
                 </div>
-                <v-divider></v-divider>
+                <v-divider></v-divider> -->
 
+                <div v-for="service in servicesQnty" v-bind:key="service">
+                  <v-container fluid>
+                    <v-row>
+                      <v-col cols="6">
+                        <v-select
+                          v-model="servicesAdd.idService"
+                          :items="services"
+                          :item-value="'idService'"
+                          :item-text="'title'"
+                          label="Selecione..."
+                          filled
+                          dense
+                        ></v-select>
+                      </v-col>
+
+                      <v-col cols="6">
+                        <v-text-field
+                          v-model="servicesAdd.quantity"
+                          label="Quantidade"
+                          type="number"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                    
+                  </v-container>
+                </div>
+
+                <v-btn color="dark" dark @click="servicesQnty++">
+                  <v-icon dark>mdi-plus</v-icon>
+                </v-btn>
+                <v-divider></v-divider>
                 <v-row>
                   <v-col cols="12" md="12">
                     <v-text-field
@@ -205,6 +236,12 @@
                       disabled
                     ></v-text-field>
                   </v-col>
+
+                  <v-spacer></v-spacer>
+                  <v-divider></v-divider>
+                  {{purchaseOrderSelect}}
+                  {{servicesAdd}}
+
                   <v-col cols="12" md="12">
                     <v-textarea
                       v-model="purchaseOrderSelect.observations"
@@ -221,7 +258,7 @@
               <v-btn
                 color="blue darken-1"
                 text
-                @click="criarConta(purchaseOrderSelect)"
+                @click="criarVenda(purchaseOrderSelect, servicesAdd)"
               >
                 Salvar
               </v-btn>
@@ -300,14 +337,16 @@ export default {
         paymentSituation: 0,
         observations: "",
         writeDate: "",
+        purchaseOrderItem: []
       },
       purchaseOrders: [],
-      PurchaseOrderItens: [],
       payments: [],
       clients: [],
       pets: [],
       services: [],
-      servicesAdd: [{ idService: "", Quantity: 0 }],
+      servicesAdd: [],
+      // servicesAdd: [{ idService: "", Quantity: 0 }],
+      servicesQnty: 1,
       purchaseOrderSelect: {
         id: "",
         idPartner: "",
@@ -321,6 +360,7 @@ export default {
         paymentSituation: 0,
         observations: "",
         writeDate: "",
+        purchaseOrderItem: []
       },
       purchaseOrderItem: {
         id: "",
@@ -367,13 +407,7 @@ export default {
     this.listarServices();
     // this.listarPetUser()
   },
-  computed: {
-    formTitle() {
-      return this.purchaseOrderSelect.isOutflow
-        ? "Cadastrar Venda"
-        : "Editar Venda";
-    },
-  },
+  computed: {},
   watch: {
     dialog(val) {
       val || this.close();
@@ -382,7 +416,7 @@ export default {
       val || this.closeDelete();
     },
     servicesAddWatch() {
-      this.servicesAdd;
+      this.servicesQnty;
     },
   },
   methods: {
@@ -465,11 +499,9 @@ export default {
         Alert.ShowAlertSuccess.Alert("Venda gerada com sucesso!");
       });
     },
-    adicionarService() {
-      this.servicesAdd.length++;
-      console.log("quantidade serviço", this.servicesAdd.length);
-    },
-    criarVenda(purchaseOrderSelect) {
+    criarVenda(purchaseOrderSelect, servicesAdd) {
+      purchaseOrderSelect.purchaseOrderItem.push(servicesAdd);
+      this.servicesAdd = {};
       register
         .postPurchaseOrder(purchaseOrderSelect)
         .then(() => {
@@ -486,7 +518,7 @@ export default {
     salvarVenda(purchaseOrderSelect) {
       purchaseOrderSelect = this.purchaseOrderSelect;
       register
-        .putCashflow(purchaseOrderSelect)
+        .putPurchaseOrder(purchaseOrderSelect)
         .then(() => {
           (this.purchaseOrderSelect = {}), (this.errors = {});
           this.listar(this.isApp);
