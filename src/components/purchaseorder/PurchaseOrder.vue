@@ -219,7 +219,6 @@
                         ></v-text-field>
                       </v-col>
                     </v-row>
-                    
                   </v-container>
                 </div>
 
@@ -239,8 +238,8 @@
 
                   <v-spacer></v-spacer>
                   <v-divider></v-divider>
-                  {{purchaseOrderSelect}}
-                  {{servicesAdd}}
+                  {{ purchaseOrderSelect }}
+                  {{ servicesAdd }}
 
                   <v-col cols="12" md="12">
                     <v-textarea
@@ -318,7 +317,6 @@ import registerUser from "@/store/modules/users";
 import registerPets from "@/store/modules/pets";
 import registerServices from "@/store/modules/services";
 import registerPayment from "@/store/modules/payment";
-import Alert from "@/components/Alerts.js";
 import enums from "../.././Enums.js";
 export default {
   name: "PagePurchaseOrder",
@@ -337,7 +335,7 @@ export default {
         paymentSituation: 0,
         observations: "",
         writeDate: "",
-        purchaseOrderItem: []
+        purchaseOrderItem: [],
       },
       purchaseOrders: [],
       payments: [],
@@ -360,7 +358,7 @@ export default {
         paymentSituation: 0,
         observations: "",
         writeDate: "",
-        purchaseOrderItem: []
+        purchaseOrderItem: [],
       },
       purchaseOrderItem: {
         id: "",
@@ -492,12 +490,17 @@ export default {
         });
     },
     async writeOff(id) {
-      await register.writeOffBill(id).then(() => {
-        this.purchaseOrderSelect = {};
-        this.errors = {};
-        this.listar();
-        Alert.ShowAlertSuccess.Alert("Venda gerada com sucesso!");
-      });
+      await register
+        .writeOffBill(id)
+        .then(() => {
+          this.purchaseOrderSelect = {};
+          this.errors = {};
+          this.listar();
+          this.showAlertSuccess("Venda finalizada com sucesso!");
+        })
+        .catch((e) => {
+          this.showAlertError(e.response.data.errors);
+        });
     },
     criarVenda(purchaseOrderSelect, servicesAdd) {
       purchaseOrderSelect.purchaseOrderItem.push(servicesAdd);
@@ -508,10 +511,10 @@ export default {
           this.purchaseOrderSelect = {};
           this.errors = {};
           this.listar(this.isApp);
-          Alert.ShowAlertSuccess.Alert("Venda gerada com sucesso!");
+          this.showAlertSuccess("Venda gerada com sucesso!");
         })
         .catch((e) => {
-          this.errors = e.response.data.data.errors;
+          this.showAlertError(e.response.data.errors);
         });
       this.close();
     },
@@ -522,10 +525,10 @@ export default {
         .then(() => {
           (this.purchaseOrderSelect = {}), (this.errors = {});
           this.listar(this.isApp);
-          Alert.ShowAlertSuccess.Alert("Venda atualizada com sucesso!");
+          this.showAlertSuccess("Venda atalizada com sucesso!");
         })
         .catch((e) => {
-          this.errors = e.response.data.errors;
+          this.showAlertError(e.response.data.errors);
         });
       this.close();
     },
@@ -541,10 +544,10 @@ export default {
           this.listar();
           this.errors = {};
           console.log("remover: ", response);
-          Alert.ShowAlertSuccess("Serviço deletado com sucesso!");
+          this.showAlertSuccess("Venda deletada com sucesso!");
         })
         .catch((e) => {
-          this.errors = e.response.data.errors;
+          this.showAlertError(e.response.data.errors);
         });
       //}
       this.closeDelete();
@@ -597,6 +600,12 @@ export default {
         this.purchaseOrders.push(this.purchaseOrderSelect);
       }
       this.close();
+    },
+    showAlertSuccess(message) {
+      this.$swal("Sucesso", message, "success");
+    },
+    showAlertError(message) {
+      this.$swal("Oops...", message, "error");
     },
   },
 };

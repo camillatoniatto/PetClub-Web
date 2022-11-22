@@ -7,7 +7,10 @@
       class="blue-grey darken-4"
       v-if="$router.currentRoute.path != '/login'"
     >
-      <center><v-avatar color="white" size="150"></v-avatar></center>
+      <!-- <center><v-avatar color="white" size="150"></v-avatar></center> -->
+
+      <img src="./assets/logo.png" :aspect-ratio="16/9"
+      :width="200"/>
       <br />
 
       <v-subheader dark class="text-center"
@@ -101,7 +104,7 @@ export default {
       { title: "Início", icon: "mdi-view-dashboard", patch: "/" },
       { title: "Minha Conta", icon: "mdi-account-circle", patch: "/myaccount" },
       { title: "Meus Pets", icon: "mdi-paw", patch: "/petsuser" },
-      { title: "Compras", icon: "mdi-account-cash", patch: "/purchaseorder" },
+      { title: "Compras", icon: "mdi-account-cash", patch: "/myorders" },
     ],
     headers: [],
     icons: ["mdi-facebook", "mdi-twitter", "mdi-linkedin", "mdi-instagram"],
