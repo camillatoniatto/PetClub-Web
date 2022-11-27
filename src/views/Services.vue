@@ -9,7 +9,7 @@
         <v-card class="pa-2" outlined tile @click="changeMyList"> Lista de Serviços </v-card>
       </v-col>
       <v-col cols="sm">
-        <v-card class="pa-2" outlined tile @click="changeMyListLog"> Log de Serviços </v-card>
+        <v-card class="pa-2" outlined tile @click="changeMyListLog"> Serviços Arquivados </v-card>
       </v-col>
     </v-row>
     </v-container>

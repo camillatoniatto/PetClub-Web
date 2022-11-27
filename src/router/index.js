@@ -72,6 +72,12 @@ const routes = [
     component: () => import('../views/CashFlow.vue')
   },
   {
+    path: '/cashflowadmin',
+    name: 'cashflowadmin',
+    meta: { requiresAuth: true },
+    component: () => import('../views/CashFlowAdmin.vue')
+  },
+  {
     path: '/purchaseorder',
     name: 'purchaseorder',
     meta: { requiresAuth: true },

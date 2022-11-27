@@ -1,48 +1,50 @@
 <template>
+  <div id="app">
+    <v-app id="inspire">
   <v-container>
-    <!-- titulo -->
     <h1 class="text-left ml-3">Financeiro</h1>
-    <v-container>
-      <!-- abas -->
       <v-row no-gutters>
-      <v-col cols="sm">
-        <v-card class="pa-2" outlined tile @click="changeMyList"> Saídas e Entradas </v-card>
-      </v-col>
-      <!-- <v-col cols="sm">
-        <v-card class="pa-2" outlined tile @click="changeMyListLog"> Log de Serviços </v-card>
-      </v-col> -->
-    </v-row>
-    </v-container>
-
-    <Bills v-if="!log"/>
-    <!-- <LogServices v-else/> -->
-
-  </v-container>
+        <v-col cols="sm">
+          <v-card class="pa-2" outlined tile @click="changeMyList">
+            Resumo Financeiro
+          </v-card>
+        </v-col>
+        <v-col cols="sm">
+          <v-card class="pa-2" outlined tile @click="changeMyListLog">
+            Saídas e Entradas
+          </v-card>
+        </v-col>
+      </v-row>
+    <ResumeBills v-if="!log" />
+    <Bills v-else />
+</v-container>
+</v-app>
+  </div>
 </template>
 
 <script>
- import Bills from '@/components/cashflow/Bills.vue'
-//  import LogServices from '@/components/partnerservices/LogServices.vue'
+import Bills from "@/components/cashflow/Bills.vue";
+import ResumeBills from "@/components/cashflow/ResumeBills.vue";
 
-  export default {
-    name: 'CashFlowView',
-    components: {
-      Bills,
+export default {
+  name: "CashFlowView",
+  components: {
+    Bills,
+    ResumeBills,
+  },
+  data() {
+    return {
+      log: false,
+      isPartner: window.localStorage.getItem('isPartner')
+    };
+  },
+  methods: {
+    changeMyList() {
+      this.log = false;
     },
-    data() {
-      return {
-        log: false
-      }
+    changeMyListLog() {
+      this.log = true;
     },
-    methods: {
-      changeMyList() {
-            this.log = false
-      },
-      changeMyListLog() {
-            this.log = true
-      }
-    }
-  }
-  </script>
-
-
+  },
+};
+</script>

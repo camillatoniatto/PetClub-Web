@@ -58,7 +58,7 @@
                   >mdi-cash-check</v-icon
                 >
                 <!-- <v-icon small class="mr-2" @click="editItem(row.item)">mdi-pencil</v-icon> -->
-                <v-icon small @click="deleteItem(row.item)">mdi-delete</v-icon>
+                <v-icon small @click="deleteItem(row.item)">mdi-close-circle</v-icon>
               </td>
             </tr>
           </template>
@@ -66,7 +66,7 @@
 
         <v-dialog v-model="details" max-width="40%">
           <v-container class="px-4 py-4">
-            <v-data-iterator :items="purchaseOrderSelect" hide-default-footer>
+            <v-data-iterator :items="purchaseOrderSelect.purchaseOrderItens" hide-default-footer>
               <template v-slot:header>
                 <v-toolbar class="mb-2" color="indigo darken-5" dark flat>
                   <v-toolbar-title
@@ -113,12 +113,12 @@
           </v-container>
         </v-dialog>
 
-        <!--    <v-dialog v-model="dialogDelete" max-width="500px">
+           <v-dialog v-model="dialogDelete" max-width="500px">
                 <v-card>
                   <v-card-title class="text-center">
                     <v-icon x-large icon dark color="center yellow lighten-2">mdi-alert-outline</v-icon>
                     <br>
-                    <h3>Você tem certeza que deseja remover essa venda?</h3>
+                    <h3>Você tem certeza que deseja cancelar essa venda?</h3>
                   </v-card-title>
 
                   <v-card-actions>
@@ -128,7 +128,7 @@
                     <v-spacer></v-spacer>
                   </v-card-actions>
                 </v-card>
-              </v-dialog> -->
+              </v-dialog>
 
         <v-dialog v-model="dialogPost" max-width="600px">
           <v-card>
@@ -175,33 +175,17 @@
                 <v-divider></v-divider>
                 <v-subheader class="text-h6">Serviços da venda</v-subheader>
 
-                <!-- <div v-model="servicesAdd"> -->
-                <!-- <div v-for="service in services" v-bind:key="service.idService">
-                  <v-container fluid>
-                    <v-col cols="12">
-                      <v-checkbox
-                        v-model="service.idService"
-                        hide-details
-                        class="shrink mr-2 mt-0"
-                        :label="`${service.title}`"
-                      ></v-checkbox>
-                      <v-text-field
-                        v-if="service.idService"
-                        v-model="purchaseOrderItem.quantity"
-                        label="Quantidade"
-                        type="number"
-                      ></v-text-field>
-                    </v-col>
-                  </v-container>
-                </div>
-                <v-divider></v-divider> -->
-
-                <div v-for="service in servicesQnty" v-bind:key="service">
+                <div
+                  v-for="(
+                    service, index
+                  ) in purchaseOrderSelect.purchaseOrderItens"
+                  v-bind:key="index"
+                >
                   <v-container fluid>
                     <v-row>
                       <v-col cols="6">
                         <v-select
-                          v-model="servicesAdd.idService"
+                          v-model="service.idService"
                           :items="services"
                           :item-value="'idService'"
                           :item-text="'title'"
@@ -213,7 +197,7 @@
 
                       <v-col cols="6">
                         <v-text-field
-                          v-model="servicesAdd.quantity"
+                          v-model="service.quantity"
                           label="Quantidade"
                           type="number"
                         ></v-text-field>
@@ -222,7 +206,16 @@
                   </v-container>
                 </div>
 
-                <v-btn color="dark" dark @click="servicesQnty++">
+                <v-btn
+                  color="dark"
+                  dark
+                  @click="
+                    purchaseOrderSelect.purchaseOrderItens.push({
+                      idService: '',
+                      quantity: 0,
+                    })
+                  "
+                >
                   <v-icon dark>mdi-plus</v-icon>
                 </v-btn>
                 <v-divider></v-divider>
@@ -238,8 +231,6 @@
 
                   <v-spacer></v-spacer>
                   <v-divider></v-divider>
-                  {{ purchaseOrderSelect }}
-                  {{ servicesAdd }}
 
                   <v-col cols="12" md="12">
                     <v-textarea
@@ -257,55 +248,13 @@
               <v-btn
                 color="blue darken-1"
                 text
-                @click="criarVenda(purchaseOrderSelect, servicesAdd)"
+                @click="criarVenda(purchaseOrderSelect)"
               >
                 Salvar
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
-
-        <!--  <v-dialog v-model="dialog" max-width="600px">
-              <v-card>
-                <v-card-title>
-                  <span class="text-h5">Edição - {{ formTitle }}</span>
-                </v-card-title>
-                <v-card-text>
-                  <v-container>
-                    <v-row>
-                      <v-col cols="12">
-                      <v-text-field v-model="purchaseOrderSelect.title" label="Titulo" type="text" required></v-text-field>
-                      <v-text-field v-model="purchaseOrderSelect.description" label="Descrição" type="text" required></v-text-field>
-                      </v-col>
-                      <v-col cols="12" md="6">
-                        <v-subheader>{{expirationDateTitle}}</v-subheader>
-                        <v-text-field v-model="purchaseOrderSelect.expirationDate" type="Date" required></v-text-field>
-                      </v-col>
-                      <v-col cols="12" md="6">
-                        <v-subheader>{{writeOffDateTitle}}</v-subheader>
-                        <v-text-field v-model="purchaseOrderSelect.writeOffDate" type="Date" required></v-text-field>
-                      </v-col>
-                      <v-col cols="12" md="6">
-                      <v-text-field v-model.number="purchaseOrderSelect.launchValue" label="Valor" type="number"></v-text-field>
-                      </v-col>
-                      <v-col cols="12" md="6">
-                        <v-subheader>Tipo de Pagamento</v-subheader>
-                        <v-select v-model="purchaseOrderSelect.paymentType" :items="payments" :item-value="'idPaymentMethod'" :item-text="'paymentType'" filled dense></v-select>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="close">
-                    Fechar
-                  </v-btn>
-                  <v-btn color="blue darken-1" text @click="salvarConta(purchaseOrderSelect)">
-                    Salvar
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog> -->
       </v-container>
     </v-app>
   </div>
@@ -335,7 +284,7 @@ export default {
         paymentSituation: 0,
         observations: "",
         writeDate: "",
-        purchaseOrderItem: [],
+        purchaseOrderItens: [],
       },
       purchaseOrders: [],
       payments: [],
@@ -358,7 +307,7 @@ export default {
         paymentSituation: 0,
         observations: "",
         writeDate: "",
-        purchaseOrderItem: [],
+        purchaseOrderItens: [],
       },
       purchaseOrderItem: {
         id: "",
@@ -370,7 +319,6 @@ export default {
         writeDate: "",
         delete: false,
       },
-      purchaseOrderItens: [],
       paymentType: enums.PaymentType,
       editedIndex: -1,
       isOutflow: false,
@@ -425,7 +373,7 @@ export default {
       switch (status) {
         case "Pago":
           return "light-green darken-3";
-        case "Recebido":
+        case "Concluido":
           return "light-green darken-3";
         case "Pendente":
           return "yellow darken-3";
@@ -489,22 +437,7 @@ export default {
           console.log(e);
         });
     },
-    async writeOff(id) {
-      await register
-        .writeOffBill(id)
-        .then(() => {
-          this.purchaseOrderSelect = {};
-          this.errors = {};
-          this.listar();
-          this.showAlertSuccess("Venda finalizada com sucesso!");
-        })
-        .catch((e) => {
-          this.showAlertError(e.response.data.errors);
-        });
-    },
-    criarVenda(purchaseOrderSelect, servicesAdd) {
-      purchaseOrderSelect.purchaseOrderItem.push(servicesAdd);
-      this.servicesAdd = {};
+    criarVenda(purchaseOrderSelect) {
       register
         .postPurchaseOrder(purchaseOrderSelect)
         .then(() => {
@@ -512,11 +445,11 @@ export default {
           this.errors = {};
           this.listar(this.isApp);
           this.showAlertSuccess("Venda gerada com sucesso!");
+          this.close();
         })
         .catch((e) => {
-          this.showAlertError(e.response.data.errors);
+          this.showAlertError(e.response.data.errors[0].message);
         });
-      this.close();
     },
     salvarVenda(purchaseOrderSelect) {
       purchaseOrderSelect = this.purchaseOrderSelect;
@@ -526,11 +459,11 @@ export default {
           (this.purchaseOrderSelect = {}), (this.errors = {});
           this.listar(this.isApp);
           this.showAlertSuccess("Venda atalizada com sucesso!");
+          this.close();
         })
         .catch((e) => {
-          this.showAlertError(e.response.data.errors);
+          this.showAlertError(e.response.data.errors[0].message);
         });
-      this.close();
     },
     editar(user) {
       this.user = user;
@@ -545,18 +478,17 @@ export default {
           this.errors = {};
           console.log("remover: ", response);
           this.showAlertSuccess("Venda deletada com sucesso!");
+          this.closeDelete();
         })
         .catch((e) => {
-          this.showAlertError(e.response.data.errors);
+          this.showAlertError(e.response.data.errors[0].message);
         });
-      //}
-      this.closeDelete();
     },
     async getItem(id) {
       await register
         .getPurchaseOrderId(id)
         .then((response) => {
-          this.purchaseOrderSelect = response.data.data.purchaseOrderItem;
+          this.purchaseOrderSelect.purchaseOrderItens = response.data.data.purchaseOrderItens;
           this.purchaseOrderSelect.id = response.data.data.idPurchaseOrder;
           this.details = true;
         })

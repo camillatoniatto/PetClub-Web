@@ -492,7 +492,7 @@ export default {
           this.showAlertSuccess("Usuário cadastrado com sucesso!");
         })
         .catch((e) => {
-          this.showAlertError(e.response.data.errors);
+          this.showAlertError(e.response.data.errors[0].message);
         });
       this.close();
     },
@@ -511,7 +511,7 @@ export default {
             this.showAlertSuccess("Usuário atualizado com sucesso!");
           })
           .catch((e) => {
-            this.showAlertError(e.response.data.errors);
+            this.showAlertError(e.response.data.errors[0].message);
           })
       );
       this.close();
@@ -531,7 +531,7 @@ export default {
           this.showAlertSuccess("Usuário deletado com sucesso!");
         })
         .catch((e) => {
-          this.showAlertError(e.response.data.errors);
+          this.showAlertError(e.response.data.errors[0].message);
         });
       //}
       //   this.closeDelete()

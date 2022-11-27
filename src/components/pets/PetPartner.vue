@@ -28,7 +28,7 @@
               <!-- <td>{{row.item.idPet}}</td> -->
               <td class="align-start">{{ row.item.name }}</td>
               <td>{{ row.item.tutor }}</td>
-              <td>{{ row.item.genre }}</td>
+              <td>{{ row.item.genreString }}</td>
               <td>{{ row.item.specie }}</td>
               <td>{{ row.item.brand }}</td>
               <td>{{ row.item.birthdate }}</td>
@@ -165,7 +165,7 @@ export default {
         idUser: "",
         tutor: "",
         name: "",
-        genre: "",
+        genre: 0,
         specie: "",
         brand: "",
         birthdate: moment(Date.now()).format("yyyy-MM-DD"),
@@ -176,7 +176,7 @@ export default {
         idUser: "",
         tutor: "",
         name: "",
-        genre: "",
+        genre: 0,
         specie: "",
         brand: "",
         birthdate: moment(Date.now()).format("yyyy-MM-DD"),
@@ -198,7 +198,7 @@ export default {
           value: "name",
         },
         { text: "Tutor", align: "center", value: "tutor" },
-        { text: "Gênero", align: "center", value: "genre" },
+        { text: "Gênero", align: "center", value: "genreString" },
         { text: "Espécie", align: "center", value: "specie" },
         { text: "Raça", align: "center", value: "brand" },
         { text: "Nascimento", align: "center", value: "birthdate" },
@@ -266,7 +266,7 @@ export default {
             this.showAlertSuccess("Animal cadastrado com sucesso!");
           })
           .catch((e) => {
-            this.showAlertError(e.response.data.errors);
+            this.showAlertError(e.response.data.errors[0].message);
           });
       } else {
         register
@@ -278,7 +278,7 @@ export default {
             this.showAlertSuccess("Animal atualizado com sucesso!");
           })
           .catch((e) => {
-            this.showAlertError(e.response.data.errors);
+            this.showAlertError(e.response.data.errors[0].message);
           });
       }
       this.close();
@@ -298,7 +298,7 @@ export default {
           this.showAlertSuccess("Animal deletado com sucesso!");
         })
         .catch((e) => {
-          this.showAlertError(e.response.data.errors);
+          this.showAlertError(e.response.data.errors[0].message);
         });
       //}
       //   this.closeDelete()

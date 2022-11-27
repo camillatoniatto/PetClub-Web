@@ -31,6 +31,7 @@
                   >{{ movimentacao(row.item.isOutflow) }}</v-chip
                 >
               </td>
+              <td>{{ row.item.userCreateName }}</td>
               <td>{{ row.item.title }}</td>
               <td>{{ row.item.description }}</td>
               <td>{{ row.item.paymentMethod }}</td>
@@ -60,7 +61,7 @@
                   >mdi-cash-check</v-icon
                 >
                 <!-- <v-icon small class="mr-2" @click="editItem(row.item)">mdi-pencil</v-icon> -->
-                <v-icon small @click="deleteItem(row.item)">mdi-delete</v-icon>
+                <v-icon small @click="deleteItem(row.item)">mdi-close-circle</v-icon>
               </td>
             </tr>
           </template>
@@ -103,6 +104,17 @@
                   label="Saída de caixa"
                 ></v-checkbox>
                 <v-row>
+                  <v-col cols="12">
+                    <v-select
+                      v-model="cashflowSelect.idUserCreate"
+                      :items="users"
+                      :item-value="'idUser'"
+                      :item-text="'fullName'"
+                      label="Usuário"
+                      filled
+                      dense
+                    ></v-select>
+                  </v-col>
                   <v-col cols="12">
                     <v-text-field
                       v-model="cashflowSelect.title"
@@ -248,6 +260,7 @@
 <script>
 import register from "@/store/modules/cashflow";
 import registerPayment from "@/store/modules/payment";
+import registerUser from "@/store/modules/users";
 import enums from "../.././Enums.js";
 export default {
   name: "PageCashflow",
@@ -271,6 +284,7 @@ export default {
       },
       allCashflow: [],
       payments: [],
+      users: [],
       cashflowSelect: {
         id: "",
         title: "",
@@ -301,10 +315,14 @@ export default {
           align: "center",
           value: "isOutflow",
         },
-        { text: "Titulo", align: "center", value: "title"},
+        {
+          text: "Responsável",
+          align: "center",
+          value: "userCreateName",
+        },
+        { text: "Titulo", align: "center", value: "title" },
         { text: "Descrição", align: "center", value: "description" },
         { text: "Tipo de Pagamento", align: "center", value: "paymentMethod" },
-        //{ text: 'Criador', align: 'center', value: 'userCreateName' },
         { text: "Valor líquido", align: "center", value: "netValue" },
         {
           text: "Data de Vencimento",
@@ -312,7 +330,6 @@ export default {
           value: "expirationDate",
         },
         { text: "Data da Baixa", align: "center", value: "writeOffDate" },
-        //{ text: 'Usuário da Baixa', align: 'center', value: 'userWriteOffName' },
         { text: "Status", align: "center", value: "status" },
         { text: "Ações", align: "center", value: "actions", sortable: false },
       ],
@@ -321,6 +338,7 @@ export default {
   mounted() {
     this.listar();
     this.listarPagamentos();
+    this.listarUsers();
   },
   computed: {
     formTitle() {
@@ -369,6 +387,16 @@ export default {
         default:
           return "white";
       }
+    },
+    async listarUsers() {
+      await registerUser
+        .getAllUsers()
+        .then((response) => {
+          this.users = response.data.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     movimentacao(isOutflow) {
       return isOutflow ? "Saída" : "Entrada";
@@ -453,6 +481,7 @@ export default {
           this.errors = {};
           console.log("remover: ", response);
           this.showAlertSuccess("Movimentação deletada com sucesso!");
+          this.close();
         })
         .catch((e) => {
           this.showAlertError(e.response.data.errors[0].message);

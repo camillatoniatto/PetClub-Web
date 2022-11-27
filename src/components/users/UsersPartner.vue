@@ -87,7 +87,7 @@
                   <v-subheader class="text-h6">Dados Pessoais</v-subheader>
                   <v-col cols="12">
                     <v-text-field
-                      v-model="userSelecionado.fullName"
+                      v-model="userSelecionado.userFullName"
                       label="Nome"
                       type="text"
                       block
@@ -96,7 +96,7 @@
                   </v-col>
                   <v-col cols="12">
                     <v-text-field
-                      v-model="userSelecionado.cpf"
+                      v-model="userSelecionado.userCpf"
                       label="CPF"
                       type="text"
                       disabled
@@ -104,14 +104,14 @@
                   </v-col>
                   <v-col cols="12">
                     <v-text-field
-                      v-model="userSelecionado.email"
+                      v-model="userSelecionado.userEmail"
                       label="Email"
                       type="text"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" md="6">
                     <v-text-field
-                      v-model="userSelecionado.phoneNumber"
+                      v-model="userSelecionado.userPhone"
                       label="Telefone"
                       type="text"
                     ></v-text-field>
@@ -124,7 +124,7 @@
                     ></v-text-field>
                   </v-col>
 
-                  <v-spacer></v-spacer>
+                  <!-- <v-spacer></v-spacer>
                   <v-divider></v-divider>
                   <v-col cols="12">
                     <v-checkbox
@@ -185,8 +185,8 @@
                         label="CEP"
                         type="text"
                       ></v-text-field>
-                    </v-col>
-                  </v-container>
+                    </v-col> 
+                  </v-container>-->
                 </v-row>
               </v-container>
             </v-card-text>
@@ -517,8 +517,6 @@ export default {
         .getCpf(cpf)
         .then((response) => {
           if (response.data.data != null) {
-            console.log("caiu no if: ", true);
-
             this.userSelecionado = response.data.data;
             this.userSelecionado.birthdate = moment(
               this.userSelecionado.birthdate,
@@ -546,7 +544,7 @@ export default {
           this.showAlertSuccess("Cliente cadastrado com sucesso!");
         })
         .catch((e) => {
-          this.showAlertError(e.response.data.errors);
+          this.showAlertError(e.response.data.errors[0].message);
         });
       this.close();
     },
@@ -561,7 +559,7 @@ export default {
           console.log("salvar user", response);
         })
         .catch((e) => {
-          this.showAlertError(e.response.data.errors);
+          this.showAlertError(e.response.data.errors[0].message);
         });
       this.close();
     },
@@ -580,7 +578,7 @@ export default {
             this.showAlertSuccess("Cliente atualizado com sucesso!");
           })
           .catch((e) => {
-            this.showAlertError(e.response.data.errors);
+            this.showAlertError(e.response.data.errors[0].message);
           })
       );
       this.close();

@@ -6,15 +6,17 @@
         class="d-flex justify-content-center align-items-center left-login"
       >
         <v-container>
-          <div class="col-8">
-            <h2 class="text-center mb-5 title-login">Faça o login</h2>
+          <div class="col-12">
+            <h2 class="text-center mb-12 title-login">LOGIN PET CLUB</h2>
             <v-form>
               <label class="d-flex justify-content-between"> CPF </label>
               <label label="CPF">
                 <v-text-field
                   v-model="login.userName"
-                  type="text"
+                  type="data"
                   required
+                  return-masked-value
+                  v-mask="'###.###.###-##'"
                 ></v-text-field>
               </label>
 
@@ -31,7 +33,7 @@
               </label>
               <br />
               <v-btn color="teal darken-4" dark @click="loginUser(login)">
-                Entrar
+                Entrar <v-icon dark>mdi-paw</v-icon> 
               </v-btn>
               <p></p>
 
@@ -230,7 +232,7 @@ export default {
           }
         })
         .catch((e) => {
-          console.log("ERRO LOGIN: ", e);
+          this.showAlertError(e.response.data.errors[0].message);
         });
     },
     salvar(newUser){
@@ -253,12 +255,12 @@ export default {
     registerNewUser(){
       this.dialogRegister = true
     },
-    showAlertSuccess() {
-      this.$swal("Sucesso", "Cadastro realizado com Sucesso!", "success");
+    showAlertSuccess(message) {
+      this.$swal("Sucesso", message, "success");
     },
 
-    showAlertError() {
-      this.$swal("Oops...", "Algum erro aconteceu! Verifique se todos os campos estão apontados corretamente!", "error");
+    showAlertError(message) {
+      this.$swal("Oops...", message, "error");
     },
   },
 };

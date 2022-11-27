@@ -7,6 +7,9 @@ export default {
     async getCashflow() {
         return await apiClient.get(`CashFlow/get-cashflow`)
     },
+    async getResumeCashflow() {
+        return await apiClient.get(`CashFlow/get-resume-cashflow`)
+    },
     async putCashflow(bill) {
         return await apiClient.put(`CashFlow/update-bill`, bill)
     },

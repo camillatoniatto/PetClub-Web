@@ -198,7 +198,7 @@ export default {
           value: "name",
         },
         { text: "Tutor", align: "center", value: "tutor" },
-        { text: "Gênero", align: "center", value: "genre" },
+        { text: "Gênero", align: "center", value: "genreString" },
         { text: "Espécie", align: "center", value: "specie" },
         { text: "Raça", align: "center", value: "brand" },
         { text: "Nascimento", align: "center", value: "birthdate" },
@@ -266,7 +266,7 @@ export default {
             this.showAlertSuccess("Animal cadastrado com sucesso!");
           })
           .catch((e) => {
-            this.showAlertError(e.response.data.errors);
+            this.showAlertError(e.response.data.errors[0].message);
           });
       } else {
         register
@@ -278,7 +278,7 @@ export default {
             this.showAlertSuccess("Animal atualizado com sucesso!");
           })
           .catch((e) => {
-            this.showAlertError(e.response.data.errors);
+            this.showAlertError(e.response.data.errors[0].message);
           });
       }
       this.close();
@@ -298,7 +298,7 @@ export default {
           this.showAlertSuccess("Animal deletado com sucesso!");
         })
         .catch((e) => {
-          this.showAlertError(e.response.data.errors);
+          this.showAlertError(e.response.data.errors[0].message);
         });
       //}
       //   this.closeDelete()

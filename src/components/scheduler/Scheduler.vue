@@ -218,8 +218,8 @@ methods:{
       this.$swal("Sucesso", "Agendamento Realizado com Sucesso!", "success");
     },
 
-    showAlertError() {
-      this.$swal("Oops...", "Algum erro aconteceu! Verifique se todos os campos estão apontados corretamente!", "error");
+    showAlertError(message) {
+      this.$swal("Oops...", message, "error");
     },
 
   salvar(schedulerSelecionado){
@@ -234,10 +234,10 @@ methods:{
         console.log('salvar scheduler', response)
         Alert.ShowAlertSuccess.Alert('Agendamento realizado com Sucesso!')
         
-      }).catch(e => {
-        this.showAlertError()
-        this.errors = e.response.data.errors
       })
+        .catch((e) => {
+          this.showAlertError(e.response.data.errors[0].message);
+        });
     }else{
       register.putScheduler(schedulerSelecionado).then(response => {
           console.log("aaaa",schedulerSelecionado)
@@ -247,11 +247,10 @@ methods:{
           this.showAlertSuccess()
           this.listar()
           Alert.ShowAlertSuccess.Alert('Agendamento atualizado com Sucesso!')
-
-      }).catch(e => {
-        this.showAlertError()
-        this.errors = e.response.data.errors
-      })
+        })
+        .catch((e) => {
+          this.showAlertError(e.response.data.errors[0].message);
+        });
     }
     this.close()
   },
@@ -267,10 +266,10 @@ methods:{
           console.log('remover', response)
           this.errors = {}
           Alert.ShowAlertSuccess.Alert('Agendamento deletado com sucesso!')
-
-      }).catch(e => {
-        this.errors = e.response.data.errors
-      })
+        })
+        .catch((e) => {
+          this.showAlertError(e.response.data.errors[0].message);
+        });
   //}
   //   this.closeDelete()
   },

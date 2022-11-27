@@ -123,7 +123,7 @@ export default {
               console.log('salvar user', response)
               Alert.ShowAlertSuccess.Alert('Usuário cadastrado com sucesso!')
           }).catch(e => {
-            this.errors = e.response.data.errors
+            this.errors = e.response.data.errors[0].message
           })
         }else{
           register.putUserPerfil(user).then(response => {
@@ -133,7 +133,7 @@ export default {
               this.meuUser(user.id)
               Alert.ShowAlertSuccess.Alert('Usuário atualizado com sucesso!')
           }).catch(e => {
-            this.errors = e.response.data.errors
+            this.errors = e.response.data.errors[0].message
           })
         }
       },

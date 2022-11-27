@@ -89,7 +89,7 @@ export default {
       { title: "Usuários", icon: "mdi-account-circle", patch: "/usersadmin" },
       { title: "Animais", icon: "mdi-paw", patch: "/pets" },
       { title: "Serviços", icon: "mdi-toolbox-outline", patch: "/servicesAdmin" },
-      { title: "Financeiro", icon: "mdi-chart-line", patch: "/cashflow" },
+      { title: "Financeiro", icon: "mdi-chart-line", patch: "/cashflowadmin" },
     ],
     itemsPartner: [
       { title: "Início", icon: "mdi-view-dashboard", patch: "/" },

@@ -177,11 +177,11 @@ export default {
       admin: true,
       headers: [
         {
-          text: "Titulo",
+          text: "Parceiro",
           align: "center",
-          value: "title",
+          value: "partnerFullName",
         },
-        { text: "Parceiro", align: "center", value: "partnerFullName" },
+        { text: "Titulo", align: "center", value: "title" },
         { text: "Tipo de Serviço", align: "center", value: "serviceType" },
         { text: "Valor", align: "center", value: "value" },
         { text: "Ações", align: "center", value: "actions", sortable: false },
@@ -246,7 +246,7 @@ export default {
             this.showAlertSuccess("Serviço cadastrado com sucesso!");
           })
           .catch((e) => {
-            this.showAlertError(e.response.data.errors);
+            this.showAlertError(e.response.data.errors[0].message);
           });
       } else {
         register
@@ -259,7 +259,7 @@ export default {
             this.showAlertSuccess("Serviço atualizado com sucesso!");
           })
           .catch((e) => {
-            this.showAlertError(e.response.data.errors);
+            this.showAlertError(e.response.data.errors[0].message);
           });
       }
       this.close();
@@ -279,7 +279,7 @@ export default {
           this.showAlertSuccess("Serviço deletado com sucesso!");
         })
         .catch((e) => {
-          this.showAlertError(e.response.data.errors);
+          this.showAlertError(e.response.data.errors[0].message);
         });
       //}
       this.closeDelete();

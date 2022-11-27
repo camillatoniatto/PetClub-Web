@@ -26,7 +26,7 @@
           <template v-slot:item="row">
             <tr>
               <td>{{ row.item.title }}</td>
-              <td>{{ row.item.serviceType }}</td>
+              <td>{{ row.item.serviceTypeString }}</td>
               <td>R$ {{ row.item.valueString }}</td>
               <td>
                 <v-icon small class="mr-2" @click="editItem(row.item)"
@@ -228,7 +228,7 @@ export default {
             this.showAlertSuccess("Serviço atualizado com sucesso!");
           })
           .catch(e => {
-            this.showAlertError(e.response.data.errors);
+            this.showAlertError(e.response.data.errors[0].message);
           });
       } else {
         register
@@ -241,7 +241,7 @@ export default {
             this.showAlertSuccess("Serviço cadastrado com sucesso!");
           })
           .catch(e => {
-            this.showAlertError(e.response.data.errors);
+            this.showAlertError(e.response.data.errors[0].message);
           });
       }
       this.close();
@@ -258,7 +258,7 @@ export default {
           this.showAlertSuccess("Serviço deletado com sucesso!");
         })
         .catch((e) => {
-          this.showAlertError(e.response.data.errors);
+          this.showAlertError(e.response.data.errors[0].message);
         });
       this.closeDelete();
     },
