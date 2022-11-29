@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import Bills from "@/components/cashflow/Bills.vue";
+import Bills from "@/components/cashflow/BillsAdmin.vue";
 
 export default {
   name: "CashFlowView",

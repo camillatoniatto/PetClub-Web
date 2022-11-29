@@ -28,6 +28,7 @@
               <td>{{ row.item.title }}</td>
               <td>{{ row.item.serviceTypeString }}</td>
               <td>R$ {{ row.item.valueString }}</td>
+              <td>{{ row.item.sold }}</td>
               <td>
                 <v-icon small class="mr-2" @click="editItem(row.item)"
                   >mdi-pencil</v-icon
@@ -169,6 +170,7 @@ export default {
         },
         { text: "Tipo de Serviço", align: "center", value: "serviceType" },
         { text: "Valor", align: "center", value: "value" },
+        { text: "Realizações", align: "center", value: "sold" },
         { text: "Ações", align: "center", value: "actions", sortable: false },
       ],
     };

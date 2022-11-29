@@ -27,8 +27,9 @@
             <tr>
               <td>{{ row.item.partnerFullName }}</td>
               <td>{{ row.item.title }}</td>
-              <td>{{ row.item.serviceType }}</td>
+              <td>{{ row.item.serviceTypeString }}</td>
               <td>R$ {{ row.item.valueString }}</td>
+              <td>{{ row.item.sold }}</td>
               <td>
                 <v-icon small class="mr-2" @click="editItem(row.item)"
                   >mdi-pencil</v-icon
@@ -75,17 +76,16 @@
               <v-container>
                 <v-row>
                   <v-col cols="12">
-                    <v-col cols="12">
                       <v-select
                         v-model="serviceSelecionado.idPartner"
                         :items="users"
-                        :item-value="'idUser'"
+                        :item-value="'id'"
                         :item-text="'fullName'"
-                        label="Cliente"
+                        label="Parceiro"
                         filled
                         dense
                       ></v-select>
-                    </v-col>
+
                     <v-text-field
                       v-model="serviceSelecionado.title"
                       label="Titulo"
@@ -184,6 +184,7 @@ export default {
         { text: "Titulo", align: "center", value: "title" },
         { text: "Tipo de Serviço", align: "center", value: "serviceType" },
         { text: "Valor", align: "center", value: "value" },
+        { text: "Realizações", align: "center", value: "sold" },
         { text: "Ações", align: "center", value: "actions", sortable: false },
       ],
     };
