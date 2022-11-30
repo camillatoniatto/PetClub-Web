@@ -4,6 +4,9 @@ export default {
     async postPurchaseOrder(order) {
         return await apiClient.post(`PurchaseOrder/create-order`, order)
     },
+    async getValueItens(itens) {
+        return await apiClient.post(`PurchaseOrder/get-value-order-itens`, itens)
+    },
     async getPurchaseOrderUser(isApp) {
         return await apiClient.get(`PurchaseOrder/get-list-order-user?isApp=${isApp}`)
     },

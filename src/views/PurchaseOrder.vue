@@ -1,6 +1,7 @@
 <template>
   <v-container>
-    <!-- <img alt="Vue logo" src="../assets/logo.png"> -->
+    <!-- titulo -->
+    <h1 class="text-left ml-3">Vendas</h1>
     <PurchaseOrder/>
   </v-container>
 </template>

@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <!-- titulo -->
-    <h1 class="text-left ml-3">Animais</h1>
+    <h1 class="text-left ml-3">Meus Animais</h1>
 
     <Pets v-if="!log"/>
 

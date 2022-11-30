@@ -28,7 +28,7 @@
               <!-- <td>{{row.item.idPet}}</td> -->
               <td class="align-start">{{ row.item.name }}</td>
               <td>{{ row.item.tutor }}</td>
-              <td>{{ row.item.genre }}</td>
+              <td>{{ row.item.genreString }}</td>
               <td>{{ row.item.specie }}</td>
               <td>{{ row.item.brand }}</td>
               <td>{{ row.item.birthdate }}</td>
@@ -88,7 +88,7 @@
                       :items="users"
                       :item-value="'idUser'"
                       :item-text="'fullName'"
-                      label="Cliente"
+                      label="Usuário"
                       filled
                       dense
                     ></v-select>
@@ -102,14 +102,18 @@
                       required
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="12">
-                    <v-text-field
-                      v-model="petSelecionado.specie"
-                      label="Espécie"
-                      type="text"
-                    ></v-text-field>
+                  <v-col cols="6">
+                    <v-select
+                    v-model="petSelecionado.specie"
+                    :items="species"
+                    :item-value="'value'"
+                    :item-text="'value'"
+                    label="Espécie"
+                    filled
+                    dense
+                  ></v-select>
                   </v-col>
-                  <v-col cols="12">
+                  <v-col cols="6">
                     <v-text-field
                       v-model="petSelecionado.brand"
                       label="Raça"
@@ -206,6 +210,7 @@ export default {
         { text: "Ações", align: "center", value: "actions", sortable: false },
       ],
       genre: enums.Genre,
+      species: enums.Specie,
     };
   },
   mounted() {
@@ -301,7 +306,7 @@ export default {
           this.showAlertError(e.response.data.errors[0].message);
         });
       //}
-      //   this.closeDelete()
+        this.closeDelete()
     },
     editItem(item) {
       this.editedIndex = this.pets.indexOf(item);

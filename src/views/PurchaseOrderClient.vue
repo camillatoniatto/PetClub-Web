@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <h1 class="text-left ml-3">Minhas Compras</h1>
     <PurchaseOrder/>
   </v-container>
 </template>

@@ -29,10 +29,14 @@
               </td>
 
               <td>{{ row.item.idPurchaseOrder }}</td>
+              <td>{{ row.item.partnerName }}</td>
               <td>{{ row.item.petName }}</td>
               <td>{{ row.item.paymentType }}</td>
               <td>R$ {{ row.item.totalValue }}</td>
               <td>{{ row.item.createDate }}</td>
+              <td><v-icon small @click="getItem(row.item.idPurchaseOrder)"
+                >mdi-eye-outline</v-icon
+              ></td>
             </tr>
           </template>
         </v-data-table>
@@ -43,7 +47,7 @@
               <template v-slot:header>
                 <v-toolbar class="mb-2" color="indigo darken-5" dark flat>
                   <v-toolbar-title
-                    >Itens da venda "{{
+                    >Serviços da venda "{{
                       purchaseOrderSelect.id
                     }}"</v-toolbar-title
                   >
@@ -162,10 +166,12 @@ export default {
           value: "purchaseOrderSituation",
         },
         { text: "Identificador", align: "center", value: "idPurchaseOrder" },
+        { text: "Parceiro", align: "center", value: "partnerName" },
         { text: "Animal", align: "center", value: "idPet" },
         { text: "Pagamento", align: "center", value: "idPaymentMethod" },
         { text: "Valor Total", align: "center", value: "totalValue" },
-        { text: "Data da Compra", align: "center", value: "createDate" }
+        { text: "Data da Compra", align: "center", value: "createDate" },
+        { text: "Serviços", align: "center", value: "actions", sortable: false}
       ],
     };
   },
@@ -192,7 +198,7 @@ export default {
       switch (status) {
         case "Pago":
           return "light-green darken-3";
-        case "Recebido":
+        case "Concluido":
           return "light-green darken-3";
         case "Pendente":
           return "yellow darken-3";

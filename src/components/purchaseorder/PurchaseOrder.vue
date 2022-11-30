@@ -58,7 +58,9 @@
                   >mdi-cash-check</v-icon
                 >
                 <!-- <v-icon small class="mr-2" @click="editItem(row.item)">mdi-pencil</v-icon> -->
-                <v-icon small @click="deleteItem(row.item)">mdi-close-circle</v-icon>
+                <v-icon small @click="deleteItem(row.item)"
+                  >mdi-close-circle</v-icon
+                >
               </td>
             </tr>
           </template>
@@ -66,11 +68,11 @@
 
         <v-dialog v-model="details" max-width="40%">
           <v-container class="px-4 py-4">
-            <v-data-iterator :items="purchaseOrderSelect.purchaseOrderItens" hide-default-footer>
+            <v-data-iterator :items="purchaseOrderSelect" hide-default-footer>
               <template v-slot:header>
                 <v-toolbar class="mb-2" color="indigo darken-5" dark flat>
                   <v-toolbar-title
-                    >Itens da venda "{{
+                    >Serviços da venda "{{
                       purchaseOrderSelect.id
                     }}"</v-toolbar-title
                   >
@@ -80,7 +82,7 @@
                 <v-row>
                   <v-col
                     v-for="item in props.items"
-                    :key="item.idPurchaseOrderItem"
+                    :key="item.purchaseOrderItem"
                     cols="12"
                   >
                     <v-card>
@@ -113,147 +115,157 @@
           </v-container>
         </v-dialog>
 
-           <v-dialog v-model="dialogDelete" max-width="500px">
-                <v-card>
-                  <v-card-title class="text-center">
-                    <v-icon x-large icon dark color="center yellow lighten-2">mdi-alert-outline</v-icon>
-                    <br>
-                    <h3>Você tem certeza que deseja cancelar essa venda?</h3>
-                  </v-card-title>
-
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="closeDelete">Cancelar</v-btn>
-                    <v-btn color="blue darken-1" text @click="remover(purchaseOrderSelect)">Sim</v-btn>
-                    <v-spacer></v-spacer>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-
-        <v-dialog v-model="dialogPost" max-width="600px">
+        <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-card-title>
-              <span class="text-h5">Cadastrar nova Venda</span>
+            <v-card-title class="text-center">
+              <v-icon x-large icon dark color="center yellow lighten-2"
+                >mdi-alert-outline</v-icon
+              >
+              <br />
+              <h3>Você tem certeza que deseja cancelar essa venda?</h3>
             </v-card-title>
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12">
-                    <v-select
-                      v-model="purchaseOrderSelect.idUser"
-                      :items="clients"
-                      :item-value="'idUser'"
-                      :item-text="'userFullName'"
-                      label="Cliente"
-                      filled
-                      dense
-                    ></v-select>
-                    <v-select
-                      @click="listarPetUser(purchaseOrderSelect.idUser)"
-                      v-model="purchaseOrderSelect.idPet"
-                      label="Pet"
-                      :items="pets"
-                      :item-value="'idPet'"
-                      :item-text="'name'"
-                      filled
-                      dense
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12" md="12">
-                    <v-subheader>Tipo de Pagamento</v-subheader>
-                    <v-select
-                      v-model="purchaseOrderSelect.idPaymentMethod"
-                      :items="payments"
-                      :item-value="'idPaymentMethod'"
-                      :item-text="'paymentType'"
-                      filled
-                      dense
-                    ></v-select>
-                  </v-col>
-                </v-row>
 
-                <v-divider></v-divider>
-                <v-subheader class="text-h6">Serviços da venda</v-subheader>
-
-                <div
-                  v-for="(
-                    service, index
-                  ) in purchaseOrderSelect.purchaseOrderItens"
-                  v-bind:key="index"
-                >
-                  <v-container fluid>
-                    <v-row>
-                      <v-col cols="6">
-                        <v-select
-                          v-model="service.idService"
-                          :items="services"
-                          :item-value="'idService'"
-                          :item-text="'title'"
-                          label="Selecione..."
-                          filled
-                          dense
-                        ></v-select>
-                      </v-col>
-
-                      <v-col cols="6">
-                        <v-text-field
-                          v-model="service.quantity"
-                          label="Quantidade"
-                          type="number"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </div>
-
-                <v-btn
-                  color="dark"
-                  dark
-                  @click="
-                    purchaseOrderSelect.purchaseOrderItens.push({
-                      idService: '',
-                      quantity: 0,
-                    })
-                  "
-                >
-                  <v-icon dark>mdi-plus</v-icon>
-                </v-btn>
-                <v-divider></v-divider>
-                <v-row>
-                  <v-col cols="12" md="12">
-                    <v-text-field
-                      v-model="purchaseOrderSelect.launchValue"
-                      label="Valor Total"
-                      type="text"
-                      disabled
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-spacer></v-spacer>
-                  <v-divider></v-divider>
-
-                  <v-col cols="12" md="12">
-                    <v-textarea
-                      v-model="purchaseOrderSelect.observations"
-                      label="Observações"
-                      type="text"
-                    ></v-textarea>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close"> Fechar </v-btn>
+              <v-btn color="blue darken-1" dark @click="closeDelete"
+                >Cancelar</v-btn
+              >
               <v-btn
                 color="blue darken-1"
-                text
-                @click="criarVenda(purchaseOrderSelect)"
+                dark
+                @click="remover(purchaseOrderSelect)"
+                >Sim</v-btn
               >
-                Salvar
-              </v-btn>
+              <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="dialogPost" max-width="600px">
+          <div @click="getValue(purchaseOrderSelect.purchaseOrderItens)">
+            <v-card>
+              <v-card-title>
+                <span class="text-h5">Cadastrar nova Venda</span>
+              </v-card-title>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-select
+                        v-model="purchaseOrderSelect.idUser"
+                        @click="listarPetUser(purchaseOrderSelect.idUser)"
+                        :items="clients"
+                        :item-value="'idUser'"
+                        :item-text="'userFullName'"
+                        label="Cliente"
+                        filled
+                        dense
+                      ></v-select>
+                      <v-select
+                        @click="listarPetUser(purchaseOrderSelect.idUser)"
+                        v-model="purchaseOrderSelect.idPet"
+                        label="Pet"
+                        :items="pets"
+                        :item-value="'idPet'"
+                        :item-text="'name'"
+                        filled
+                        dense
+                      ></v-select>
+                      <v-select
+                        v-model="purchaseOrderSelect.idPaymentMethod"
+                        :items="payments"
+                        :item-value="'idPaymentMethod'"
+                        :item-text="'paymentType'"
+                        label="Tipo de Pagamento"
+
+                        filled
+                        dense
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+
+                  <v-divider></v-divider>
+                  <v-subheader class="text-h6">Serviços</v-subheader>
+                  <div
+                    v-for="(
+                      service, index
+                    ) in purchaseOrderSelect.purchaseOrderItens"
+                    v-bind:key="index"
+                  >
+                    <v-container fluid>
+                      <v-row>
+                        <v-col cols="6">
+                          <v-select
+                            v-model="service.idService"
+                            :items="services"
+                            :item-value="'idService'"
+                            :item-text="'title'"
+                            label="Selecione..."
+                            filled
+                            dense
+                          ></v-select>
+                        </v-col>
+
+                        <v-col cols="6">
+                          <v-text-field
+                            v-model="service.quantity"
+                            label="Quantidade"
+                            type="number"
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </div>
+                  <div class="d-flex justify-end mb-6">
+                    <v-btn
+                      color="dark"
+                      dark
+                      @click="
+                        purchaseOrderSelect.purchaseOrderItens.push({
+                          idService: '',
+                          quantity: 0,
+                        })
+                      "
+                    >
+                      <v-icon dark>mdi-plus</v-icon>
+                    </v-btn>
+                  </div>
+
+                  <v-card
+                    class="d-flex justify-space-between mb-6"
+                    outlined
+                    tile
+                  >
+                    <v-list-item-title bold class="text-h6 mb-1">
+                      Valor Total: R$ {{ value }}
+                    </v-list-item-title>
+                  </v-card>
+                  <v-row>
+                    <v-col cols="12" md="12">
+                      <v-textarea
+                        v-model="purchaseOrderSelect.observations"
+                        label="Observações"
+                        type="text"
+                      ></v-textarea>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="close">
+                  Fechar
+                </v-btn>
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="criarVenda(purchaseOrderSelect)"
+                >
+                  Salvar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </div>
         </v-dialog>
       </v-container>
     </v-app>
@@ -329,6 +341,7 @@ export default {
       dialogDelete: false,
       details: false,
       isApp: false,
+      value: 0,
       headers: [
         {
           text: "Situação",
@@ -361,11 +374,28 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
-    servicesAddWatch() {
-      this.servicesQnty;
+    valueWatch() {
+      console.log("watch value", this.value);
+      if (
+        this.purchaseOrderSelect.purchaseOrderItens &&
+        this.purchaseOrderSelect.purchaseOrderItens.lenght > 0
+      ) {
+        this.getValue(this.purchaseOrderSelect.purchaseOrderItens);
+      }
+      console.log("watch value 2", this.value);
     },
   },
   methods: {
+    async getValue(services) {
+      await register
+        .getValueItens(services)
+        .then((response) => {
+          this.value = response.data.data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
     getColor(isOutflow) {
       return isOutflow ? "red" : "green";
     },
@@ -488,7 +518,7 @@ export default {
       await register
         .getPurchaseOrderId(id)
         .then((response) => {
-          this.purchaseOrderSelect.purchaseOrderItens = response.data.data.purchaseOrderItens;
+          this.purchaseOrderSelect = response.data.data.purchaseOrderItem;
           this.purchaseOrderSelect.id = response.data.data.idPurchaseOrder;
           this.details = true;
         })

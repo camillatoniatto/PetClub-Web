@@ -33,6 +33,9 @@
               <td>{{ row.item.dateCreation }}</td>
               <!-- <td>{{row.item.roles}}</td> -->
               <td>
+                <v-icon small class="mr-2" @click="listarPetUser(row.item.idUser)"
+                >mdi-paw</v-icon
+                >
                 <v-icon small class="mr-2" @click="editItem(row.item)"
                   >mdi-pencil</v-icon
                 >
@@ -401,6 +404,53 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+
+        <v-dialog v-model="details" max-width="40%">
+          <v-container class="px-4 py-4">
+            <v-data-iterator :items="pets" hide-default-footer>
+              <template v-slot:header>
+                <v-toolbar class="mb-2" color="teal darken-3" dark flat>
+                  <v-toolbar-title
+                    >Animais cadastrados</v-toolbar-title
+                  >
+                </v-toolbar>
+              </template>
+              <template v-slot:default="props">
+                <v-row>
+                  <v-col
+                    v-for="item in props.items"
+                    :key="item.idPet"
+                    cols="12"
+                  >
+                <v-card v-if="pets.length > 0">
+                  <v-list-item three-line>
+                    <v-list-item-content>
+                      <v-list-item-title class="text-h5 mb-1">
+                        {{item.name}}
+                      </v-list-item-title>
+                      <v-list-item-subtitle>Espécie: {{item.specie}}
+                        <br>
+                        Raça: {{item.brand}}</v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-avatar
+                      tile
+                      size="80"
+                    >
+                  <v-icon>mdi-paw</v-icon></v-list-item-avatar>
+                  </v-list-item>
+                </v-card>
+                <v-card v-else>
+                  <v-list-item-title class="text-h5 mb-1">
+                    Nenhum animal cadastrado
+                  </v-list-item-title>
+                </v-card>
+
+                  </v-col>
+                </v-row>
+              </template>
+            </v-data-iterator>
+          </v-container>
+        </v-dialog>
       </v-container>
     </v-app>
   </div>
@@ -408,6 +458,7 @@
 
 <script>
 import register from "@/store/modules/users";
+import registerPets from "@/store/modules/pets";
 import moment from "moment";
 
 export default {
@@ -457,6 +508,7 @@ export default {
         writeDate: "",
       },
       users: [],
+      pets: [],
       editedIndex: -1,
       errors: [],
       showAddress: false,
@@ -466,6 +518,7 @@ export default {
       dialogPost: false,
       dialogCpf: false,
       dialogVisual: false,
+      details: false,
       admin: true,
       radios: "",
       headers: [
@@ -562,6 +615,17 @@ export default {
           this.showAlertError(e.response.data.errors[0].message);
         });
       this.close();
+    },
+    async listarPetUser(id) {
+      await registerPets
+        .getPetUser(id)
+        .then((response) => {
+          this.pets = response.data.data;
+          this.details = true
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
     salvar(userSelecionado) {
       this.setRole();

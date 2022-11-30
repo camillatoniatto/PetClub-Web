@@ -110,7 +110,7 @@
                       :items="users"
                       :item-value="'idUser'"
                       :item-text="'fullName'"
-                      label="Usuário"
+                      label="Parceiro"
                       filled
                       dense
                     ></v-select>
@@ -323,7 +323,7 @@ export default {
         { text: "Titulo", align: "center", value: "title" },
         { text: "Descrição", align: "center", value: "description" },
         { text: "Tipo de Pagamento", align: "center", value: "paymentMethod" },
-        { text: "Valor líquido", align: "center", value: "netValue" },
+        { text: "Valor Total", align: "center", value: "netValue" },
         {
           text: "Data de Vencimento",
           align: "center",

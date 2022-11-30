@@ -114,6 +114,7 @@ export default {
       isPartner: window.localStorage.getItem("isPartner"),
       token: window.localStorage.getItem("acessToken"),
     },
+    welcome: ''
   }),
   computed: {
     userAdmin() {
@@ -125,7 +126,12 @@ export default {
     userAcess() {
       console.log('acess user', window.localStorage.getItem("fullName") != null)
       return window.localStorage.getItem("fullName") != null
-    }
+    },
+    // userName(){
+    //   if(window.localStorage.clear("fullName")){
+    //     this.welcome = `Olá, ${this.user.fullName}`
+    //   }
+    // }
   },
   updated() {
     console.log("mounted");

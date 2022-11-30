@@ -305,7 +305,7 @@ export default {
         { text: "Descrição", align: "center", value: "description" },
         { text: "Tipo de Pagamento", align: "center", value: "paymentMethod" },
         //{ text: 'Criador', align: 'center', value: 'userCreateName' },
-        { text: "Valor líquido", align: "center", value: "netValue" },
+        { text: "Valor Total", align: "center", value: "netValue" },
         {
           text: "Data de Vencimento",
           align: "center",

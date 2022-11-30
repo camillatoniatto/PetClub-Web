@@ -29,7 +29,15 @@ const enums = {
       {key: 1, value: 'Concluído'},
       {key: 2, value: 'Cancelado'},
       {key: 3, value: 'Em Andamento'}
-    ]
+    ],
+    Specie: [
+      {key: 0, value: 'Canino'},
+      {key: 1, value: 'Felino'},
+      {key: 2, value: 'Ave'},
+      {key: 3, value: 'Réptil'},
+      {key: 4, value: 'Roedor'},
+      {key: 5, value: 'Outra'},
+    ],
 }
 
 export default enums;

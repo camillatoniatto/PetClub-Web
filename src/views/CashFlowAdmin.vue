@@ -2,6 +2,7 @@
   <div id="app">
     <v-app id="inspire">
   <v-container>
+    <h1 class="text-left ml-3">Financeiro</h1>
 
     <Bills/>
 
