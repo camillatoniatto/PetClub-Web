@@ -83,7 +83,7 @@
                       :items="clients"
                       :item-value="'idUser'"
                       :item-text="'userFullName'"
-                      filled
+                      outlined
                       dense
                     ></v-select>
                   </v-col>
@@ -95,7 +95,7 @@
                       :items="petuser"
                       :item-value="'idPet'"
                       :item-text="'name'"
-                      filled
+                      outlined
                       dense
                     ></v-select>
                   </v-col>
@@ -106,7 +106,7 @@
                       :items="servicetype"
                       :item-value="'key'"
                       :item-text="'value'"
-                      filled
+                      outlined
                       dense
                     ></v-select>
                   </v-col>
@@ -135,7 +135,7 @@
                   :items="situation"
                   :item-value="'key'"
                   :item-text="'value'"
-                  filled
+                  outlined
                   dense
                 ></v-select>
               </v-col>

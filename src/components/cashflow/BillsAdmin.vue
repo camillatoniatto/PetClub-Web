@@ -111,7 +111,7 @@
                       :item-value="'idUser'"
                       :item-text="'fullName'"
                       label="Parceiro"
-                      filled
+                      outlined
                       dense
                     ></v-select>
                   </v-col>
@@ -159,7 +159,7 @@
                       :items="payments"
                       :item-value="'idPaymentMethod'"
                       :item-text="'paymentType'"
-                      filled
+                      outlined
                       dense
                     ></v-select>
                   </v-col>
@@ -194,12 +194,14 @@
                       label="Titulo"
                       type="text"
                       required
+                      outlined
                     ></v-text-field>
                     <v-text-field
                       v-model="cashflowSelect.description"
                       label="Descrição"
                       type="text"
                       required
+                      outlined
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" md="6">
@@ -223,6 +225,7 @@
                       v-model.number="cashflowSelect.launchValue"
                       label="Valor"
                       type="number"
+                      outlined
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" md="6">
@@ -232,7 +235,7 @@
                       :items="payments"
                       :item-value="'idPaymentMethod'"
                       :item-text="'paymentType'"
-                      filled
+                      outlined
                       dense
                     ></v-select>
                   </v-col>
@@ -453,22 +456,21 @@ export default {
         })
         .catch((e) => {
           this.showAlertError(e.response.data.errors[0].message);
-
-          this.close();
         });
     },
     salvarConta(cashflowSelect) {
       register
         .putCashflow(cashflowSelect)
         .then(() => {
-          (this.cashflowSelect = {}), (this.errors = {});
+          this.cashflowSelect = {}
+          this.errors = {}
           this.listar();
           this.showAlertSuccess("Movimentação atualizada com sucesso!");
+          this.close();
         })
         .catch((e) => {
           this.showAlertError(e.response.data.errors[0].message);
         });
-      this.close();
     },
     editar(user) {
       this.user = user;
@@ -486,7 +488,6 @@ export default {
         .catch((e) => {
           this.showAlertError(e.response.data.errors[0].message);
         });
-      this.close();
     },
     createItem() {
       this.dialogPost = true;

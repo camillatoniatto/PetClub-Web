@@ -109,12 +109,14 @@
                       label="Titulo"
                       type="text"
                       required
+                      outlined
                     ></v-text-field>
                     <v-textarea
                       v-model="cashflowSelect.description"
                       label="Descrição"
                       type="text"
                       required
+                      outlined
                     ></v-textarea>
                   </v-col>
                   <v-col cols="12" md="6">
@@ -138,6 +140,8 @@
                       v-model.number="cashflowSelect.launchValue"
                       label="Valor"
                       type="number"
+                      required
+                      outlined
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" md="6">
@@ -147,7 +151,7 @@
                       :items="payments"
                       :item-value="'idPaymentMethod'"
                       :item-text="'paymentType'"
-                      filled
+                      outlined
                       dense
                     ></v-select>
                   </v-col>
@@ -220,7 +224,7 @@
                       :items="payments"
                       :item-value="'idPaymentMethod'"
                       :item-text="'paymentType'"
-                      filled
+                      outlined
                       dense
                     ></v-select>
                   </v-col>
@@ -304,7 +308,6 @@ export default {
         { text: "Titulo", align: "center", value: "title"},
         { text: "Descrição", align: "center", value: "description" },
         { text: "Tipo de Pagamento", align: "center", value: "paymentMethod" },
-        //{ text: 'Criador', align: 'center', value: 'userCreateName' },
         { text: "Valor Total", align: "center", value: "netValue" },
         {
           text: "Data de Vencimento",
@@ -312,7 +315,6 @@ export default {
           value: "expirationDate",
         },
         { text: "Data da Baixa", align: "center", value: "writeOffDate" },
-        //{ text: 'Usuário da Baixa', align: 'center', value: 'userWriteOffName' },
         { text: "Status", align: "center", value: "status" },
         { text: "Ações", align: "center", value: "actions", sortable: false },
       ],
@@ -425,22 +427,21 @@ export default {
         })
         .catch((e) => {
           this.showAlertError(e.response.data.errors[0].message);
-
-          this.close();
         });
     },
     salvarConta(cashflowSelect) {
       register
         .putCashflow(cashflowSelect)
         .then(() => {
-          (this.cashflowSelect = {}), (this.errors = {});
+          this.cashflowSelect = {}
+          this.errors = {}
           this.listar();
           this.showAlertSuccess("Movimentação atualizada com sucesso!");
+          this.close();
         })
         .catch((e) => {
           this.showAlertError(e.response.data.errors[0].message);
         });
-      this.close();
     },
     editar(user) {
       this.user = user;
@@ -453,11 +454,11 @@ export default {
           this.errors = {};
           console.log("remover: ", response);
           this.showAlertSuccess("Movimentação deletada com sucesso!");
+          this.close();
         })
         .catch((e) => {
           this.showAlertError(e.response.data.errors[0].message);
         });
-      this.close();
     },
     createItem() {
       this.dialogPost = true;

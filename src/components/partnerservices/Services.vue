@@ -80,17 +80,20 @@
                       label="Titulo"
                       type="text"
                       required
+                      outlined
                     ></v-text-field>
                     <v-text-field
                       v-model="serviceSelecionado.description"
                       label="Descrição"
                       type="text"
                       required
+                      outlined
                     ></v-text-field>
                     <v-text-field
                       v-model="serviceSelecionado.value"
                       label="Valor"
                       type="text"
+                      outlined
                     ></v-text-field>
                     <v-subheader>Tipo de Serviço</v-subheader>
                     <v-select
@@ -99,7 +102,7 @@
                       :item-value="'key'"
                       :item-text="'value'"
                       label="Selecionar..."
-                      filled
+                      outlined
                       dense
                     ></v-select>
                   </v-col>

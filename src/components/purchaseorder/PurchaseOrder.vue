@@ -158,7 +158,7 @@
                         :item-value="'idUser'"
                         :item-text="'userFullName'"
                         label="Cliente"
-                        filled
+                        outlined
                         dense
                       ></v-select>
                       <v-select
@@ -168,7 +168,7 @@
                         :items="pets"
                         :item-value="'idPet'"
                         :item-text="'name'"
-                        filled
+                        outlined
                         dense
                       ></v-select>
                       <v-select
@@ -178,7 +178,7 @@
                         :item-text="'paymentType'"
                         label="Tipo de Pagamento"
 
-                        filled
+                        outlined
                         dense
                       ></v-select>
                     </v-col>
@@ -201,7 +201,7 @@
                             :item-value="'idService'"
                             :item-text="'title'"
                             label="Selecione..."
-                            filled
+                            outlined
                             dense
                           ></v-select>
                         </v-col>
@@ -486,7 +486,8 @@ export default {
       register
         .putPurchaseOrder(purchaseOrderSelect)
         .then(() => {
-          (this.purchaseOrderSelect = {}), (this.errors = {});
+          this.purchaseOrderSelect = {}
+          this.errors = {}
           this.listar(this.isApp);
           this.showAlertSuccess("Venda atalizada com sucesso!");
           this.close();

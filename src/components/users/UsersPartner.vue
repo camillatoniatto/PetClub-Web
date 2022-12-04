@@ -25,13 +25,11 @@
         <v-data-table :headers="headers" :items="users" :search="search">
           <template v-slot:item="row">
             <tr>
-              <!-- <td>{{row.item.idPet}}</td> -->
               <td class="align-start">{{ row.item.userFullName }}</td>
               <td>{{ row.item.userCpf }}</td>
               <td>{{ row.item.userEmail }}</td>
               <td>{{ row.item.userPhone }}</td>
               <td>{{ row.item.dateCreation }}</td>
-              <!-- <td>{{row.item.roles}}</td> -->
               <td>
                 <v-icon small class="mr-2" @click="listarPetUser(row.item.idUser)"
                 >mdi-paw</v-icon
@@ -465,6 +463,7 @@ export default {
   name: "PageUser",
   data() {
     return {
+      search: "",
       user: {
         id: "",
         fullName: "",
@@ -512,7 +511,6 @@ export default {
       editedIndex: -1,
       errors: [],
       showAddress: false,
-      search: "",
       dialog: false,
       dialogDelete: false,
       dialogPost: false,
@@ -525,7 +523,6 @@ export default {
         {
           text: "Nome",
           align: "center",
-          filterable: false,
           value: "fullname",
         },
         { text: "CPF", align: "center", value: "cpf" },
@@ -583,9 +580,9 @@ export default {
           }
         })
         .catch((e) => {
-          this.errors = e.response.data.data.errors;
+          this.showAlertError(e.response.data.errors[0].message);
         });
-      this.close();
+        this.close();
     },
     cadastrarCliente(cpf) {
       register
@@ -595,11 +592,11 @@ export default {
           this.errors = {};
           this.listar();
           this.showAlertSuccess("Cliente cadastrado com sucesso!");
+          this.close();
         })
         .catch((e) => {
           this.showAlertError(e.response.data.errors[0].message);
         });
-      this.close();
     },
     cadastrarUsuario(userSelecionado) {
       register
@@ -636,16 +633,17 @@ export default {
         register
           .putUserAdmin(userSelecionado)
           .then((response) => {
-            (this.userSelecionado = {}), (this.errors = {});
+            this.userSelecionado = {}
+            this.errors = {}
             console.log("salvar erro", response);
             this.listar();
             this.showAlertSuccess("Cliente atualizado com sucesso!");
+            this.close();
           })
           .catch((e) => {
             this.showAlertError(e.response.data.errors[0].message);
           })
       );
-      this.close();
     },
     editar(user) {
       this.user = user;

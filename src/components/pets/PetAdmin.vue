@@ -89,7 +89,7 @@
                       :item-value="'idUser'"
                       :item-text="'fullName'"
                       label="Usuário"
-                      filled
+                      outlined
                       dense
                     ></v-select>
                   </v-col>
@@ -109,7 +109,7 @@
                     :item-value="'value'"
                     :item-text="'value'"
                     label="Espécie"
-                    filled
+                    outlined
                     dense
                   ></v-select>
                   </v-col>
@@ -133,9 +133,15 @@
                       :items="genre"
                       :item-value="'key'"
                       :item-text="'value'"
-                      filled
+                      outlined
                       dense
                     ></v-select>
+                  </v-col>
+                  <v-col>
+                    <v-checkbox
+                    v-model="petSelecionado.isAlive"
+                    label="Animal vivo"
+                  ></v-checkbox>
                   </v-col>
                 </v-row>
               </v-container>
@@ -198,7 +204,6 @@ export default {
         {
           text: "Nome",
           align: "center",
-          filterable: false,
           value: "name",
         },
         { text: "Tutor", align: "center", value: "tutor" },
@@ -277,7 +282,8 @@ export default {
         register
           .putPet(petSelecionado)
           .then((response) => {
-            (this.petSelecionado = {}), (this.errors = {});
+            this.petSelecionado = {}
+            this.errors = {}
             console.log("salvar erro", response);
             this.listar();
             this.showAlertSuccess("Animal atualizado com sucesso!");

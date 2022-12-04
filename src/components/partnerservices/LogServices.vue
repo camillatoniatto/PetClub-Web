@@ -3,12 +3,7 @@
     <v-app id="inspire">
       <!-- adicionar novo -->
       <v-container>
-        <div class="text-left mb-2 mr-2">
-          <v-btn color="dark" dark @click="editItem(serviceSelecionado)">
-            <v-icon dark>mdi-plus</v-icon>
-            Adicionar um serviço
-          </v-btn>
-        </div>
+
 
         <br />
 
@@ -26,7 +21,7 @@
           <template v-slot:item="row">
             <tr>
               <td>{{ row.item.title }}</td>
-              <td>{{ row.item.serviceType }}</td>
+              <td>{{ row.item.serviceTypeString }}</td>
               <td>R$ {{ row.item.value }}</td>
               <td>{{ row.item.sold }}</td>
               <td>{{ row.item.writeDate }}</td>

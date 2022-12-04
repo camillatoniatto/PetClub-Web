@@ -82,7 +82,7 @@
                         :item-value="'id'"
                         :item-text="'fullName'"
                         label="Parceiro"
-                        filled
+                        outlined
                         dense
                       ></v-select>
 
@@ -91,12 +91,14 @@
                       label="Titulo"
                       type="text"
                       required
+                      outlined
                     ></v-text-field>
                     <v-text-field
                       v-model="serviceSelecionado.description"
                       label="Descrição"
                       type="text"
                       required
+                      outlined
                     ></v-text-field>
                     <v-text-field
                       v-model="serviceSelecionado.value"
@@ -110,7 +112,7 @@
                       :item-value="'key'"
                       :item-text="'value'"
                       label="Selecionar..."
-                      filled
+                      outlined
                       dense
                     ></v-select>
                   </v-col>

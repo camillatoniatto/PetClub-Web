@@ -97,7 +97,7 @@
                     :item-value="'value'"
                     :item-text="'value'"
                     label="Espécie"
-                    filled
+                    outlined
                     dense
                   ></v-select>
                   </v-col>
@@ -121,7 +121,7 @@
                       :items="genre"
                       :item-value="'key'"
                       :item-text="'value'"
-                      filled
+                      outlined
                       dense
                     ></v-select>
                   </v-col>
@@ -184,7 +184,6 @@ export default {
         {
           text: "Nome",
           align: "center",
-          filterable: false,
           value: "name",
         },
         { text: "Gênero", align: "center", value: "genreString" },
@@ -252,7 +251,8 @@ export default {
         register
           .putPet(petSelecionado)
           .then((response) => {
-            (this.petSelecionado = {}), (this.errors = {});
+            this.petSelecionado = {}
+            this.errors = {}
             console.log("salvar erro", response);
             this.listar();
             this.showAlertSuccess("Animal atualizado com sucesso!");

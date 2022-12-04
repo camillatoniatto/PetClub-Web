@@ -465,7 +465,6 @@ export default {
         {
           text: "Nome",
           align: "center",
-          filterable: false,
           value: "fullname",
         },
         { text: "CPF", align: "center", value: "cpf" },
@@ -563,7 +562,8 @@ export default {
         register
           .putUserAdmin(userSelecionado)
           .then((response) => {
-            (this.userSelecionado = {}), (this.errors = {});
+            this.userSelecionado = {}
+            this.errors = {}
             console.log("salvar erro", response);
             this.listar();
             this.showAlertSuccess("Usuário atualizado com sucesso!");
