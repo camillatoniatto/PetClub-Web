@@ -4,6 +4,9 @@ export default {
     async postUsers(Users) {
         return await apiClient.post(`Account/register`, Users)
     },
+    async getHomeCards() {
+        return await apiClient.get(`User/get-home-cards`)
+    },
     async getAllUsers() {
         return await apiClient.get(`User/get-all-users`)
     },
