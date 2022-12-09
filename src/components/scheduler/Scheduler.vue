@@ -30,7 +30,7 @@
               <td>{{ row.item.serviceTypeString }}</td>
               <td>{{ row.item.startDateString }}</td>
               <td>{{ row.item.finalDateString }}</td>
-              <td>{{ row.item.schedulerSituationString }}</td>
+              <td>{{ row.item.schedulerSituationString == 'Agendado' ?  `Agendado - Faltam ${setStartDateInterval(row.item.startDateString)} dias`  : row.item.schedulerSituationString }}</td>
               <td>
                 <v-icon small class="mr-2" @click="editItem(row.item)"
                   >mdi-pencil</v-icon
@@ -83,7 +83,7 @@
                       :items="clients"
                       :item-value="'idUser'"
                       :item-text="'userFullName'"
-                      outlined
+                      filled
                       dense
                     ></v-select>
                   </v-col>
@@ -95,7 +95,7 @@
                       :items="petuser"
                       :item-value="'idPet'"
                       :item-text="'name'"
-                      outlined
+                      filled
                       dense
                     ></v-select>
                   </v-col>
@@ -106,7 +106,7 @@
                       :items="servicetype"
                       :item-value="'key'"
                       :item-text="'value'"
-                      outlined
+                      filled
                       dense
                     ></v-select>
                   </v-col>
@@ -135,7 +135,7 @@
                   :items="situation"
                   :item-value="'key'"
                   :item-text="'value'"
-                  outlined
+                  filled
                   dense
                 ></v-select>
               </v-col>
@@ -160,7 +160,9 @@
 import register from "@/store/modules/scheduler";
 import registers from "@/store/modules/users";
 import registerpet from "@/store/modules/pets";
+import Alert from "../Alerts.js";
 import enums from "../.././Enums.js";
+import moment from 'moment';
 
 export default {
   name: "PageScheduler",
@@ -171,6 +173,7 @@ export default {
         idPartner: "",
         idPet: "",
         serviceType: "",
+        // startDate: moment(Date()).format("yyyy-MM-DD HH:MM:SS"),
         startDate: "",
         finalDate: "",
         schedulerSituation: "",
@@ -217,6 +220,7 @@ export default {
   mounted() {
     this.listar();
     this.listarClients();
+    // this.listaPetUser();
     this.listaPets();
   },
   computed: {
@@ -238,6 +242,17 @@ export default {
     },
   },
   methods: {
+    setStartDateInterval(startDate) {
+      
+      var dateNow = new Date()
+      var invoiceDateFormat = new Date(moment(startDate, 'DD/MM/YYYY').format('MM/DD/YYYY'))
+      var difference_In_Time = invoiceDateFormat.getTime() - dateNow.getTime();
+      return Math.round(difference_In_Time / (1000 * 3600 * 24));
+      
+
+      
+    },
+
     listar() {
       register
         .getSchedulerPartner()
@@ -255,6 +270,8 @@ export default {
         .getAllClients()
         .then((response) => {
           this.clients = response.data.data;
+          console.log("listar Clientes: ", this.clients);
+          console.log("listar ", this.clients);
         })
         .catch((e) => {
           console.log(e);
@@ -265,6 +282,8 @@ export default {
         .getSchedulerId()
         .then((response) => {
           this.schedulersall = response.data.data;
+          console.log("listar Clientes: ", this.scheduler);
+          console.log("listar ", this.scheduler);
         })
         .catch((e) => {
           console.log(e);
@@ -275,6 +294,8 @@ export default {
         .getPetUser(idClient)
         .then((response) => {
           this.petuser = response.data.data;
+          console.log("listar pets: ", this.petuser);
+          console.log("listar ", this.petuser);
         })
         .catch((e) => {
           console.log(e);
@@ -285,6 +306,8 @@ export default {
         .getPetsPartner()
         .then((response) => {
           this.petuser = response.data.data;
+          console.log("listar pets: ", this.petuser);
+          console.log("listar ", this.petuser);
         })
         .catch((e) => {
           console.log(e);
@@ -300,24 +323,24 @@ export default {
     },
 
     salvar(schedulerSelecionado) {
-      this.schedulerEdit.idScheduler = schedulerSelecionado.idScheduler;
-      this.schedulerEdit.idPartner = schedulerSelecionado.idPartner;
-      this.schedulerEdit.idPet = schedulerSelecionado.idPet;
-      this.schedulerEdit.serviceType = schedulerSelecionado.serviceType;
-      this.schedulerEdit.startDate = schedulerSelecionado.startDate;
-      this.schedulerEdit.finalDate = schedulerSelecionado.finalDate;
-      this.schedulerEdit.schedulerSituation =
-        schedulerSelecionado.schedulerSituation;
+      this.schedulerEdit.idScheduler = schedulerSelecionado.idScheduler
+      this.schedulerEdit.idPartner = schedulerSelecionado.idPartner
+      this.schedulerEdit.idPet = schedulerSelecionado.idPet
+      this.schedulerEdit.serviceType = schedulerSelecionado.serviceType
+      this.schedulerEdit.startDate = schedulerSelecionado.startDate
+      this.schedulerEdit.finalDate = schedulerSelecionado.finalDate
+      this.schedulerEdit.schedulerSituation = schedulerSelecionado.schedulerSituation
       console.log("salvar scheduler -----", schedulerSelecionado);
       if (this.schedulerEdit.idScheduler == "") {
         register
           .postScheduler(this.schedulerEdit)
-          .then(() => {
+          .then((response) => {
             this.schedulerEdit = {};
-            this.schedulerSelecionado = {};
             this.errors = {};
+            this.showAlertSuccess();
             this.listar();
-            this.showAlertSuccess("Agendamento realizado com Sucesso!");
+            console.log("salvar scheduler", response);
+            Alert.ShowAlertSuccess.Alert("Agendamento realizado com Sucesso!");
             this.close();
           })
           .catch((e) => {
@@ -327,14 +350,14 @@ export default {
         register
           .putScheduler(this.schedulerEdit)
           .then((response) => {
-            this.schedulerEdit = {};
-            this.schedulerSelecionado = {};
-            this.errors = {};
+            console.log("aaaa", this.schedulerEdit);
+            (this.this.schedulerEdit = {}), (this.errors = {});
+            (this.this.schedulerSelecionado = {}), (this.errors = {});
             console.log("salvar erro", response);
-            this.showAlertSuccess("Agendamento atualizado com Sucesso!");
+            this.showAlertSuccess();
             this.listar();
+            Alert.ShowAlertSuccess.Alert("Agendamento atualizado com Sucesso!");
             this.close();
-            console.log("era pra fechar");
           })
           .catch((e) => {
             this.showAlertError(e.response.data.errors[0].message);
@@ -345,12 +368,16 @@ export default {
       this.schedulers = schedulers;
     },
     remover(schedulers) {
+      console.log("remover", schedulers);
+      // var result = Alert.ShowAlertAlert.Alert('Você tem certeza que quer deletar este pet?')
+      // if(result){
       register
         .deleteScheduler(schedulers.idScheduler)
-        .then(() => {
+        .then((response) => {
           this.listar();
+          console.log("remover", response);
           this.errors = {};
-          this.showAlertSuccess("Agendamento deletado com sucesso!");
+          Alert.ShowAlertSuccess.Alert("Agendamento deletado com sucesso!");
           this.closeDelete();
         })
         .catch((e) => {
@@ -360,6 +387,7 @@ export default {
     editItem(item) {
       this.editedIndex = this.scheduler.indexOf(item);
       this.schedulerSelecionado = Object.assign({}, item);
+      // this.schedulerSelecionado.idPet = this.scheduler.detailPet.idPet
       this.dialog = true;
     },
     deleteItem(item) {
