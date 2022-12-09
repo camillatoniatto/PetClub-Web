@@ -1,12 +1,10 @@
 <template>
   <div id="app">
     <v-app id="inspire">
-      <!-- adicionar novo -->
-      <v-container>
-        <v-row >
-
+      <v-container text-xs-center align-center justify-space-between py-12>
+        <v-layout row align-center justify-space-between>
           <v-col col="4" class="pa-3">
-            <v-card elevation="8" color="green" dark height="100%" >
+            <v-card elevation="8" color="green" dark height="100%" class="grow">
               <v-col class="d-flex align-start flex-column mb-6 text-h3">
                 Entradas
               </v-col>
@@ -17,7 +15,7 @@
           </v-col>
 
           <v-col col="4" class="pa-3">
-            <v-card elevation="8" color="red" dark height="100%" >
+            <v-card elevation="8" color="red" dark height="100%" class="grow">
               <v-col class="d-flex align-start flex-column mb-6 text-h3">
                 Saidas
               </v-col>
@@ -28,7 +26,7 @@
           </v-col>
 
           <v-col col="4" class="pa-3">
-            <v-card elevation="8" color="blue" dark height="100%" >
+            <v-card elevation="8" color="blue" dark height="100%" class="grow">
               <v-col class="d-flex align-start flex-column mb-6 text-h3">
                 Saldo
               </v-col>
@@ -37,8 +35,7 @@
               </v-col>
             </v-card>
           </v-col>
-
-        </v-row>
+        </v-layout>
       </v-container>
     </v-app>
   </div>
@@ -86,3 +83,11 @@ export default {
   },
 };
 </script>
+<style>
+.grow {
+  transition: all 0.2s ease-in-out;
+}
+.grow:hover {
+  transform: scale(1.1);
+}
+</style>

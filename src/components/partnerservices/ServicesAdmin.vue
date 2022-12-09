@@ -25,6 +25,14 @@
         <v-data-table :headers="headers" :items="services" :search="search">
           <template v-slot:item="row">
             <tr>
+              <td>
+                <v-img
+                  contain
+                  max-height="140"
+                  max-width="140"
+                  :src="getIcon(row.item.serviceType)"
+                ></v-img>
+              </td>
               <td>{{ row.item.partnerFullName }}</td>
               <td>{{ row.item.title }}</td>
               <td>{{ row.item.serviceTypeString }}</td>
@@ -178,6 +186,7 @@ export default {
       dialogDelete: false,
       admin: true,
       headers: [
+        { text: " ", align: "center", value: "image", filterable: false},
         {
           text: "Parceiro",
           align: "center",
@@ -209,6 +218,20 @@ export default {
     },
   },
   methods: {
+    getIcon(type) {
+      switch (type) {
+        case 0:
+          return require("../.././assets/pictures/iconHospedagem.png");
+        case 1:
+          return require("../.././assets/pictures/iconPasseio.png");
+        case 2:
+          return require("../.././assets/pictures/iconVet.png");
+        case 3:
+          return require("../.././assets/pictures/iconGrooming.png");
+        default:
+          return require("../.././assets/pictures/iconPet.png");
+      }
+    },
     formatPrice(value) {
       return Number(value.replace(",", "."));
     },
@@ -217,8 +240,6 @@ export default {
         .getServicesAdmin()
         .then((response) => {
           this.services = response.data.data;
-          console.log("listar services: ", this.services);
-          console.log("listar ", this.services);
         })
         .catch((e) => {
           console.log(e);
@@ -226,7 +247,7 @@ export default {
     },
     async listarUsers() {
       await registerUser
-        .getAllUsers()
+        .getAllPartners()
         .then((response) => {
           this.users = response.data.data;
         })
@@ -240,9 +261,8 @@ export default {
       if (!serviceSelecionado.id) {
         register
           .postService(serviceSelecionado)
-          .then((response) => {
+          .then(() => {
             serviceSelecionado = {};
-            console.log("postService: ", response.data.data);
             serviceSelecionado = this.serv;
             this.listar();
             this.errors = {};
@@ -254,10 +274,9 @@ export default {
       } else {
         register
           .putService(serviceSelecionado)
-          .then((response) => {
+          .then(() => {
             serviceSelecionado = this.serviceDefault;
             this.errors = {};
-            console.log("putService: ", response.data.data);
             this.listar();
             this.showAlertSuccess("Serviço atualizado com sucesso!");
           })
@@ -275,10 +294,9 @@ export default {
       //if(result){
       register
         .deleteService(service.idService)
-        .then((response) => {
+        .then(() => {
           this.listar();
           this.errors = {};
-          console.log("remover: ", response);
           this.showAlertSuccess("Serviço deletado com sucesso!");
         })
         .catch((e) => {

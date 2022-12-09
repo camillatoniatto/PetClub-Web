@@ -11,8 +11,6 @@
         </div>
 
         <br />
-
-        <!-- tabela reserva -->
         <v-card-title>
           <v-text-field
             v-model="search"
@@ -25,7 +23,14 @@
         <v-data-table :headers="headers" :items="pets" :search="search">
           <template v-slot:item="row">
             <tr>
-              <!-- <td>{{row.item.idPet}}</td> -->
+              <td>
+                <v-img
+                  contain
+                  max-height="140"
+                  max-width="140"
+                  :src="getIconPet(row.item.specie)"
+                ></v-img>
+              </td>
               <td class="align-start">{{ row.item.name }}</td>
               <td>{{ row.item.tutor }}</td>
               <td>{{ row.item.genreString }}</td>
@@ -82,6 +87,16 @@
             <v-card-text>
               <v-container>
                 <v-row>
+                  <v-col cols="12" class="d-flex justify-center">
+                    <v-card
+                      ><v-img
+                      contain
+                      max-height="140"
+                      max-width="140"
+                     :src="getIconPet(petSelecionado.specie)"
+                      ></v-img
+                    ></v-card>
+                  </v-col>
                   <v-col cols="12">
                     <v-select
                       v-model="petSelecionado.idUser"
@@ -104,14 +119,15 @@
                   </v-col>
                   <v-col cols="6">
                     <v-select
-                    v-model="petSelecionado.specie"
-                    :items="species"
-                    :item-value="'value'"
-                    :item-text="'value'"
-                    label="Espécie"
-                    filled
-                    dense
-                  ></v-select>
+                      v-model="petSelecionado.specie"
+                      :items="species"
+                      :item-value="'value'"
+                      :item-text="'value'"
+                      @change="getIconPet(petSelecionado.specie)"
+                      label="Espécie"
+                      filled
+                      dense
+                    ></v-select>
                   </v-col>
                   <v-col cols="6">
                     <v-text-field
@@ -187,6 +203,7 @@ export default {
         isAlive: true,
       },
       clients: [],
+      iconPet: "",
       pets: [],
       editedIndex: -1,
       errors: [],
@@ -195,12 +212,8 @@ export default {
       dialogDelete: false,
       admin: true,
       headers: [
-        {
-          text: "Nome",
-          align: "center",
-          filterable: false,
-          value: "name",
-        },
+        { text: " ", align: "center", value: "image", filterable: false},
+        { text: "Nome", align: "center", value: "name" },
         { text: "Tutor", align: "center", value: "tutor" },
         { text: "Gênero", align: "center", value: "genreString" },
         { text: "Espécie", align: "center", value: "specie" },
@@ -210,7 +223,7 @@ export default {
         { text: "Ações", align: "center", value: "actions", sortable: false },
       ],
       genre: enums.Genre,
-      species: enums.Specie
+      species: enums.Specie,
     };
   },
   mounted() {
@@ -236,6 +249,22 @@ export default {
     },
   },
   methods: {
+    getIconPet(specie) {
+      switch (specie) {
+        case "Canino":
+          return require("../.././assets/pictures/iconDog.png");
+        case "Felino":
+          return require("../.././assets/pictures/iconCat.png");
+        case "Ave":
+          return require("../.././assets/pictures/iconBird2.png");
+        case "Réptil":
+          return require("../.././assets/pictures/iconReptil.png");
+        case "Roedor":
+          return require("../.././assets/pictures/iconBunny.png");
+        default:
+          return require("../.././assets/pictures/iconPet.png");
+      }
+    },
     getColor(isAlive) {
       return isAlive ? "green" : "red";
     },
@@ -277,13 +306,13 @@ export default {
         register
           .putPet(petSelecionado)
           .then(() => {
-            this.petSelecionado = {}
+            this.petSelecionado = {};
             this.errors = {};
             this.listar();
             this.showAlertSuccess("Animal atualizado com sucesso!");
           })
           .catch((e) => {
-              this.showAlertError(e.response.data.errors[0].message);
+            this.showAlertError(e.response.data.errors[0].message);
           });
       }
       this.close();
@@ -303,7 +332,7 @@ export default {
           this.showAlertSuccess("Animal deletado com sucesso!");
         })
         .catch((e) => {
-            this.showAlertError(e.response.data.errors[0].message);
+          this.showAlertError(e.response.data.errors[0].message);
         });
       //}
       //   this.closeDelete()

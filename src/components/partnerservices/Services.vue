@@ -25,6 +25,14 @@
         <v-data-table :headers="headers" :items="services" :search="search">
           <template v-slot:item="row">
             <tr>
+              <td>
+                <v-img
+                  contain
+                  max-height="140"
+                  max-width="140"
+                  :src="getIcon(row.item.serviceType)"
+                ></v-img>
+              </td>
               <td>{{ row.item.title }}</td>
               <td>{{ row.item.serviceTypeString }}</td>
               <td>R$ {{ row.item.valueString }}</td>
@@ -74,6 +82,16 @@
             <v-card-text>
               <v-container>
                 <v-row>
+                  <v-col cols="12" class="d-flex justify-center">
+                    <v-card
+                      ><v-img
+                      contain
+                      max-height="140"
+                      max-width="140"
+                     :src="getIcon(serviceSelecionado.serviceType)"
+                      ></v-img
+                    ></v-card>
+                  </v-col>
                   <v-col cols="12">
                     <v-text-field
                       v-model="serviceSelecionado.title"
@@ -166,6 +184,7 @@ export default {
       dialogDelete: false,
       admin: true,
       headers: [
+        { text: " ", align: "center", value: "image", filterable: false},
         {
           text: "Titulo",
           align: "center",
@@ -195,9 +214,23 @@ export default {
     },
   },
   methods: {
-    formatPrice(value) {
-      return Number(value.replace(",", "."));
+    getIcon(type) {
+      switch (type) {
+        case 0:
+          return require("../.././assets/pictures/iconHospedagem.png");
+        case 1:
+          return require("../.././assets/pictures/iconPasseio.png");
+        case 2:
+          return require("../.././assets/pictures/iconVet.png");
+        case 3:
+          return require("../.././assets/pictures/iconGrooming.png");
+        default:
+          return require("../.././assets/pictures/iconPet.png");
+      }
     },
+    // formatPrice(value) {
+    //   return Number(value.replace(",", "."));
+    // },
     listar() {
       register
         .getServices()
@@ -219,15 +252,13 @@ export default {
         });
     },
     salvar(serviceSelecionado) {
-      var valorNovo = this.formatPrice(serviceSelecionado.value);
-      serviceSelecionado.value = valorNovo;
+      // var valorNovo = this.formatPrice(serviceSelecionado.value);
+      // serviceSelecionado.value = valorNovo;
       if (!serviceSelecionado.id) {
         register
           .postService(serviceSelecionado)
-          .then((response) => {
+          .then(() => {
             serviceSelecionado = {};
-            console.log("postService: ", response.data.data);
-            serviceSelecionado = this.serv;
             this.listar();
             this.errors = {};
             this.showAlertSuccess("Serviço atualizado com sucesso!");
@@ -238,10 +269,9 @@ export default {
       } else {
         register
           .putService(serviceSelecionado)
-          .then((response) => {
+          .then(() => {
             serviceSelecionado = this.serviceDefault;
             this.errors = {};
-            console.log("putService: ", response.data.data);
             this.listar();
             this.showAlertSuccess("Serviço cadastrado com sucesso!");
           })

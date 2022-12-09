@@ -10,6 +10,9 @@ export default {
     async getAllUsers() {
         return await apiClient.get(`User/get-all-users`)
     },
+    async getAllPartners() {
+        return await apiClient.get(`User/get-all-partners`)
+    },
     async getAllUserFilter() {
         return await apiClient.get(`User/get-all-users-filter`)
     },

@@ -25,7 +25,14 @@
         <v-data-table :headers="headers" :items="pets" :search="search">
           <template v-slot:item="row">
             <tr>
-              <!-- <td>{{row.item.idPet}}</td> -->
+              <td>
+                <v-img
+                  contain
+                  max-height="140"
+                  max-width="140"
+                  :src="getIconPet(row.item.specie)"
+                ></v-img>
+              </td>
               <td class="align-start">{{ row.item.name }}</td>
               <td>{{ row.item.genreString }}</td>
               <td>{{ row.item.specie }}</td>
@@ -81,6 +88,16 @@
             <v-card-text>
               <v-container>
                 <v-row>
+                  <v-col cols="12" class="d-flex justify-center">
+                    <v-card
+                      ><v-img
+                      contain
+                      max-height="140"
+                      max-width="140"
+                     :src="getIconPet(petSelecionado.specie)"
+                      ></v-img
+                    ></v-card>
+                  </v-col>
                   <v-col cols="12">
                     <v-text-field
                       v-model="petSelecionado.name"
@@ -176,11 +193,13 @@ export default {
       pets: [],
       editedIndex: -1,
       errors: [],
+      iconPet: "",
       search: "",
       dialog: false,
       dialogDelete: false,
       admin: true,
       headers: [
+        { text: " ", align: "center", value: "image", filterable: false},
         {
           text: "Nome",
           align: "center",
@@ -219,6 +238,22 @@ export default {
     },
   },
   methods: {
+    getIconPet(specie) {
+      switch (specie) {
+        case "Canino":
+          return require("../.././assets/pictures/iconDog.png");
+        case "Felino":
+          return require("../.././assets/pictures/iconCat.png");
+        case "Ave":
+          return require("../.././assets/pictures/iconBird2.png");
+        case "Réptil":
+          return require("../.././assets/pictures/iconReptil.png");
+        case "Roedor":
+          return require("../.././assets/pictures/iconBunny.png");
+        default:
+          return require("../.././assets/pictures/iconPet.png");
+      }
+    },
     getColor(isAlive) {
       return isAlive ? "green" : "red";
     },

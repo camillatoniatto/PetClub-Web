@@ -393,7 +393,7 @@ export default {
     },
     async listarUsers() {
       await registerUser
-        .getAllUsers()
+        .getAllPartners()
         .then((response) => {
           this.users = response.data.data;
         })

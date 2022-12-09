@@ -32,7 +32,7 @@
               <td>{{ row.item.dateCreation }}</td>
               <td>
                 <v-icon small class="mr-2" @click="listarPetUser(row.item.idUser)"
-                >mdi-paw</v-icon
+                v-if="(row.item.quantityPet > 0)">mdi-paw</v-icon
                 >
                 <v-icon small class="mr-2" @click="editItem(row.item)"
                   >mdi-pencil</v-icon
@@ -430,11 +430,12 @@
                         <br>
                         Raça: {{item.brand}}</v-list-item-subtitle>
                     </v-list-item-content>
-                    <v-list-item-avatar
-                      tile
-                      size="80"
-                    >
-                  <v-icon>mdi-paw</v-icon></v-list-item-avatar>
+                    <v-img
+                    contain
+                    max-height="100"
+                    max-width="100"
+                    :src="getIconPet(item.specie)"
+                  ></v-img>
                   </v-list-item>
                 </v-card>
                 <v-card v-else>
@@ -550,6 +551,22 @@ export default {
     },
   },
   methods: {
+    getIconPet(specie) {
+      switch (specie) {
+        case "Canino":
+          return require("../.././assets/pictures/iconDog.png");
+        case "Felino":
+          return require("../.././assets/pictures/iconCat.png");
+        case "Ave":
+          return require("../.././assets/pictures/iconBird2.png");
+        case "Réptil":
+          return require("../.././assets/pictures/iconReptil.png");
+        case "Roedor":
+          return require("../.././assets/pictures/iconBunny.png");
+        default:
+          return require("../.././assets/pictures/iconPet.png");
+      }
+    },
     listar() {
       register
         .getAllClients()

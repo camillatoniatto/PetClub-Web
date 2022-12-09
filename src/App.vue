@@ -7,10 +7,7 @@
       class="blue-grey darken-4"
       v-if="$router.currentRoute.path != '/login'"
     >
-      <!-- <center><v-avatar color="white" size="150"></v-avatar></center> -->
-
-      <img src="./assets/logo.png" :aspect-ratio="16/9"
-      :width="200"/>
+      <img src="./assets/logo.png" :aspect-ratio="16 / 9" :width="200" />
       <br />
 
       <v-subheader dark class="text-center"
@@ -80,15 +77,18 @@
 </template>
 
 <script>
-// import setUser from './store/index.js'
-
 export default {
   data: () => ({
     itemsAdmin: [
       { title: "Início", icon: "mdi-view-dashboard", patch: "/" },
       { title: "Usuários", icon: "mdi-account-circle", patch: "/usersadmin" },
       { title: "Animais", icon: "mdi-paw", patch: "/pets" },
-      { title: "Serviços", icon: "mdi-toolbox-outline", patch: "/servicesAdmin" },
+      {
+        title: "Serviços",
+        icon: "mdi-toolbox-outline",
+        patch: "/servicesAdmin",
+      },
+      { title: "Agenda", icon: "mdi-calendar-multiselect", patch: "/scheduler" },
       { title: "Financeiro", icon: "mdi-chart-line", patch: "/cashflowadmin" },
     ],
     itemsPartner: [
@@ -96,7 +96,7 @@ export default {
       { title: "Clientes", icon: "mdi-account-circle", patch: "/userspartner" },
       { title: "Animais", icon: "mdi-paw", patch: "/petspartner" },
       { title: "Serviços", icon: "mdi-toolbox-outline", patch: "/services" },
-      { title: "Agenda", icon: "mdi-calendar-multiselect", patch: "/scheduler"},
+      { title: "Agenda", icon: "mdi-calendar-multiselect", patch: "/scheduler" },
       { title: "Vendas", icon: "mdi-account-cash", patch: "/purchaseorder" },
       { title: "Financeiro", icon: "mdi-chart-line", patch: "/cashflow" },
     ],
@@ -105,6 +105,7 @@ export default {
       { title: "Minha Conta", icon: "mdi-account-circle", patch: "/myaccount" },
       { title: "Meus Pets", icon: "mdi-paw", patch: "/petsuser" },
       { title: "Compras", icon: "mdi-account-cash", patch: "/myorders" },
+      { title: "Agenda", icon: "mdi-calendar-multiselect", patch: "/scheduler" },
     ],
     headers: [],
     icons: ["mdi-facebook", "mdi-twitter", "mdi-linkedin", "mdi-instagram"],
@@ -114,7 +115,7 @@ export default {
       isPartner: window.localStorage.getItem("isPartner"),
       token: window.localStorage.getItem("acessToken"),
     },
-    welcome: ''
+    welcome: "",
   }),
   computed: {
     userAdmin() {
@@ -124,8 +125,11 @@ export default {
       return window.localStorage.getItem("isPartner");
     },
     userAcess() {
-      console.log('acess user', window.localStorage.getItem("fullName") != null)
-      return window.localStorage.getItem("fullName") != null
+      console.log(
+        "acess user",
+        window.localStorage.getItem("fullName") != null
+      );
+      return window.localStorage.getItem("fullName") != null;
     },
     // userName(){
     //   if(window.localStorage.clear("fullName")){
