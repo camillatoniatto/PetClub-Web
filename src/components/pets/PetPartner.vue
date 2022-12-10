@@ -4,12 +4,11 @@
       <!-- adicionar novo -->
       <v-container>
         <div class="text-left mb-2 mr-2">
-          <v-btn color="dark" dark @click="editItem(petSelecionado)">
+          <v-btn color="dark" dark @click="createItem()">
             <v-icon dark>mdi-plus</v-icon>
             Cadastrar um pet
           </v-btn>
         </div>
-
         <br />
         <v-card-title>
           <v-text-field
@@ -49,40 +48,46 @@
                 <v-icon small class="mr-2" @click="editItem(row.item)"
                   >mdi-pencil</v-icon
                 >
-                <v-icon small @click="remover(row.item)">mdi-delete</v-icon>
+                <v-icon small @click="deleteItem(row.item)">mdi-delete</v-icon>
               </td>
             </tr>
           </template>
         </v-data-table>
 
         <!-- delete dialog -->
-        <v-dialog v-model="dialogDelete" max-width="500px">
+        <v-dialog v-model="dialogDelete" max-width="50%">
           <v-card>
-            <v-card-title class="text-center">
-              <v-icon x-large icon dark color="yellow lighten-2"
-                >mdi-alert-outline</v-icon
-              >
-              <br />
-              <h3>Você tem certeza que deseja deletar esse animal?</h3>
-            </v-card-title>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete"
-                >Cancelar</v-btn
-              >
-              <v-btn color="blue darken-1" text @click="remover(petSelecionado)"
-                >Sim</v-btn
-              >
-              <v-spacer></v-spacer>
-            </v-card-actions>
+            <v-alert dense outlined prominent type="error">
+              <h3 class="text-h5">Atenção!</h3>
+              <div>
+                Você tem certeza que deseja deletar esse animal? Essa ação não
+                poderá ser desfeita.
+              </div>
+              <v-divider class="my-4 info" style="opacity: 0.22"></v-divider>
+              <v-row align="center" no-gutters>
+                <v-col>
+                  <v-btn color="blue-grey darken-2" dark @click="closeDelete"
+                    >Não</v-btn
+                  >
+                </v-col>
+                <v-col>
+                  <v-btn
+                    color="red accent-3"
+                    dark
+                    @click="remover(petSelecionado)"
+                  >
+                    Sim
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-alert>
           </v-card>
         </v-dialog>
 
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialogCreate" max-width="500px">
           <v-card>
             <v-card-title>
-              <span class="text-h5">{{ formTitle }}</span>
+              <span class="text-h5">Cadastrar Animal</span>
             </v-card-title>
             <v-card-text>
               <v-container>
@@ -90,10 +95,10 @@
                   <v-col cols="12" class="d-flex justify-center">
                     <v-card
                       ><v-img
-                      contain
-                      max-height="140"
-                      max-width="140"
-                     :src="getIconPet(petSelecionado.specie)"
+                        contain
+                        max-height="140"
+                        max-width="140"
+                        :src="getIconPet(petSelecionado.specie)"
                       ></v-img
                     ></v-card>
                   </v-col>
@@ -104,7 +109,7 @@
                       :item-value="'idUser'"
                       :item-text="'userFullName'"
                       label="Cliente"
-                      filled
+                      outlined
                       dense
                     ></v-select>
                   </v-col>
@@ -125,7 +130,7 @@
                       :item-text="'value'"
                       @change="getIconPet(petSelecionado.specie)"
                       label="Espécie"
-                      filled
+                      outlined
                       dense
                     ></v-select>
                   </v-col>
@@ -149,7 +154,8 @@
                       :items="genre"
                       :item-value="'key'"
                       :item-text="'value'"
-                      filled
+                      label="Gênero"
+                      outlined
                       dense
                     ></v-select>
                   </v-col>
@@ -158,8 +164,109 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close"> Fechar </v-btn>
-              <v-btn color="blue darken-1" text @click="salvar(petSelecionado)">
+              <v-btn color="grey darken-1" dark @click="close"> Fechar </v-btn>
+              <v-btn
+                color="green lighten-1"
+                dark
+                @click="criar(petSelecionado)"
+              >
+                Salvar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="dialogUpdate" max-width="500px">
+          <v-card>
+            <v-card-title>
+              <span class="text-h5">Editar Animal</span>
+            </v-card-title>
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="12" class="d-flex justify-center">
+                    <v-card
+                      ><v-img
+                        contain
+                        max-height="140"
+                        max-width="140"
+                        :src="getIconPet(petSelecionado.specie)"
+                      ></v-img
+                    ></v-card>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      v-model="petSelecionado.idUser"
+                      :items="clients"
+                      :item-value="'idUser'"
+                      :item-text="'userFullName'"
+                      label="Cliente"
+                      outlined
+                      dense
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="petSelecionado.name"
+                      label="Nome"
+                      type="text"
+                      block
+                      required
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-select
+                      v-model="petSelecionado.specie"
+                      :items="species"
+                      :item-value="'value'"
+                      :item-text="'value'"
+                      @change="getIconPet(petSelecionado.specie)"
+                      label="Espécie"
+                      outlined
+                      dense
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-text-field
+                      v-model="petSelecionado.brand"
+                      label="Raça"
+                      type="text"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="petSelecionado.birthdate"
+                      label="Nascimento"
+                      type="date"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select
+                      v-model="petSelecionado.genre"
+                      :items="genre"
+                      :item-value="'key'"
+                      :item-text="'value'"
+                      outlined
+                      dense
+                    ></v-select>
+                  </v-col>
+                  <v-col>
+                    <v-checkbox
+                      v-model="petSelecionado.isAlive"
+                      label="Animal vivo"
+                    ></v-checkbox>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="grey darken-1" dark @click="close"> Fechar </v-btn>
+              <v-btn
+                color="green lighten-1"
+                dark
+                @click="salvar(petSelecionado)"
+              >
                 Salvar
               </v-btn>
             </v-card-actions>
@@ -206,13 +313,13 @@ export default {
       iconPet: "",
       pets: [],
       editedIndex: -1,
-      errors: [],
       search: "",
-      dialog: false,
+      dialogCreate: false,
+      dialogUpdate: false,
       dialogDelete: false,
       admin: true,
       headers: [
-        { text: " ", align: "center", value: "image", filterable: false},
+        { text: " ", align: "center", value: "image", filterable: false },
         { text: "Nome", align: "center", value: "name" },
         { text: "Tutor", align: "center", value: "tutor" },
         { text: "Gênero", align: "center", value: "genreString" },
@@ -288,54 +395,52 @@ export default {
           console.log(e);
         });
     },
+    criar(petSelecionado) {
+      register
+        .postPet(petSelecionado)
+        .then(() => {
+          this.petSelecionado = {}
+          this.listarPetPartner()
+          this.showAlertSuccess("Animal cadastrado com sucesso!");
+          this.close();
+        })
+        .catch((e) => {
+          this.showAlertError(e.response.data.errors[0].message);
+        });
+    },
     salvar(petSelecionado) {
-      if (petSelecionado.idPet == "") {
-        register
-          .postPet(this.petSelecionado)
-          .then((response) => {
-            petSelecionado = {};
-            this.errors = {};
-            this.listar();
-            console.log("salvar pet", response);
-            this.showAlertSuccess("Animal cadastrado com sucesso!");
-          })
-          .catch((e) => {
-            this.showAlertError(e.response.data.errors[0].message);
-          });
-      } else {
-        register
-          .putPet(petSelecionado)
-          .then(() => {
-            this.petSelecionado = {};
-            this.errors = {};
-            this.listar();
-            this.showAlertSuccess("Animal atualizado com sucesso!");
-          })
-          .catch((e) => {
-            this.showAlertError(e.response.data.errors[0].message);
-          });
-      }
-      this.close();
+      register
+        .putPet(petSelecionado)
+        .then((response) => {
+          this.petSelecionado = {};
+          console.log("salvar erro", response);
+          this.listarPetPartner();
+          this.showAlertSuccess("Animal atualizado com sucesso!");
+          this.close();
+        })
+        .catch((e) => {
+          this.showAlertError(e.response.data.errors[0].message);
+        });
     },
     editar(pet) {
       this.pet = pet;
     },
     remover(pet) {
-      // var result = Alert.ShowAlertAlert.Alert('Você tem certeza que quer deletar este pet?')
-      // if(result){
       register
         .deletePet(pet.idPet)
         .then((response) => {
-          this.listar();
-          this.errors = {};
+          this.listarPetPartner();
           console.log("remover", response);
           this.showAlertSuccess("Animal deletado com sucesso!");
+          this.closeDelete();
         })
         .catch((e) => {
           this.showAlertError(e.response.data.errors[0].message);
         });
-      //}
-      //   this.closeDelete()
+    },
+    createItem() {
+      this.petSelecionado = {};
+      this.dialogCreate = true;
     },
     editItem(item) {
       this.editedIndex = this.pets.indexOf(item);
@@ -344,7 +449,7 @@ export default {
         this.petSelecionado.birthdate,
         "DD/MM/YYYY"
       ).format("yyyy-MM-DD");
-      this.dialog = true;
+      this.dialogUpdate = true;
     },
     deleteItem(item) {
       this.editedIndex = this.pets.indexOf(item);
@@ -352,7 +457,8 @@ export default {
       this.dialogDelete = true;
     },
     close() {
-      this.dialog = false;
+      this.dialogCreate = false;
+      this.dialogUpdate = false;
       this.$nextTick(() => {
         (this.petSelecionado = {}), (this.editedIndex = -1);
       });
@@ -362,14 +468,6 @@ export default {
       this.$nextTick(() => {
         (this.petSelecionado = {}), (this.editedIndex = -1);
       });
-    },
-    save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.pets[this.editedIndex], this.petSelecionado);
-      } else {
-        this.pets.push(this.petSelecionado);
-      }
-      this.close();
     },
     showAlertSuccess(message) {
       this.$swal("Sucesso", message, "success");

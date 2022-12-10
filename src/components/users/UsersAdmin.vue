@@ -1,18 +1,15 @@
 <template>
   <div id="app">
     <v-app id="inspire">
-      <!-- adicionar novo -->
       <v-container>
         <div class="text-left mb-2 mr-2">
-          <v-btn color="dark" dark @click="createItem(userSelecionado)">
+          <v-btn color="dark" dark @click="createItem()">
             <v-icon dark>mdi-plus</v-icon>
             Cadastrar um usuário
           </v-btn>
         </div>
 
         <br />
-
-        <!-- tabela reserva -->
         <v-card-title>
           <v-text-field
             v-model="search"
@@ -32,42 +29,51 @@
               <td>{{ row.item.birthdate }}</td>
               <td>{{ row.item.roles }}</td>
               <td>
-                <v-icon small class="mr-2" @click="listarPetUser(row.item.id)"
-                v-if="(row.item.quantityPet > 0)">mdi-paw</v-icon
+                <v-icon
+                  small
+                  class="mr-2"
+                  @click="listarPetUser(row.item.id)"
+                  v-if="row.item.quantityPet > 0"
+                  >mdi-paw</v-icon
                 >
                 <v-icon small class="mr-2" @click="editItem(row.item)"
                   >mdi-pencil</v-icon
                 >
-                <v-icon small @click="remover(row.item)">mdi-delete</v-icon>
+                <!-- <v-icon small @click="remover(row.item)">mdi-delete</v-icon> -->
               </td>
             </tr>
           </template>
         </v-data-table>
 
         <!-- delete dialog -->
-        <v-dialog v-model="dialogDelete" max-width="500px">
+        <v-dialog v-model="dialogDelete" max-width="50%">
           <v-card>
-            <v-card-title class="text-center">
-              <v-icon x-large icon dark color="yellow lighten-2"
-                >mdi-alert-outline</v-icon
-              >
-              <br />
-              <h3>Você tem certeza que deseja deletar esse usuário?</h3>
-            </v-card-title>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete"
-                >Cancelar</v-btn
-              >
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="remover(userSelecionado)"
-                >Sim</v-btn
-              >
-              <v-spacer></v-spacer>
-            </v-card-actions>
+            <v-alert dense outlined prominent type="error">
+              <h3 class="text-h5">Atenção!</h3>
+              <div>
+                Você tem certeza que deseja remover esse usuário? Todos os seus
+                animais cadastrados e agendamentos irão ser removidos também,
+                mas as compras permanecerão. Cuidado, essa ação não poderá ser
+                desfeita.
+              </div>
+              <v-divider class="my-4 info" style="opacity: 0.22"></v-divider>
+              <v-row align="center" no-gutters>
+                <v-col>
+                  <v-btn color="blue-grey darken-2" dark @click="closeDelete"
+                    >Não</v-btn
+                  >
+                </v-col>
+                <v-col>
+                  <v-btn
+                    color="red accent-3"
+                    dark
+                    @click="remover(userSelecionado)"
+                  >
+                    Sim
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-alert>
           </v-card>
         </v-dialog>
 
@@ -132,7 +138,15 @@
 
                   <v-container v-if="showAddress">
                     <v-subheader class="text-h6">Dados Endereço</v-subheader>
-
+                    <v-spacer></v-spacer>
+                    <v-col cols="12" md="8">
+                      <v-text-field
+                        v-model="userSelecionado.zipCode"
+                        label="CEP"
+                        type="number"
+                        @keyup="searchCep()"
+                      ></v-text-field>
+                    </v-col>
                     <v-col cols="12">
                       <v-text-field
                         v-model="userSelecionado.addressName"
@@ -140,14 +154,14 @@
                         type="text"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" md="6">
+                    <v-col cols="12">
                       <v-text-field
                         v-model="userSelecionado.number"
                         label="Número"
                         type="number"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" md="6">
+                    <v-col cols="12">
                       <v-text-field
                         v-model="userSelecionado.complement"
                         label="Complemento"
@@ -175,13 +189,6 @@
                         type="text"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" md="6">
-                      <v-text-field
-                        v-model="userSelecionado.zipCode"
-                        label="CEP"
-                        type="text"
-                      ></v-text-field>
-                    </v-col>
                   </v-container>
 
                   <v-spacer></v-spacer>
@@ -199,10 +206,10 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close"> Fechar </v-btn>
+              <v-btn color="grey darken-1" dark @click="close"> Fechar </v-btn>
               <v-btn
-                color="blue darken-1"
-                text
+                color="green lighten-1"
+                dark
                 @click="salvar(userSelecionado)"
               >
                 Salvar
@@ -270,10 +277,17 @@
                       value="showAddress"
                     ></v-checkbox>
                   </v-col>
-
                   <v-container v-if="showAddress">
                     <v-subheader class="text-h6">Dados Endereço</v-subheader>
-
+                    <v-spacer></v-spacer>
+                    <v-col cols="12" md="8">
+                      <v-text-field
+                        v-model="userSelecionado.zipCode"
+                        label="CEP"
+                        type="text"
+                        @keyup="searchCep()"
+                      ></v-text-field>
+                    </v-col>
                     <v-col cols="12">
                       <v-text-field
                         v-model="userSelecionado.addressName"
@@ -281,14 +295,14 @@
                         type="text"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" md="6">
+                    <v-col cols="12">
                       <v-text-field
                         v-model="userSelecionado.number"
                         label="Número"
                         type="number"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" md="6">
+                    <v-col cols="12">
                       <v-text-field
                         v-model="userSelecionado.complement"
                         label="Complemento"
@@ -316,13 +330,6 @@
                         type="text"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" md="6">
-                      <v-text-field
-                        v-model="userSelecionado.zipCode"
-                        label="CEP"
-                        type="text"
-                      ></v-text-field>
-                    </v-col>
                   </v-container>
 
                   <v-spacer></v-spacer>
@@ -340,10 +347,10 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close"> Fechar </v-btn>
+              <v-btn color="grey darken-1" dark @click="close"> Fechar </v-btn>
               <v-btn
-                color="blue darken-1"
-                text
+                color="green lighten-1"
+                dark
                 @click="cadastrar(userSelecionado)"
               >
                 Salvar
@@ -357,9 +364,7 @@
             <v-data-iterator :items="pets" hide-default-footer>
               <template v-slot:header>
                 <v-toolbar class="mb-2" color="teal darken-3" dark flat>
-                  <v-toolbar-title
-                    >Animais cadastrados</v-toolbar-title
-                  >
+                  <v-toolbar-title>Animais cadastrados</v-toolbar-title>
                 </v-toolbar>
               </template>
               <template v-slot:default="props">
@@ -369,25 +374,26 @@
                     :key="item.idPet"
                     cols="12"
                   >
-
-                <v-card v-if="pets.length > 0">
-                  <v-list-item three-line>
-                    <v-list-item-content>
-                      <v-list-item-title class="text-h5 mb-1">
-                        {{item.name}}
-                      </v-list-item-title>
-                      <v-list-item-subtitle>Espécie: {{item.specie}}
-                        <br>
-                        Raça: {{item.brand}}</v-list-item-subtitle>
-                    </v-list-item-content>
-                    <v-img
-                    contain
-                    max-height="100"
-                    max-width="100"
-                    :src="getIconPet(item.specie)"
-                  ></v-img>
-                  </v-list-item>
-                </v-card>
+                    <v-card v-if="pets.length > 0">
+                      <v-list-item three-line>
+                        <v-list-item-content>
+                          <v-list-item-title class="text-h5 mb-1">
+                            {{ item.name }}
+                          </v-list-item-title>
+                          <v-list-item-subtitle
+                            >Espécie: {{ item.specie }}
+                            <br />
+                            Raça: {{ item.brand }}</v-list-item-subtitle
+                          >
+                        </v-list-item-content>
+                        <v-img
+                          contain
+                          max-height="100"
+                          max-width="100"
+                          :src="getIconPet(item.specie)"
+                        ></v-img>
+                      </v-list-item>
+                    </v-card>
                   </v-col>
                 </v-row>
               </template>
@@ -403,6 +409,7 @@
 import register from "@/store/modules/users";
 import registerPets from "@/store/modules/pets";
 import moment from "moment";
+import axios from "axios";
 
 export default {
   name: "PageUser",
@@ -453,7 +460,6 @@ export default {
       users: [],
       editedIndex: -1,
       pets: [],
-      errors: [],
       showAddress: false,
       search: "",
       dialog: false,
@@ -475,6 +481,8 @@ export default {
         { text: "Tipo", align: "center", value: "roles" },
         { text: "Ações", align: "center", value: "actions", sortable: false },
       ],
+      data: null,
+      messageCep: null,
     };
   },
   mounted() {
@@ -494,6 +502,22 @@ export default {
     },
   },
   methods: {
+    searchCep() {
+      if (this.userSelecionado.zipCode.length == 8) {
+        axios
+          .get(`https://viacep.com.br/ws/${this.userSelecionado.zipCode}/json/`)
+          .then((response) => {
+            this.userSelecionado.addressName = response.data.logradouro;
+            this.userSelecionado.complement = response.data.complemento;
+            this.userSelecionado.neighborhood = response.data.bairro;
+            this.userSelecionado.city = response.data.localidade;
+            this.userSelecionado.state = response.data.uf;
+          })
+          .catch(() => {
+            this.showAlertError("CEP inválido");
+          });
+      }
+    },
     getIconPet(specie) {
       switch (specie) {
         case "Canino":
@@ -527,7 +551,7 @@ export default {
         .getPetUser(id)
         .then((response) => {
           this.pets = response.data.data;
-          this.details = true
+          this.details = true;
         })
         .catch((e) => {
           console.log(e);
@@ -560,7 +584,6 @@ export default {
         .postUsers(userSelecionado)
         .then((response) => {
           userSelecionado = {};
-          this.errors = {};
           this.listar();
           console.log("salvar user", response);
           this.showAlertSuccess("Usuário cadastrado com sucesso!");
@@ -579,8 +602,7 @@ export default {
         register
           .putUserAdmin(userSelecionado)
           .then((response) => {
-            this.userSelecionado = {}
-            this.errors = {}
+            this.userSelecionado = {};
             console.log("salvar erro", response);
             this.listar();
             this.showAlertSuccess("Usuário atualizado com sucesso!");
@@ -595,21 +617,17 @@ export default {
       this.user = user;
     },
     remover(user) {
-      // var result = Alert.ShowAlertAlert.Alert('Você tem certeza que quer deletar este usuário?')
-      // if(result){
       register
-        .deleteUsers(user.id)
+        .deleteUser(user.id)
         .then((response) => {
           this.listar();
-          this.errors = {};
           console.log("remover", response);
-          this.showAlertSuccess("Usuário deletado com sucesso!");
+          this.showAlertSuccess("Usuário removido com sucesso!");
+          this.closeDelete();
         })
         .catch((e) => {
           this.showAlertError(e.response.data.errors[0].message);
         });
-      //}
-      //   this.closeDelete()
     },
     editItem(item) {
       this.editedIndex = this.users.indexOf(item);
@@ -621,9 +639,7 @@ export default {
       console.log("este usuario edit 1: ", this.userSelecionado);
       this.dialog = true;
     },
-    createItem(item) {
-      this.editedIndex = this.users.indexOf(item);
-      this.userSelecionado = Object.assign({}, item);
+    createItem() {
       this.dialogPost = true;
     },
     deleteItem(item) {

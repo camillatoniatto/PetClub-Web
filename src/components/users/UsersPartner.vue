@@ -11,8 +11,6 @@
         </div>
 
         <br />
-
-        <!-- tabela reserva -->
         <v-card-title>
           <v-text-field
             v-model="search"
@@ -31,8 +29,12 @@
               <td>{{ row.item.userPhone }}</td>
               <td>{{ row.item.dateCreation }}</td>
               <td>
-                <v-icon small class="mr-2" @click="listarPetUser(row.item.idUser)"
-                v-if="(row.item.quantityPet > 0)">mdi-paw</v-icon
+                <v-icon
+                  small
+                  class="mr-2"
+                  @click="listarPetUser(row.item.idUser)"
+                  v-if="row.item.quantityPet > 0"
+                  >mdi-paw</v-icon
                 >
                 <v-icon small class="mr-2" @click="editItem(row.item)"
                   >mdi-pencil</v-icon
@@ -64,10 +66,10 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close"> Fechar </v-btn>
+              <v-btn color="grey darken-1" dark @click="close"> Fechar </v-btn>
               <v-btn
-                color="blue darken-1"
-                text
+                color="green lighten-1"
+                dark
                 @click="buscarCliente(userSelecionado.cpf)"
               >
                 Buscar
@@ -124,8 +126,7 @@
                       type="date"
                     ></v-text-field>
                   </v-col>
-
-                  <!-- <v-spacer></v-spacer>
+                  <v-spacer></v-spacer>
                   <v-divider></v-divider>
                   <v-col cols="12">
                     <v-checkbox
@@ -137,7 +138,15 @@
 
                   <v-container v-if="showAddress">
                     <v-subheader class="text-h6">Dados Endereço</v-subheader>
-
+                    <v-spacer></v-spacer>
+                    <v-col cols="12" md="8">
+                      <v-text-field
+                        v-model="userSelecionado.zipCode"
+                        label="CEP"
+                        type="text"
+                        @keyup="searchCep()"
+                      ></v-text-field>
+                    </v-col>
                     <v-col cols="12">
                       <v-text-field
                         v-model="userSelecionado.addressName"
@@ -145,14 +154,14 @@
                         type="text"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" md="6">
+                    <v-col cols="12">
                       <v-text-field
                         v-model="userSelecionado.number"
                         label="Número"
                         type="number"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" md="6">
+                    <v-col cols="12">
                       <v-text-field
                         v-model="userSelecionado.complement"
                         label="Complemento"
@@ -180,23 +189,16 @@
                         type="text"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" md="6">
-                      <v-text-field
-                        v-model="userSelecionado.zipCode"
-                        label="CEP"
-                        type="text"
-                      ></v-text-field>
-                    </v-col> 
-                  </v-container>-->
+                  </v-container>
                 </v-row>
               </v-container>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close"> Fechar </v-btn>
+              <v-btn color="grey darken-1" dark @click="close"> Fechar </v-btn>
               <v-btn
-                color="blue darken-1"
-                text
+                color="green lighten-1"
+                dark
                 @click="salvar(userSelecionado)"
               >
                 Salvar
@@ -254,7 +256,7 @@
                     ></v-text-field>
                   </v-col>
 
-                  <v-spacer></v-spacer>
+                  <!-- <v-spacer></v-spacer>
                   <v-divider></v-divider>
                   <v-col cols="12">
                     <v-checkbox
@@ -263,10 +265,18 @@
                       value="showAddress"
                     ></v-checkbox>
                   </v-col>
-
                   <v-container v-if="showAddress">
                     <v-subheader class="text-h6">Dados Endereço</v-subheader>
 
+                    <v-spacer></v-spacer>
+                    <v-col cols="12" md="8">
+                      <v-text-field
+                        v-model="userSelecionado.zipCode"
+                        label="CEP"
+                        type="text"
+                        @keyup="searchCep()"
+                      ></v-text-field>
+                    </v-col>
                     <v-col cols="12">
                       <v-text-field
                         v-model="userSelecionado.addressName"
@@ -274,14 +284,14 @@
                         type="text"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" md="6">
+                    <v-col cols="12">
                       <v-text-field
                         v-model="userSelecionado.number"
                         label="Número"
                         type="number"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" md="6">
+                    <v-col cols="12">
                       <v-text-field
                         v-model="userSelecionado.complement"
                         label="Complemento"
@@ -309,23 +319,16 @@
                         type="text"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" md="6">
-                      <v-text-field
-                        v-model="userSelecionado.zipCode"
-                        label="CEP"
-                        type="text"
-                      ></v-text-field>
-                    </v-col>
-                  </v-container>
+                  </v-container>-->
                 </v-row>
               </v-container>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close"> Fechar </v-btn>
+              <v-btn color="grey darken-1" dark @click="close"> Fechar </v-btn>
               <v-btn
-                color="blue darken-1"
-                text
+                color="green lighten-1"
+                dark
                 @click="cadastrarUsuario(userSelecionado)"
               >
                 Salvar
@@ -391,10 +394,10 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close"> Fechar </v-btn>
+              <v-btn color="grey darken-1" dark @click="close"> Fechar </v-btn>
               <v-btn
-                color="blue darken-1"
-                text
+                color="green lighten-1"
+                dark
                 @click="cadastrarCliente(userSelecionado.cpf)"
               >
                 Salvar
@@ -408,9 +411,7 @@
             <v-data-iterator :items="pets" hide-default-footer>
               <template v-slot:header>
                 <v-toolbar class="mb-2" color="teal darken-3" dark flat>
-                  <v-toolbar-title
-                    >Animais cadastrados</v-toolbar-title
-                  >
+                  <v-toolbar-title>Animais cadastrados</v-toolbar-title>
                 </v-toolbar>
               </template>
               <template v-slot:default="props">
@@ -420,30 +421,31 @@
                     :key="item.idPet"
                     cols="12"
                   >
-                <v-card v-if="pets.length > 0">
-                  <v-list-item three-line>
-                    <v-list-item-content>
+                    <v-card v-if="pets.length > 0">
+                      <v-list-item three-line>
+                        <v-list-item-content>
+                          <v-list-item-title class="text-h5 mb-1">
+                            {{ item.name }}
+                          </v-list-item-title>
+                          <v-list-item-subtitle
+                            >Espécie: {{ item.specie }}
+                            <br />
+                            Raça: {{ item.brand }}</v-list-item-subtitle
+                          >
+                        </v-list-item-content>
+                        <v-img
+                          contain
+                          max-height="100"
+                          max-width="100"
+                          :src="getIconPet(item.specie)"
+                        ></v-img>
+                      </v-list-item>
+                    </v-card>
+                    <v-card v-else>
                       <v-list-item-title class="text-h5 mb-1">
-                        {{item.name}}
+                        Nenhum animal cadastrado
                       </v-list-item-title>
-                      <v-list-item-subtitle>Espécie: {{item.specie}}
-                        <br>
-                        Raça: {{item.brand}}</v-list-item-subtitle>
-                    </v-list-item-content>
-                    <v-img
-                    contain
-                    max-height="100"
-                    max-width="100"
-                    :src="getIconPet(item.specie)"
-                  ></v-img>
-                  </v-list-item>
-                </v-card>
-                <v-card v-else>
-                  <v-list-item-title class="text-h5 mb-1">
-                    Nenhum animal cadastrado
-                  </v-list-item-title>
-                </v-card>
-
+                    </v-card>
                   </v-col>
                 </v-row>
               </template>
@@ -459,6 +461,7 @@
 import register from "@/store/modules/users";
 import registerPets from "@/store/modules/pets";
 import moment from "moment";
+import axios from "axios";
 
 export default {
   name: "PageUser",
@@ -507,10 +510,24 @@ export default {
         isActive: true,
         writeDate: "",
       },
+      userEdit: {
+        id: "",
+        fullName: "",
+        email: "",
+        phoneNumber: "",
+        birthdate: moment(Date.now()).format("yyyy-MM-DD"),
+        addressName: "",
+        number: "",
+        password: "",
+        complement: "",
+        neighborhood: "",
+        city: "",
+        state: "",
+        zipCode: "",
+      },
       users: [],
       pets: [],
       editedIndex: -1,
-      errors: [],
       showAddress: false,
       dialog: false,
       dialogDelete: false,
@@ -524,14 +541,16 @@ export default {
         {
           text: "Nome",
           align: "center",
-          value: "fullname",
+          value: "userFullName",
         },
-        { text: "CPF", align: "center", value: "cpf" },
-        { text: "Email", align: "center", value: "email" },
-        { text: "Telefone", align: "center", value: "phoneNumber" },
+        { text: "CPF", align: "center", value: "userCpf" },
+        { text: "Email", align: "center", value: "userEmail" },
+        { text: "Telefone", align: "center", value: "userPhone" },
         { text: "Data de Adesão", align: "center", value: "dateCreation" },
         { text: "Ações", align: "center", value: "actions", sortable: false },
       ],
+      data: null,
+      messageCep: null,
     };
   },
   mounted() {
@@ -551,6 +570,22 @@ export default {
     },
   },
   methods: {
+    searchCep() {
+      if (this.userSelecionado.zipCode.length == 8) {
+        axios
+          .get(`https://viacep.com.br/ws/${this.userSelecionado.zipCode}/json/`)
+          .then((response) => {
+            this.userSelecionado.addressName = response.data.logradouro;
+            this.userSelecionado.complement = response.data.complemento;
+            this.userSelecionado.neighborhood = response.data.bairro;
+            this.userSelecionado.city = response.data.localidade;
+            this.userSelecionado.state = response.data.uf;
+          })
+          .catch(() => {
+            this.showAlertError("CEP inválido");
+          });
+      }
+    },
     getIconPet(specie) {
       switch (specie) {
         case "Canino":
@@ -599,14 +634,13 @@ export default {
         .catch((e) => {
           this.showAlertError(e.response.data.errors[0].message);
         });
-        this.close();
+      this.close();
     },
     cadastrarCliente(cpf) {
       register
         .postUserPartner(cpf)
         .then(() => {
           this.userSelecionado = {};
-          this.errors = {};
           this.listar();
           this.showAlertSuccess("Cliente cadastrado com sucesso!");
           this.close();
@@ -621,7 +655,6 @@ export default {
         .then((response) => {
           this.cadastrarCliente(userSelecionado.cpf);
           userSelecionado = {};
-          this.errors = {};
           this.listar();
           console.log("salvar user", response);
         })
@@ -635,32 +668,38 @@ export default {
         .getPetUser(id)
         .then((response) => {
           this.pets = response.data.data;
-          this.details = true
+          this.details = true;
         })
         .catch((e) => {
           console.log(e);
         });
     },
     salvar(userSelecionado) {
-      this.setRole();
-      userSelecionado = this.userSelecionado;
-      console.log("este usuario edit 2: ", userSelecionado);
-
-      register.putUserPerfil(userSelecionado).then(
-        register
-          .putUserAdmin(userSelecionado)
-          .then((response) => {
-            this.userSelecionado = {}
-            this.errors = {}
-            console.log("salvar erro", response);
-            this.listar();
-            this.showAlertSuccess("Cliente atualizado com sucesso!");
-            this.close();
-          })
-          .catch((e) => {
-            this.showAlertError(e.response.data.errors[0].message);
-          })
-      );
+      this.userEdit.id = userSelecionado.idUser;
+      this.userEdit.fullName = userSelecionado.userFullName;
+      this.userEdit.email = userSelecionado.userEmail;
+      this.userEdit.phoneNumber = userSelecionado.userPhone;
+      this.userEdit.birthdate = userSelecionado.birthdate;
+      this.userEdit.addressName = userSelecionado.addressName;
+      this.userEdit.number = userSelecionado.number;
+      this.userEdit.complement = userSelecionado.complement;
+      this.userEdit.neighborhood = userSelecionado.neighborhood;
+      this.userEdit.city = userSelecionado.city;
+      this.userEdit.state = userSelecionado.state;
+      this.userEdit.zipCode = userSelecionado.zipCode;
+      register
+        .putUserPerfil(this.userEdit)
+        .then((response) => {
+          this.userSelecionado = {};
+          this.userEdit = {};
+          console.log("salvar erro", response);
+          this.listar();
+          this.showAlertSuccess("Cliente atualizado com sucesso!");
+          this.close();
+        })
+        .catch((e) => {
+          this.showAlertError(e.response.data.errors[0].message);
+        });
     },
     editar(user) {
       this.user = user;
@@ -681,10 +720,8 @@ export default {
       this.userSelecionado = Object.assign({}, item);
       this.dialogVisual = true;
     },
-    createItem(item) {
+    createItem() {
       this.dialogCpf = false;
-      this.editedIndex = this.users.indexOf(item);
-      this.userSelecionado = Object.assign({}, item);
       this.dialogPost = true;
     },
     getCpf(item) {

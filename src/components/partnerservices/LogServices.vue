@@ -1,13 +1,8 @@
 <template>
   <div id="app">
     <v-app id="inspire">
-      <!-- adicionar novo -->
       <v-container>
-
-
         <br />
-
-        <!-- tabela reserva -->
         <v-card-title>
           <v-text-field
             v-model="search"
@@ -48,7 +43,6 @@ export default {
         writeDate: "",
       },
       services: [],
-      errors: [],
       search: "",
       headers: [
         {

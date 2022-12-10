@@ -57,8 +57,10 @@
                   @click="writeOff(row.item.idPurchaseOrder)"
                   >mdi-cash-check</v-icon
                 >
-                <!-- <v-icon small class="mr-2" @click="editItem(row.item)">mdi-pencil</v-icon> -->
-                <v-icon small @click="deleteItem(row.item)"
+                <v-icon
+                  small
+                  v-if="showCancelOrder(row.item.purchaseOrderSituation)"
+                  @click="deleteItem(row.item)"
                   >mdi-close-circle</v-icon
                 >
               </td>
@@ -70,7 +72,7 @@
           <v-container class="px-4 py-4">
             <v-data-iterator :items="purchaseOrderSelect" hide-default-footer>
               <template v-slot:header>
-                <v-toolbar class="mb-2" color="indigo darken-5" dark flat>
+                <v-toolbar class="mb-2" color="teal darken-4" dark flat>
                   <v-toolbar-title
                     >Serviços da venda "{{
                       purchaseOrderSelect.id
@@ -87,7 +89,7 @@
                   >
                     <v-card>
                       <v-card-title class="subheading font-weight-bold">
-                        {{ item.title }}
+                        Serviço: {{ item.title }}
                       </v-card-title>
                       <v-divider></v-divider>
                       <v-list dense>
@@ -109,35 +111,44 @@
                       </v-list>
                     </v-card>
                   </v-col>
+                  <v-col v-if="purchaseOrderSelect.observations">
+                    <v-card>
+                      Obervações da venda:
+                      {{ purchaseOrderSelect.observations }}
+                    </v-card>
+                  </v-col>
                 </v-row>
               </template>
             </v-data-iterator>
           </v-container>
         </v-dialog>
 
-        <v-dialog v-model="dialogDelete" max-width="500px">
+        <v-dialog v-model="dialogDelete" max-width="50%">
           <v-card>
-            <v-card-title class="text-center">
-              <v-icon x-large icon dark color="center yellow lighten-2"
-                >mdi-alert-outline</v-icon
-              >
-              <br />
-              <h3>Você tem certeza que deseja cancelar essa venda?</h3>
-            </v-card-title>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" dark @click="closeDelete"
-                >Cancelar</v-btn
-              >
-              <v-btn
-                color="blue darken-1"
-                dark
-                @click="remover(purchaseOrderSelect)"
-                >Sim</v-btn
-              >
-              <v-spacer></v-spacer>
-            </v-card-actions>
+            <v-alert dense outlined prominent type="error">
+              <h3 class="text-h5">Atenção!</h3>
+              <div>
+                Você tem certeza que deseja cancelar essa venda? Essa ação não
+                poderá ser desfeita.
+              </div>
+              <v-divider class="my-4 info" style="opacity: 0.22"></v-divider>
+              <v-row align="center" no-gutters>
+                <v-col>
+                  <v-btn color="blue-grey darken-2" dark @click="closeDelete"
+                    >Não</v-btn
+                  >
+                </v-col>
+                <v-col>
+                  <v-btn
+                    color="red accent-3"
+                    dark
+                    @click="remover(purchaseOrderSelect)"
+                  >
+                    Sim
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-alert>
           </v-card>
         </v-dialog>
 
@@ -177,7 +188,6 @@
                         :item-value="'idPaymentMethod'"
                         :item-text="'paymentType'"
                         label="Tipo de Pagamento"
-
                         outlined
                         dense
                       ></v-select>
@@ -253,12 +263,12 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">
+                <v-btn color="grey darken-1" dark @click="close">
                   Fechar
                 </v-btn>
                 <v-btn
-                  color="blue darken-1"
-                  text
+                  color="green lighten-1"
+                  dark
                   @click="criarVenda(purchaseOrderSelect)"
                 >
                   Salvar
@@ -334,7 +344,6 @@ export default {
       paymentType: enums.PaymentType,
       editedIndex: -1,
       isOutflow: false,
-      errors: [],
       search: "",
       dialog: false,
       dialogPost: false,
@@ -349,10 +358,10 @@ export default {
           value: "purchaseOrderSituation",
         },
         { text: "Identificador", align: "center", value: "idPurchaseOrder" },
-        { text: "Animal", align: "center", value: "idPet" },
-        { text: "Cliente", align: "center", value: "idUser" },
+        { text: "Animal", align: "center", value: "petName" },
+        { text: "Cliente", align: "center", value: "fullName" },
         { text: "CPF", align: "center", value: "cpf" },
-        { text: "Pagamento", align: "center", value: "idPaymentMethod" },
+        { text: "Pagamento", align: "center", value: "paymentType" },
         { text: "Valor Total", align: "center", value: "totalValue" },
         { text: "Data da Compra", align: "center", value: "createDate" },
         { text: "Ações", align: "center", value: "actions", sortable: false },
@@ -386,6 +395,11 @@ export default {
     },
   },
   methods: {
+    showCancelOrder(purchaseOrderSituation) {
+      if (purchaseOrderSituation != "Cancelado") {
+        return true;
+      }
+    },
     async getValue(services) {
       await register
         .getValueItens(services)
@@ -472,7 +486,6 @@ export default {
         .postPurchaseOrder(purchaseOrderSelect)
         .then(() => {
           this.purchaseOrderSelect = {};
-          this.errors = {};
           this.listar(this.isApp);
           this.showAlertSuccess("Venda gerada com sucesso!");
           this.close();
@@ -486,8 +499,7 @@ export default {
       register
         .putPurchaseOrder(purchaseOrderSelect)
         .then(() => {
-          this.purchaseOrderSelect = {}
-          this.errors = {}
+          this.purchaseOrderSelect = {};
           this.listar(this.isApp);
           this.showAlertSuccess("Venda atalizada com sucesso!");
           this.close();
@@ -500,13 +512,10 @@ export default {
       this.user = user;
     },
     remover(purchaseOrder) {
-      // var result = Alert.ShowAlertAlert('Você tem certeza que quer deletar esta venda?')
-      //if(result){
       register
         .deletePurchaseOrder(purchaseOrder.idPurchaseOrder)
         .then((response) => {
           this.listar();
-          this.errors = {};
           console.log("remover: ", response);
           this.showAlertSuccess("Venda deletada com sucesso!");
           this.closeDelete();
@@ -521,6 +530,8 @@ export default {
         .then((response) => {
           this.purchaseOrderSelect = response.data.data.purchaseOrderItem;
           this.purchaseOrderSelect.id = response.data.data.idPurchaseOrder;
+          this.purchaseOrderSelect.observations =
+            response.data.data.observations;
           this.details = true;
         })
         .catch((e) => {

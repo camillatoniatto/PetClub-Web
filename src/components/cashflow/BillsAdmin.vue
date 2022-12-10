@@ -35,7 +35,6 @@
               <td>{{ row.item.title }}</td>
               <td>{{ row.item.description }}</td>
               <td>{{ row.item.paymentMethod }}</td>
-              <!-- <td>{{row.item.userCreateName}}</td> -->
               <td>R$ {{ row.item.netValue }}</td>
               <td>{{ row.item.expirationDate }}</td>
               <td>{{ row.item.writeOffDate }}</td>
@@ -47,7 +46,6 @@
                   >{{ row.item.status }}</v-chip
                 >
               </td>
-              <!-- <td>{{row.item.userWriteOffName}}</td> -->
               <td>
                 <v-icon
                   v-if="
@@ -60,35 +58,44 @@
                   @click="writeOff(row.item.id)"
                   >mdi-cash-check</v-icon
                 >
-                <!-- <v-icon small class="mr-2" @click="editItem(row.item)">mdi-pencil</v-icon> -->
-                <v-icon small @click="deleteItem(row.item)">mdi-close-circle</v-icon>
+                <v-icon small @click="deleteItem(row.item)"
+                  >mdi-close-circle</v-icon
+                >
               </td>
             </tr>
           </template>
         </v-data-table>
 
-        <v-dialog v-model="dialogDelete" max-width="500px">
+        <!-- delete dialog -->
+        <v-dialog v-model="dialogDelete" max-width="50%">
           <v-card>
-            <v-card-title class="text-center">
-              <v-icon x-large icon dark color="center yellow lighten-2"
-                >mdi-alert-outline</v-icon
-              >
-              <br />
-              <h3>
+            <v-alert dense outlined prominent type="error">
+              <h3 class="text-h5">Atenção!</h3>
+              <div>
                 Você tem certeza que deseja remover essa movimentação de caixa?
-              </h3>
-            </v-card-title>
+                Essa ação não poderá ser desfeita.
+              </div>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete"
-                >Cancelar</v-btn
-              >
-              <v-btn color="blue darken-1" text @click="remover(cashflowSelect.id)"
-                >Sim</v-btn
-              >
-              <v-spacer></v-spacer>
-            </v-card-actions>
+              <v-divider class="my-4 info" style="opacity: 0.22"></v-divider>
+
+              <v-row align="center" no-gutters>
+                <v-col>
+                  <v-btn color="blue-grey darken-2" dark @click="closeDelete"
+                    >Não</v-btn
+                  >
+                </v-col>
+
+                <v-col>
+                  <v-btn
+                    color="red accent-3"
+                    dark
+                    @click="remover(cashflowSelect.id)"
+                  >
+                    Sim
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-alert>
           </v-card>
         </v-dialog>
 
@@ -110,7 +117,7 @@
                       :items="users"
                       :item-value="'idUser'"
                       :item-text="'fullName'"
-                      label="Parceiro"
+                      label="Parceiro Responsável"
                       outlined
                       dense
                     ></v-select>
@@ -153,12 +160,12 @@
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-subheader>Tipo de Pagamento</v-subheader>
                     <v-select
                       v-model="cashflowSelect.idPaymentMethod"
                       :items="payments"
                       :item-value="'idPaymentMethod'"
                       :item-text="'paymentType'"
+                      label="Tipo de Pagamento"
                       outlined
                       dense
                     ></v-select>
@@ -168,10 +175,10 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close"> Fechar </v-btn>
+              <v-btn color="grey darken-1" dark @click="close"> Fechar </v-btn>
               <v-btn
-                color="blue darken-1"
-                text
+                color="green lighten-1"
+                dark
                 @click="criarConta(cashflowSelect)"
               >
                 Salvar
@@ -244,10 +251,10 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close"> Fechar </v-btn>
+              <v-btn color="grey darken-1" dark @click="close"> Fechar </v-btn>
               <v-btn
-                color="blue darken-1"
-                text
+                color="green lighten-1"
+                dark
                 @click="salvarConta(cashflowSelect)"
               >
                 Salvar
@@ -304,10 +311,25 @@ export default {
         isOutflow: false,
         writeDate: "",
       },
+      cashflowEdit: {
+        id: "",
+        title: "",
+        description: "",
+        idUserCreate: "",
+        idPurchaseOrder: "",
+        idPaymentMethod: "",
+        launchValue: 0,
+        netValue: 0,
+        expirationDate: "",
+        writeOffDate: "",
+        idUserWriteOff: "",
+        idUserInactivate: "",
+        isOutflow: false,
+        writeDate: "",
+      },
       paymentType: enums.PaymentType,
       editedIndex: -1,
       isOutflow: false,
-      errors: [],
       search: "",
       dialog: false,
       dialogPost: false,
@@ -431,7 +453,6 @@ export default {
         .writeOffBill(id)
         .then(() => {
           this.cashflowSelect = {};
-          this.errors = {};
           this.listar();
           this.showAlertSuccess("Baixa realizada com sucesso!");
         })
@@ -445,11 +466,20 @@ export default {
         var minDate = new Date("0001-01-01T00:00:00Z");
         cashflowSelect.writeOffDate = minDate;
       }
+      this.cashflowEdit.title = cashflowSelect.title
+      this.cashflowEdit.description = cashflowSelect.description
+      this.cashflowEdit.idUserCreate = cashflowSelect.idUserCreate
+      this.cashflowEdit.idPurchaseOrder = cashflowSelect.idPurchaseOrder
+      this.cashflowEdit.idPaymentMethod = cashflowSelect.idPaymentMethod
+      this.cashflowEdit.launchValue = cashflowSelect.launchValue
+      this.cashflowEdit.expirationDate = cashflowSelect.expirationDate
+      this.cashflowEdit.writeOffDate = cashflowSelect.writeOffDate
+      this.cashflowEdit.isOutflow = cashflowSelect.isOutflow
       register
         .postCashflow(cashflowSelect)
         .then(() => {
-          this.cashflowSelect = {};
-          this.errors = {};
+          this.cashflowSelect = {}
+          this.cashflowEdit = {}
           this.listar();
           this.showAlertSuccess("Movimentação registrada com sucesso!");
           this.close();
@@ -459,11 +489,20 @@ export default {
         });
     },
     salvarConta(cashflowSelect) {
+        this.cashflowEdit.title = cashflowSelect.title
+        this.cashflowEdit.description = cashflowSelect.description
+        this.cashflowEdit.idUserCreate = cashflowSelect.idUserCreate
+        this.cashflowEdit.idPurchaseOrder = cashflowSelect.idPurchaseOrder
+        this.cashflowEdit.idPaymentMethod = cashflowSelect.idPaymentMethod
+        this.cashflowEdit.launchValue = cashflowSelect.launchValue
+        this.cashflowEdit.expirationDate = cashflowSelect.expirationDate
+        this.cashflowEdit.writeOffDate = cashflowSelect.writeOffDate
+        this.cashflowEdit.isOutflow = cashflowSelect.isOutflow
       register
-        .putCashflow(cashflowSelect)
+        .putCashflow(this.cashflowEdit)
         .then(() => {
           this.cashflowSelect = {}
-          this.errors = {}
+          this.cashflowEdit = {}
           this.listar();
           this.showAlertSuccess("Movimentação atualizada com sucesso!");
           this.close();
@@ -480,7 +519,6 @@ export default {
         .deleteCashflow(id)
         .then((response) => {
           this.listar();
-          this.errors = {};
           console.log("remover: ", response);
           this.showAlertSuccess("Movimentação deletada com sucesso!");
           this.close();

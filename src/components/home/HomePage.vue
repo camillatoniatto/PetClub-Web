@@ -19,7 +19,12 @@
           justify-space-between
         >
           <v-layout row align-center justify-space-between>
-            <v-card xs12 md4 class="grow" @click="$router.push({name: 'scheduler'})">
+            <v-card
+              xs12
+              md4
+              class="grow"
+              @click="$router.push({ name: 'scheduler' })"
+            >
               <v-card height="200" color="green darken-4" dark>
                 <v-card-title
                   class="d-flex align-center flex-column mb-6 text-h5"
@@ -48,7 +53,7 @@
                 </v-card-text>
               </v-card>
             </v-card>
-            <v-card xs12 md4 class="grow" @click="(birthdatePet = true)">
+            <v-card xs12 md4 class="grow" @click="birthdatePet = true">
               <v-card height="200" color="green darken-1" dark>
                 <v-card-title
                   class="d-flex align-center flex-column mb-6 text-h5"
@@ -72,46 +77,41 @@
             <template v-slot:header>
               <v-toolbar class="mb-2" color="green darken-3" dark flat>
                 <v-toolbar-title
-                  >AUniversariantes do Mês <v-icon>mdi-gift</v-icon></v-toolbar-title
+                  >AUniversariantes do Mês
+                  <v-icon>mdi-gift</v-icon></v-toolbar-title
                 >
               </v-toolbar>
             </template>
             <template v-slot:default="props">
               <v-row>
-                <v-col
-                  v-for="item in props.items"
-                  :key="item.idPet"
-                  cols="12"
-                >
-
-              <v-card>
-                <v-list-item>
-                  <v-list-item-content>
-                    <v-list-item-title class="text-h5 mb-1">
-                      {{item.name}}
-                    </v-list-item-title>
-                    <v-list-item-subtitle>
-                      Tutor: {{item.userFullName}}<br>
-                      Espécie: {{item.specie}}<br>
-                      Raça: {{item.brand}}<br>
-                      Nascimento: {{item.birthdate}}
-                      </v-list-item-subtitle>
-                  </v-list-item-content>
-                  <v-img
-                  contain
-                  max-height="100"
-                  max-width="100"
-                  :src="getIconPet(item.specie)"
-                ></v-img>
-                </v-list-item>
-              </v-card>
+                <v-col v-for="item in props.items" :key="item.idPet" cols="12">
+                  <v-card>
+                    <v-list-item>
+                      <v-list-item-content>
+                        <v-list-item-title class="text-h5 mb-1">
+                          {{ item.name }}
+                        </v-list-item-title>
+                        <v-list-item-subtitle>
+                          Tutor: {{ item.userFullName }}<br />
+                          Espécie: {{ item.specie }}<br />
+                          Raça: {{ item.brand }}<br />
+                          Nascimento: {{ item.birthdate }}
+                        </v-list-item-subtitle>
+                      </v-list-item-content>
+                      <v-img
+                        contain
+                        max-height="100"
+                        max-width="100"
+                        :src="getIconPet(item.specie)"
+                      ></v-img>
+                    </v-list-item>
+                  </v-card>
                 </v-col>
               </v-row>
             </template>
           </v-data-iterator>
         </v-container>
       </v-dialog>
-
     </v-container>
   </div>
 </template>
@@ -137,9 +137,9 @@ export default {
       agendamentos: 0,
       pet: 0,
       aniversario: 0,
-      petsAniversario: []
+      petsAniversario: [],
     },
-    birthdatePet: false
+    birthdatePet: false,
   }),
   mounted() {
     this.detalhes();
@@ -157,11 +157,11 @@ export default {
     },
     redirectPet() {
       if (window.localStorage.getItem("isAdmin") === "true") {
-        return this.$router.push({name: 'pets'})
+        return this.$router.push({ name: "pets" });
       } else if (window.localStorage.getItem("isPartner") === "true") {
-        return this.$router.push({name: 'petspartner'})
-      }else {
-        return this.$router.push({name: 'petsuser'})
+        return this.$router.push({ name: "petspartner" });
+      } else {
+        return this.$router.push({ name: "petsuser" });
       }
     },
     getIconPet(specie) {
@@ -180,11 +180,11 @@ export default {
           return require("../.././assets/pictures/iconPet.png");
       }
     },
-    openBirthdates(){
-      if(this.cards.petsAniversario.length > 0){
-        this.birthdatePet = true
+    openBirthdates() {
+      if (this.cards.petsAniversario.length > 0) {
+        this.birthdatePet = true;
       }
-    }
+    },
   },
 };
 </script>

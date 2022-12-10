@@ -34,9 +34,11 @@
               <td>{{ row.item.paymentType }}</td>
               <td>R$ {{ row.item.totalValue }}</td>
               <td>{{ row.item.createDate }}</td>
-              <td><v-icon small @click="getItem(row.item.idPurchaseOrder)"
-                >mdi-eye-outline</v-icon
-              ></td>
+              <td>
+                <v-icon small @click="getItem(row.item.idPurchaseOrder)"
+                  >mdi-eye-outline</v-icon
+                >
+              </td>
             </tr>
           </template>
         </v-data-table>
@@ -45,7 +47,7 @@
           <v-container class="px-4 py-4">
             <v-data-iterator :items="purchaseOrderSelect" hide-default-footer>
               <template v-slot:header>
-                <v-toolbar class="mb-2" color="indigo darken-5" dark flat>
+                <v-toolbar class="mb-2" color="green darken-3" dark flat>
                   <v-toolbar-title
                     >Serviços da venda "{{
                       purchaseOrderSelect.id
@@ -62,7 +64,7 @@
                   >
                     <v-card>
                       <v-card-title class="subheading font-weight-bold">
-                        {{ item.title }}
+                        Serviço: {{ item.title }}
                       </v-card-title>
                       <v-divider></v-divider>
                       <v-list dense>
@@ -84,6 +86,12 @@
                       </v-list>
                     </v-card>
                   </v-col>
+                  <v-col v-if="purchaseOrderSelect.observations">
+                    <v-card>
+                      Obervações da venda:
+                      {{ purchaseOrderSelect.observations }}
+                    </v-card>
+                  </v-col>
                 </v-row>
               </template>
             </v-data-iterator>
@@ -96,7 +104,6 @@
 
 <script>
 import register from "@/store/modules/purchaseorder";
-import enums from "../../Enums.js";
 export default {
   name: "PagePurchaseOrder",
   data() {
@@ -114,16 +121,10 @@ export default {
         paymentSituation: 0,
         observations: "",
         writeDate: "",
-        purchaseOrderItem: []
+        purchaseOrderItem: [],
       },
       purchaseOrders: [],
-      payments: [],
-      clients: [],
-      pets: [],
       services: [],
-      servicesAdd: [],
-      // servicesAdd: [{ idService: "", Quantity: 0 }],
-      servicesQnty: 1,
       purchaseOrderSelect: {
         id: "",
         idPartner: "",
@@ -137,7 +138,7 @@ export default {
         paymentSituation: 0,
         observations: "",
         writeDate: "",
-        purchaseOrderItem: []
+        purchaseOrderItem: [],
       },
       purchaseOrderItem: {
         id: "",
@@ -150,14 +151,7 @@ export default {
         delete: false,
       },
       purchaseOrderItens: [],
-      paymentType: enums.PaymentType,
-      editedIndex: -1,
-      isOutflow: false,
-      errors: [],
       search: "",
-      dialog: false,
-      dialogPost: false,
-      dialogDelete: false,
       details: false,
       headers: [
         {
@@ -167,11 +161,16 @@ export default {
         },
         { text: "Identificador", align: "center", value: "idPurchaseOrder" },
         { text: "Parceiro", align: "center", value: "partnerName" },
-        { text: "Animal", align: "center", value: "idPet" },
-        { text: "Pagamento", align: "center", value: "idPaymentMethod" },
+        { text: "Animal", align: "center", value: "petName" },
+        { text: "Pagamento", align: "center", value: "paymentType" },
         { text: "Valor Total", align: "center", value: "totalValue" },
         { text: "Data da Compra", align: "center", value: "createDate" },
-        { text: "Serviços", align: "center", value: "actions", sortable: false}
+        {
+          text: "Serviços",
+          align: "center",
+          value: "actions",
+          sortable: false,
+        },
       ],
     };
   },
@@ -228,6 +227,7 @@ export default {
         .then((response) => {
           this.purchaseOrderSelect = response.data.data.purchaseOrderItem;
           this.purchaseOrderSelect.id = response.data.data.idPurchaseOrder;
+          this.purchaseOrderSelect.observations = response.data.data.observations;
           this.details = true;
         })
         .catch((e) => {

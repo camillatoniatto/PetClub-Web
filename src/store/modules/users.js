@@ -52,7 +52,7 @@ export default {
     async getUserPartnerDetails(id) {
         return await apiClient.get(`UsersPartners/get-users-partner-details?idUsersPertners=${id}`)
     },
-    // deleteUsers(id) {
-    //     return apiClient.delete(`User/delete-users?idUser=${id}`)
-    // }
+    async deleteUser(id) {
+        return apiClient.delete(`User/delete-user?idUser=${id}`)
+    }
 }
