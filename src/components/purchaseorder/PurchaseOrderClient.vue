@@ -3,7 +3,7 @@
     <v-app id="inspire">
       <!-- adicionar novo -->
       <v-container>
-        <v-card-title>
+        <v-card-title v-if="!loading">
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
@@ -16,6 +16,7 @@
           :headers="headers"
           :items="purchaseOrders"
           :search="search"
+          v-if="!loading"
         >
           <template v-slot:item="row">
             <tr>
@@ -42,6 +43,13 @@
             </tr>
           </template>
         </v-data-table>
+        <v-progress-circular
+          v-else
+          :size="100"
+          indeterminate
+          x-large
+          color="teal darken-4"
+        ></v-progress-circular>
 
         <v-dialog v-model="details" max-width="40%">
           <v-container class="px-4 py-4">
@@ -152,6 +160,7 @@ export default {
       },
       purchaseOrderItens: [],
       search: "",
+      loading: false,
       details: false,
       headers: [
         {
@@ -210,14 +219,17 @@ export default {
       }
     },
     async listar() {
+      this.loading = true;
       await register
         .getPurchaseOrderUser(true)
         .then((response) => {
           this.purchaseOrders = response.data.data;
           console.log("listar purchaseOrders: ", this.purchaseOrders);
           console.log("listar ", this.purchaseOrders);
+          this.loading = false;
         })
         .catch((e) => {
+          this.loading = false;
           console.log(e);
         });
     },
@@ -227,7 +239,8 @@ export default {
         .then((response) => {
           this.purchaseOrderSelect = response.data.data.purchaseOrderItem;
           this.purchaseOrderSelect.id = response.data.data.idPurchaseOrder;
-          this.purchaseOrderSelect.observations = response.data.data.observations;
+          this.purchaseOrderSelect.observations =
+            response.data.data.observations;
           this.details = true;
         })
         .catch((e) => {

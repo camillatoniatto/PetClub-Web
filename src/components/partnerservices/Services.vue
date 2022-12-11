@@ -9,7 +9,7 @@
           </v-btn>
         </div>
         <br />
-        <v-card-title>
+        <v-card-title v-if="!loading">
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
@@ -18,7 +18,12 @@
             hide-details
           ></v-text-field>
         </v-card-title>
-        <v-data-table :headers="headers" :items="services" :search="search">
+        <v-data-table
+          :headers="headers"
+          :items="services"
+          :search="search"
+          v-if="!loading"
+        >
           <template v-slot:item="row">
             <tr>
               <td>
@@ -30,6 +35,7 @@
                 ></v-img>
               </td>
               <td>{{ row.item.title }}</td>
+              <td>{{ row.item.description }}</td>
               <td>{{ row.item.serviceTypeString }}</td>
               <td>R$ {{ row.item.valueString }}</td>
               <td>{{ row.item.sold }}</td>
@@ -42,7 +48,13 @@
             </tr>
           </template>
         </v-data-table>
-
+        <v-card-actions v-else class="d-flex justify-center">
+          <v-progress-circular
+            indeterminate
+            :size="100"
+            color="teal darken-4"
+          ></v-progress-circular>
+        </v-card-actions>
         <!-- delete dialog -->
         <v-dialog v-model="dialogDelete" max-width="50%">
           <v-card>
@@ -251,11 +263,17 @@ export default {
       dialogCreate: false,
       dialogUpdate: false,
       dialogDelete: false,
+      loading: false,
       admin: true,
       headers: [
         { text: " ", align: "center", value: "image", filterable: false },
         { text: "Titulo", align: "center", value: "title" },
-        { text: "Tipo de Serviço", align: "center", value: "serviceTypeString" },
+        { text: "Descrição", align: "center", value: "description" },
+        {
+          text: "Tipo de Serviço",
+          align: "center",
+          value: "serviceTypeString",
+        },
         { text: "Valor", align: "center", value: "valueString" },
         { text: "Realizações", align: "center", value: "sold" },
         { text: "Ações", align: "center", value: "actions", sortable: false },
@@ -297,12 +315,15 @@ export default {
     //   return Number(value.replace(",", "."));
     // },
     listar() {
+      this.loading = true;
       register
         .getServices()
         .then((response) => {
           this.services = response.data.data;
+          this.loading = false;
         })
         .catch((e) => {
+          this.loading = false;
           console.log(e);
         });
     },
@@ -338,7 +359,7 @@ export default {
       register
         .putService(this.serviceEdit)
         .then(() => {
-          this.serviceSelecionado = {}
+          this.serviceSelecionado = {};
           this.listar();
           this.showAlertSuccess("Serviço atualizado com sucesso!");
           this.close();

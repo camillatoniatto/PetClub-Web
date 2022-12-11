@@ -10,7 +10,7 @@
         </div>
 
         <br />
-        <v-card-title>
+        <v-card-title v-if="!loading">
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
@@ -19,7 +19,7 @@
             hide-details
           ></v-text-field>
         </v-card-title>
-        <v-data-table :headers="headers" :items="users" :search="search">
+        <v-data-table :headers="headers" :items="users" :search="search" v-if="!loading">
           <template v-slot:item="row">
             <tr>
               <td class="align-start">{{ row.item.fullName }}</td>
@@ -44,7 +44,13 @@
             </tr>
           </template>
         </v-data-table>
-
+        <v-progress-circular
+          v-else
+          :size="100"
+          indeterminate
+          x-large
+          color="teal darken-4"
+        ></v-progress-circular>
         <!-- delete dialog -->
         <v-dialog v-model="dialogDelete" max-width="50%">
           <v-card>
@@ -204,7 +210,7 @@
                 </v-row>
               </v-container>
             </v-card-text>
-            <v-card-actions>
+            <v-card-actions v-if="!loading">
               <v-spacer></v-spacer>
               <v-btn color="grey darken-1" dark @click="close"> Fechar </v-btn>
               <v-btn
@@ -214,6 +220,12 @@
               >
                 Salvar
               </v-btn>
+            </v-card-actions>
+            <v-card-actions v-else class="d-flex justify-center">
+              <v-progress-circular
+                indeterminate
+                color="teal darken-4"
+              ></v-progress-circular>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -345,7 +357,7 @@
                 </v-row>
               </v-container>
             </v-card-text>
-            <v-card-actions>
+            <v-card-actions v-if="!loading">
               <v-spacer></v-spacer>
               <v-btn color="grey darken-1" dark @click="close"> Fechar </v-btn>
               <v-btn
@@ -355,6 +367,12 @@
               >
                 Salvar
               </v-btn>
+            </v-card-actions>
+            <v-card-actions v-else class="d-flex justify-center">
+              <v-progress-circular
+                indeterminate
+                color="teal darken-4"
+              ></v-progress-circular>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -467,6 +485,7 @@ export default {
       dialogPost: false,
       details: false,
       admin: true,
+      loading: false,
       radios: "",
       headers: [
         {
@@ -529,20 +548,25 @@ export default {
         case "Réptil":
           return require("../.././assets/pictures/iconReptil.png");
         case "Roedor":
+          return require("../.././assets/pictures/iconRat.png");
+        case "Coelho":
           return require("../.././assets/pictures/iconBunny.png");
         default:
           return require("../.././assets/pictures/iconPet.png");
       }
     },
     listar() {
+      this.loading = true;
       register
         .getAllUsers()
         .then((response) => {
           this.users = response.data.data;
+          this.loading = false;
           console.log("listar users: ", this.users);
           console.log("listar ", this.users);
         })
         .catch((e) => {
+          this.loading = false;
           console.log(e);
         });
     },
@@ -579,6 +603,7 @@ export default {
       }
     },
     cadastrar(userSelecionado) {
+      this.loading = true;
       this.setRole();
       register
         .postUsers(userSelecionado)
@@ -586,18 +611,20 @@ export default {
           userSelecionado = {};
           this.listar();
           console.log("salvar user", response);
+          this.loading = false;
           this.showAlertSuccess("Usuário cadastrado com sucesso!");
+          this.close();
         })
         .catch((e) => {
+          this.loading = false;
           this.showAlertError(e.response.data.errors[0].message);
         });
-      this.close();
     },
     salvar(userSelecionado) {
+      this.loading = true;
       this.setRole();
       userSelecionado = this.userSelecionado;
       console.log("este usuario edit 2: ", userSelecionado);
-
       register.putUserPerfil(userSelecionado).then(
         register
           .putUserAdmin(userSelecionado)
@@ -605,13 +632,15 @@ export default {
             this.userSelecionado = {};
             console.log("salvar erro", response);
             this.listar();
+            this.loading = false;
             this.showAlertSuccess("Usuário atualizado com sucesso!");
+            this.close();
           })
           .catch((e) => {
+            this.loading = false;
             this.showAlertError(e.response.data.errors[0].message);
           })
       );
-      this.close();
     },
     editar(user) {
       this.user = user;

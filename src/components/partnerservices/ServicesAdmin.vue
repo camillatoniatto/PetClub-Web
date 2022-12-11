@@ -13,7 +13,7 @@
         <br />
 
         <!-- tabela reserva -->
-        <v-card-title>
+        <v-card-title v-if="!loading">
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
@@ -22,7 +22,7 @@
             hide-details
           ></v-text-field>
         </v-card-title>
-        <v-data-table :headers="headers" :items="services" :search="search">
+        <v-data-table :headers="headers" :items="services" :search="search" v-if="!loading">
           <template v-slot:item="row">
             <tr>
               <td>
@@ -35,6 +35,7 @@
               </td>
               <td>{{ row.item.partnerFullName }}</td>
               <td>{{ row.item.title }}</td>
+              <td>{{ row.item.description }}</td>
               <td>{{ row.item.serviceTypeString }}</td>
               <td>R$ {{ row.item.valueString }}</td>
               <td>{{ row.item.sold }}</td>
@@ -47,6 +48,13 @@
             </tr>
           </template>
         </v-data-table>
+        <v-progress-circular
+          v-else
+          :size="100"
+          indeterminate
+          x-large
+          color="teal darken-4"
+        ></v-progress-circular>
 
         <!-- delete dialog -->
         <v-dialog v-model="dialogDelete" max-width="50%">
@@ -256,6 +264,7 @@ export default {
       dialogCreate: false,
       dialogUpdate: false,
       dialogDelete: false,
+      loading: false,
       admin: true,
       headers: [
         { text: " ", align: "center", value: "image", filterable: false },
@@ -265,6 +274,7 @@ export default {
           value: "partnerFullName",
         },
         { text: "Titulo", align: "center", value: "title" },
+        { text: "Descrição", align: "center", value: "description" },
         {
           text: "Tipo de Serviço",
           align: "center",
@@ -312,12 +322,15 @@ export default {
       return Number(value.replace(",", "."));
     },
     listar() {
+      this.loading = true
       register
         .getServicesAdmin()
         .then((response) => {
           this.services = response.data.data;
+          this.loading = false
         })
         .catch((e) => {
+          this.loading = false
           console.log(e);
         });
     },

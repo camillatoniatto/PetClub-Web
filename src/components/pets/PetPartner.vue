@@ -367,6 +367,8 @@ export default {
         case "Réptil":
           return require("../.././assets/pictures/iconReptil.png");
         case "Roedor":
+          return require("../.././assets/pictures/iconRat.png");
+        case "Coelho":
           return require("../.././assets/pictures/iconBunny.png");
         default:
           return require("../.././assets/pictures/iconPet.png");
@@ -399,8 +401,8 @@ export default {
       register
         .postPet(petSelecionado)
         .then(() => {
-          this.petSelecionado = {}
-          this.listarPetPartner()
+          this.petSelecionado = {};
+          this.listarPetPartner();
           this.showAlertSuccess("Animal cadastrado com sucesso!");
           this.close();
         })

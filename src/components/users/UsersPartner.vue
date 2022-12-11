@@ -64,7 +64,7 @@
                 </v-row>
               </v-container>
             </v-card-text>
-            <v-card-actions>
+            <v-card-actions v-if="!loading">
               <v-spacer></v-spacer>
               <v-btn color="grey darken-1" dark @click="close"> Fechar </v-btn>
               <v-btn
@@ -74,6 +74,12 @@
               >
                 Buscar
               </v-btn>
+            </v-card-actions>
+            <v-card-actions v-else class="d-flex justify-center">
+              <v-progress-circular
+                indeterminate
+                color="teal darken-4"
+              ></v-progress-circular>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -193,7 +199,7 @@
                 </v-row>
               </v-container>
             </v-card-text>
-            <v-card-actions>
+            <v-card-actions v-if="!loading">
               <v-spacer></v-spacer>
               <v-btn color="grey darken-1" dark @click="close"> Fechar </v-btn>
               <v-btn
@@ -203,6 +209,12 @@
               >
                 Salvar
               </v-btn>
+            </v-card-actions>
+            <v-card-actions v-else class="d-flex justify-center">
+              <v-progress-circular
+                indeterminate
+                color="teal darken-4"
+              ></v-progress-circular>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -256,7 +268,7 @@
                     ></v-text-field>
                   </v-col>
 
-                  <!-- <v-spacer></v-spacer>
+                  <v-spacer></v-spacer>
                   <v-divider></v-divider>
                   <v-col cols="12">
                     <v-checkbox
@@ -319,11 +331,11 @@
                         type="text"
                       ></v-text-field>
                     </v-col>
-                  </v-container>-->
+                  </v-container>
                 </v-row>
               </v-container>
             </v-card-text>
-            <v-card-actions>
+            <v-card-actions v-if="!loading">
               <v-spacer></v-spacer>
               <v-btn color="grey darken-1" dark @click="close"> Fechar </v-btn>
               <v-btn
@@ -333,6 +345,12 @@
               >
                 Salvar
               </v-btn>
+            </v-card-actions>
+            <v-card-actions v-else class="d-flex justify-center">
+              <v-progress-circular
+                indeterminate
+                color="teal darken-4"
+              ></v-progress-circular>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -392,7 +410,7 @@
                 </v-row>
               </v-container>
             </v-card-text>
-            <v-card-actions>
+            <v-card-actions v-if="!loading">
               <v-spacer></v-spacer>
               <v-btn color="grey darken-1" dark @click="close"> Fechar </v-btn>
               <v-btn
@@ -402,6 +420,12 @@
               >
                 Salvar
               </v-btn>
+            </v-card-actions>
+            <v-card-actions v-else class="d-flex justify-center">
+              <v-progress-circular
+                indeterminate
+                color="teal darken-4"
+              ></v-progress-circular>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -535,6 +559,7 @@ export default {
       dialogCpf: false,
       dialogVisual: false,
       details: false,
+      loading: false,
       admin: true,
       radios: "",
       headers: [
@@ -597,6 +622,8 @@ export default {
         case "Réptil":
           return require("../.././assets/pictures/iconReptil.png");
         case "Roedor":
+          return require("../.././assets/pictures/iconRat.png");
+        case "Coelho":
           return require("../.././assets/pictures/iconBunny.png");
         default:
           return require("../.././assets/pictures/iconPet.png");
@@ -615,6 +642,7 @@ export default {
         });
     },
     buscarCliente(cpf) {
+      this.loading = true;
       register
         .getCpf(cpf)
         .then((response) => {
@@ -630,38 +658,46 @@ export default {
             console.log("this.userSelecionado.cpf: ", cpf);
             this.createItem(this.userSelecionado);
           }
+          this.loading = false;
         })
         .catch((e) => {
+          this.loading = false;
           this.showAlertError(e.response.data.errors[0].message);
         });
       this.close();
     },
     cadastrarCliente(cpf) {
+      this.loading = true;
       register
         .postUserPartner(cpf)
         .then(() => {
           this.userSelecionado = {};
           this.listar();
           this.showAlertSuccess("Cliente cadastrado com sucesso!");
+          this.loading = false;
           this.close();
         })
         .catch((e) => {
+          this.loading = false;
+
           this.showAlertError(e.response.data.errors[0].message);
         });
     },
     cadastrarUsuario(userSelecionado) {
+      this.loading = true;
       register
         .postUsers(userSelecionado)
-        .then((response) => {
+        .then(() => {
           this.cadastrarCliente(userSelecionado.cpf);
           userSelecionado = {};
           this.listar();
-          console.log("salvar user", response);
+          this.loading = false;
+          this.close();
         })
         .catch((e) => {
+          this.loading = false;
           this.showAlertError(e.response.data.errors[0].message);
         });
-      this.close();
     },
     async listarPetUser(id) {
       await registerPets

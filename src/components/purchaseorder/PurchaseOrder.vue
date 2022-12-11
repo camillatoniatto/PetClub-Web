@@ -11,7 +11,7 @@
         </div>
         <br />
 
-        <v-card-title>
+        <v-card-title v-if="!loading">
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
@@ -24,6 +24,7 @@
           :headers="headers"
           :items="purchaseOrders"
           :search="search"
+          v-if="!loading"
         >
           <template v-slot:item="row">
             <tr>
@@ -67,6 +68,13 @@
             </tr>
           </template>
         </v-data-table>
+        <v-progress-circular
+          v-else
+          :size="100"
+          indeterminate
+          x-large
+          color="teal darken-4"
+        ></v-progress-circular>
 
         <v-dialog v-model="details" max-width="40%">
           <v-container class="px-4 py-4">
@@ -349,6 +357,7 @@ export default {
       dialogPost: false,
       dialogDelete: false,
       details: false,
+      loading: false,
       isApp: false,
       value: 0,
       headers: [
@@ -430,14 +439,17 @@ export default {
       }
     },
     async listar() {
+      this.loading = true;
       await register
         .getPurchaseOrderUser(this.isApp)
         .then((response) => {
           this.purchaseOrders = response.data.data;
+          this.loading = false;
           console.log("listar purchaseOrders: ", this.purchaseOrders);
           console.log("listar ", this.purchaseOrders);
         })
         .catch((e) => {
+          this.loading = false;
           console.log(e);
         });
     },
@@ -489,6 +501,7 @@ export default {
           this.listar(this.isApp);
           this.showAlertSuccess("Venda gerada com sucesso!");
           this.close();
+          this.value = 0;
         })
         .catch((e) => {
           this.showAlertError(e.response.data.errors[0].message);
@@ -503,6 +516,7 @@ export default {
           this.listar(this.isApp);
           this.showAlertSuccess("Venda atalizada com sucesso!");
           this.close();
+          this.value = 0;
         })
         .catch((e) => {
           this.showAlertError(e.response.data.errors[0].message);
@@ -519,6 +533,7 @@ export default {
           console.log("remover: ", response);
           this.showAlertSuccess("Venda deletada com sucesso!");
           this.closeDelete();
+          this.value = 0;
         })
         .catch((e) => {
           this.showAlertError(e.response.data.errors[0].message);

@@ -175,6 +175,8 @@ export default {
         case "Réptil":
           return require("../.././assets/pictures/iconReptil.png");
         case "Roedor":
+          return require("../.././assets/pictures/iconRat.png");
+        case "Coelho":
           return require("../.././assets/pictures/iconBunny.png");
         default:
           return require("../.././assets/pictures/iconPet.png");

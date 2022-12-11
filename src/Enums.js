@@ -36,7 +36,8 @@ const enums = {
       {key: 2, value: 'Ave'},
       {key: 3, value: 'Réptil'},
       {key: 4, value: 'Roedor'},
-      {key: 5, value: 'Outra'},
+      {key: 5, value: 'Coelho'},
+      {key: 6, value: 'Outra'},
     ],
 }
 

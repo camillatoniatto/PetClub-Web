@@ -11,7 +11,7 @@
         </div>
         <br />
 
-        <v-card-title>
+        <v-card-title v-if="!loading">
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
@@ -20,7 +20,12 @@
             hide-details
           ></v-text-field>
         </v-card-title>
-        <v-data-table :headers="headers" :items="allCashflow" :search="search">
+        <v-data-table
+          :headers="headers"
+          :items="allCashflow"
+          :search="search"
+          v-if="!loading"
+        >
           <template v-slot:item="row">
             <tr>
               <td>
@@ -65,6 +70,14 @@
             </tr>
           </template>
         </v-data-table>
+
+        <v-progress-circular
+          v-else
+          :size="100"
+          indeterminate
+          x-large
+          color="teal darken-4"
+        ></v-progress-circular>
 
         <!-- delete dialog -->
         <v-dialog v-model="dialogDelete" max-width="50%">
@@ -334,6 +347,7 @@ export default {
       dialog: false,
       dialogPost: false,
       dialogDelete: false,
+      loading: false,
       headers: [
         {
           text: "Tipo",
@@ -427,15 +441,18 @@ export default {
       return isOutflow ? "Saída" : "Entrada";
     },
     async listar() {
+      this.loading = true
       await register
         .getCashflow()
         .then((response) => {
           this.allCashflow = response.data.data;
           console.log("listar allCashflow: ", this.allCashflow);
           console.log("listar ", this.allCashflow);
+        this.loading = false
         })
         .catch((e) => {
           console.log(e);
+          this.loading = false
         });
     },
     async listarPagamentos() {
@@ -466,20 +483,20 @@ export default {
         var minDate = new Date("0001-01-01T00:00:00Z");
         cashflowSelect.writeOffDate = minDate;
       }
-      this.cashflowEdit.title = cashflowSelect.title
-      this.cashflowEdit.description = cashflowSelect.description
-      this.cashflowEdit.idUserCreate = cashflowSelect.idUserCreate
-      this.cashflowEdit.idPurchaseOrder = cashflowSelect.idPurchaseOrder
-      this.cashflowEdit.idPaymentMethod = cashflowSelect.idPaymentMethod
-      this.cashflowEdit.launchValue = cashflowSelect.launchValue
-      this.cashflowEdit.expirationDate = cashflowSelect.expirationDate
-      this.cashflowEdit.writeOffDate = cashflowSelect.writeOffDate
-      this.cashflowEdit.isOutflow = cashflowSelect.isOutflow
+      this.cashflowEdit.title = cashflowSelect.title;
+      this.cashflowEdit.description = cashflowSelect.description;
+      this.cashflowEdit.idUserCreate = cashflowSelect.idUserCreate;
+      this.cashflowEdit.idPurchaseOrder = cashflowSelect.idPurchaseOrder;
+      this.cashflowEdit.idPaymentMethod = cashflowSelect.idPaymentMethod;
+      this.cashflowEdit.launchValue = cashflowSelect.launchValue;
+      this.cashflowEdit.expirationDate = cashflowSelect.expirationDate;
+      this.cashflowEdit.writeOffDate = cashflowSelect.writeOffDate;
+      this.cashflowEdit.isOutflow = cashflowSelect.isOutflow;
       register
         .postCashflow(cashflowSelect)
         .then(() => {
-          this.cashflowSelect = {}
-          this.cashflowEdit = {}
+          this.cashflowSelect = {};
+          this.cashflowEdit = {};
           this.listar();
           this.showAlertSuccess("Movimentação registrada com sucesso!");
           this.close();
@@ -489,20 +506,20 @@ export default {
         });
     },
     salvarConta(cashflowSelect) {
-        this.cashflowEdit.title = cashflowSelect.title
-        this.cashflowEdit.description = cashflowSelect.description
-        this.cashflowEdit.idUserCreate = cashflowSelect.idUserCreate
-        this.cashflowEdit.idPurchaseOrder = cashflowSelect.idPurchaseOrder
-        this.cashflowEdit.idPaymentMethod = cashflowSelect.idPaymentMethod
-        this.cashflowEdit.launchValue = cashflowSelect.launchValue
-        this.cashflowEdit.expirationDate = cashflowSelect.expirationDate
-        this.cashflowEdit.writeOffDate = cashflowSelect.writeOffDate
-        this.cashflowEdit.isOutflow = cashflowSelect.isOutflow
+      this.cashflowEdit.title = cashflowSelect.title;
+      this.cashflowEdit.description = cashflowSelect.description;
+      this.cashflowEdit.idUserCreate = cashflowSelect.idUserCreate;
+      this.cashflowEdit.idPurchaseOrder = cashflowSelect.idPurchaseOrder;
+      this.cashflowEdit.idPaymentMethod = cashflowSelect.idPaymentMethod;
+      this.cashflowEdit.launchValue = cashflowSelect.launchValue;
+      this.cashflowEdit.expirationDate = cashflowSelect.expirationDate;
+      this.cashflowEdit.writeOffDate = cashflowSelect.writeOffDate;
+      this.cashflowEdit.isOutflow = cashflowSelect.isOutflow;
       register
         .putCashflow(this.cashflowEdit)
         .then(() => {
-          this.cashflowSelect = {}
-          this.cashflowEdit = {}
+          this.cashflowSelect = {};
+          this.cashflowEdit = {};
           this.listar();
           this.showAlertSuccess("Movimentação atualizada com sucesso!");
           this.close();

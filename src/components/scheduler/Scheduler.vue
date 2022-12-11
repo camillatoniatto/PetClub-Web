@@ -10,7 +10,7 @@
           </v-btn>
         </div>
         <br />
-        <v-card-title>
+        <v-card-title v-if="!loading">
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
@@ -23,6 +23,7 @@
           :headers="getHeaders()"
           :items="scheduler"
           :search="search"
+          v-if="!loading"
         >
           <template v-slot:item="row">
             <tr>
@@ -56,7 +57,13 @@
             </tr>
           </template>
         </v-data-table>
-
+        <v-progress-circular
+          v-else
+          :size="100"
+          indeterminate
+          x-large
+          color="teal darken-4"
+        ></v-progress-circular>
         <!-- delete dialog -->
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
@@ -299,6 +306,7 @@ export default {
       dialogCreate: false,
       dialogUpdate: false,
       dialogDelete: false,
+      loading: false,
       admin: true,
       headersPartner: [
         { text: "Animal", align: "center", value: "petName" },
@@ -391,14 +399,17 @@ export default {
       }
     },
     listar() {
+      this.loading = true
       register
         .getSchedulerPartner()
         .then((response) => {
           this.scheduler = response.data.data;
+          this.loading = false
           console.log("listar scheduler: ", this.scheduler);
           console.log("listar ", this.scheduler);
         })
         .catch((e) => {
+          this.loading = false
           console.log(e);
         });
     },

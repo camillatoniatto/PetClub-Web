@@ -11,7 +11,7 @@
         </div>
         <br />
 
-        <v-card-title>
+        <v-card-title v-if="!loading">
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
@@ -20,7 +20,12 @@
             hide-details
           ></v-text-field>
         </v-card-title>
-        <v-data-table :headers="headers" :items="allCashflow" :search="search">
+        <v-data-table
+          :headers="headers"
+          :items="allCashflow"
+          :search="search"
+          v-if="!loading"
+        >
           <template v-slot:item="row">
             <tr>
               <td>
@@ -67,6 +72,13 @@
             </tr>
           </template>
         </v-data-table>
+        <v-card-actions v-else class="d-flex justify-center">
+          <v-progress-circular
+            indeterminate
+            :size="100"
+            color="teal darken-4"
+          ></v-progress-circular>
+        </v-card-actions>
 
         <!-- delete dialog -->
         <v-dialog v-model="dialogDelete" max-width="50%">
@@ -308,6 +320,7 @@ export default {
       dialog: false,
       dialogPost: false,
       dialogDelete: false,
+      loading: false,
       headers: [
         {
           text: "Tipo",
@@ -401,14 +414,17 @@ export default {
       return isOutflow ? "Saída" : "Entrada";
     },
     async listar() {
+      this.loading = true;
       await register
         .getCashflow()
         .then((response) => {
           this.allCashflow = response.data.data;
+          this.loading = false;
           console.log("listar allCashflow: ", this.allCashflow);
           console.log("listar ", this.allCashflow);
         })
         .catch((e) => {
+          this.loading = false;
           console.log(e);
         });
     },
