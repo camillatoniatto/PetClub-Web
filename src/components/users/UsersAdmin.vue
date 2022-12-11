@@ -19,7 +19,12 @@
             hide-details
           ></v-text-field>
         </v-card-title>
-        <v-data-table :headers="headers" :items="users" :search="search" v-if="!loading">
+        <v-data-table
+          :headers="headers"
+          :items="users"
+          :search="search"
+          v-if="!loading"
+        >
           <template v-slot:item="row">
             <tr>
               <td class="align-start">{{ row.item.fullName }}</td>
@@ -35,6 +40,11 @@
                   @click="listarPetUser(row.item.id)"
                   v-if="row.item.quantityPet > 0"
                   >mdi-paw</v-icon
+                >
+                <v-icon
+                  class="mr-2"
+                  @click="redirectWhatsapp(row.item.phoneNumber)"
+                  >mdi-whatsapp</v-icon
                 >
                 <v-icon small class="mr-2" @click="editItem(row.item)"
                   >mdi-pencil</v-icon
@@ -521,6 +531,9 @@ export default {
     },
   },
   methods: {
+    redirectWhatsapp(phone) {
+      window.location.replace(`https://wa.me/55${phone}`);
+    },
     searchCep() {
       if (this.userSelecionado.zipCode.length == 8) {
         axios

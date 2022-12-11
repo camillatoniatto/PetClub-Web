@@ -36,6 +36,11 @@
                   v-if="row.item.quantityPet > 0"
                   >mdi-paw</v-icon
                 >
+                <v-icon
+                  class="mr-2"
+                  @click="redirectWhatsapp(row.item.userPhone)"
+                  >mdi-whatsapp</v-icon
+                >
                 <v-icon small class="mr-2" @click="editItem(row.item)"
                   >mdi-pencil</v-icon
                 >
@@ -595,6 +600,9 @@ export default {
     },
   },
   methods: {
+    redirectWhatsapp(phone) {
+      window.location.replace(`https://wa.me/55${phone}`);
+    },
     searchCep() {
       if (this.userSelecionado.zipCode.length == 8) {
         axios
