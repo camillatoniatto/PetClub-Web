@@ -229,6 +229,7 @@
                             v-model="service.quantity"
                             label="Quantidade"
                             type="number"
+                            min="0"
                           ></v-text-field>
                         </v-col>
                       </v-row>

@@ -38,9 +38,6 @@
               </td>
               <td>{{ row.item.userCreateName }}</td>
               <td>{{ row.item.title }}</td>
-              <td>{{ row.item.description }}</td>
-              <td>{{ row.item.paymentMethod }}</td>
-              <td>R$ {{ row.item.netValue }}</td>
               <td>{{ row.item.expirationDate }}</td>
               <td>{{ row.item.writeOffDate }}</td>
               <td>
@@ -360,9 +357,6 @@ export default {
           value: "userCreateName",
         },
         { text: "Titulo", align: "center", value: "title" },
-        { text: "Descrição", align: "center", value: "description" },
-        { text: "Tipo de Pagamento", align: "center", value: "paymentMethod" },
-        { text: "Valor Total", align: "center", value: "netValue" },
         {
           text: "Data de Vencimento",
           align: "center",
